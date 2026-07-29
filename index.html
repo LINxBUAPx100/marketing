@@ -1,0 +1,1974 @@
+<!doctype html>
+<html lang="es" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing estratégico y analítico — Guía de estudio</title>
+<meta name="description" content="Guía de estudio de marketing de nivel intermedio-avanzado: estrategia y posicionamiento, psicología del consumidor, ecosistema digital, contenidos y analítica. 5 módulos, 20 secciones, 20 tareas prácticas.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Marketing estratégico y analítico — Guía de estudio">
+<meta property="og:description" content="Cinco módulos, veinte secciones, veinte entregables: de la estrategia a la medición del retorno.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23EAEBE5'/%3E%3Cpath d='M14 46V18h7l11 17 11-17h7v28h-7V30l-11 16-11-16v16z' fill='%23A8352A'/%3E%3C/svg%3E">
+
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --paper:#EAEBE5;
+  --paper-2:#E3E4DC;
+  --ink:#1B1D1A;
+  --ink-soft:#3C403A;
+  --muted:#63665F;
+  --rule:#CDCFC5;
+  --rule-soft:#DCDDD4;
+  --spot:#A8352A;
+  --spot-soft:#C6584B;
+  --hl:rgba(216,222,94,.55);
+  --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Mono",Consolas,ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#15171A; --paper-2:#1B1E21; --ink:#E4E3DA; --ink-soft:#CBCAC1;
+    --muted:#949790; --rule:#2E3237; --rule-soft:#242830;
+    --spot:#E0705E; --spot-soft:#C86B5C; --hl:rgba(216,222,94,.20);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15171A; --paper-2:#1B1E21; --ink:#E4E3DA; --ink-soft:#CBCAC1;
+  --muted:#949790; --rule:#2E3237; --rule-soft:#242830;
+  --spot:#E0705E; --spot-soft:#C86B5C; --hl:rgba(216,222,94,.20);
+}
+:root[data-theme="light"]{
+  --paper:#EAEBE5; --paper-2:#E3E4DC; --ink:#1B1D1A; --ink-soft:#3C403A;
+  --muted:#63665F; --rule:#CDCFC5; --rule-soft:#DCDDD4;
+  --spot:#A8352A; --spot-soft:#C6584B; --hl:rgba(216,222,94,.55);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:1.72;
+  font-kerning:normal; text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4,p,dl,dd,figure,blockquote{margin:0}
+img,svg{max-width:100%}
+a{color:inherit}
+mark{
+  background:linear-gradient(180deg,transparent 10%,var(--hl) 10%,var(--hl) 94%,transparent 94%);
+  color:inherit; padding:0 .06em;
+}
+::selection{background:var(--hl); color:var(--ink)}
+:focus-visible{outline:2px solid var(--spot); outline-offset:3px; border-radius:2px}
+
+.skip{position:absolute;left:-9999px;top:0}
+.skip:focus{left:.5rem;top:.5rem;background:var(--paper-2);padding:.5rem .8rem;z-index:50}
+
+/* ---------- shell ---------- */
+.libro{
+  display:grid; grid-template-columns:1fr; gap:0;
+  max-width:1400px; margin:0 auto;
+}
+@media (min-width:900px){
+  .libro{grid-template-columns:16.5rem minmax(0,1fr);}
+}
+
+/* ---------- índice ---------- */
+.indice{
+  border-bottom:1px solid var(--rule);
+  padding:1.6rem 1.4rem;
+  max-height:46vh; overflow:auto;
+  font-family:var(--sans);
+}
+@media (min-width:900px){
+  .indice{
+    position:sticky; top:0; align-self:start;
+    height:100vh; max-height:none;
+    border-bottom:0; border-right:1px solid var(--rule);
+    padding:2.6rem 1.6rem 3rem 1.8rem;
+  }
+}
+.indice .marca{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--spot); margin:0 0 .35rem;
+}
+.indice .titulillo{
+  font-family:var(--serif); font-size:1.02rem; line-height:1.35;
+  margin:0 0 1.4rem; padding-bottom:1.1rem; border-bottom:1px solid var(--rule);
+  color:var(--ink);
+}
+.indice ol{list-style:none; margin:0; padding:0}
+.indice > ol > li{margin-bottom:1.15rem}
+.indice a{text-decoration:none; display:block; transition:color .15s ease}
+.indice .mod-link{
+  display:grid; grid-template-columns:1.6rem 1fr; gap:.4rem;
+  font-size:.86rem; line-height:1.3; color:var(--ink);
+}
+.indice .mod-link b{font-weight:600}
+.indice .mod-link .n{
+  font-family:var(--mono); font-size:.72rem; color:var(--spot); padding-top:.14em;
+}
+.indice .sub{margin:.45rem 0 0 2rem; padding:0; border-left:1px solid var(--rule)}
+.indice .sub li{margin:0}
+.indice .sub a{
+  font-size:.78rem; line-height:1.35; color:var(--muted);
+  padding:.2rem 0 .2rem .7rem; margin-left:-1px;
+  border-left:1px solid transparent;
+}
+.indice .sub a:hover{color:var(--ink)}
+.indice a.activo,.indice .sub a.activo{color:var(--spot)}
+.indice .sub a.activo{border-left-color:var(--spot)}
+.indice .cierre{margin-top:1.5rem;padding-top:1.1rem;border-top:1px solid var(--rule)}
+.indice .cierre a{font-size:.78rem;color:var(--muted)}
+.indice .cierre a:hover{color:var(--ink)}
+.tema{
+  margin-top:1rem; background:none; border:0; padding:0; cursor:pointer;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted);
+}
+.tema:hover{color:var(--spot)}
+
+/* ---------- columna de lectura ---------- */
+main{padding:0 1.4rem 6rem; min-width:0}
+@media (min-width:640px){main{padding:0 2.6rem 7rem}}
+@media (min-width:1280px){main{padding-right:19rem}}
+.col{max-width:42rem}
+
+/* ---------- portada ---------- */
+.portada{max-width:42rem; padding:4rem 0 3.4rem; border-bottom:3px double var(--rule)}
+@media (min-width:900px){.portada{padding-top:6rem}}
+.portada .eyebrow{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--spot); margin:0 0 1.6rem;
+}
+.portada h1{
+  font-size:clamp(2.3rem,6vw,3.5rem); line-height:1.06; margin:0 0 1.1rem;
+  font-weight:600; letter-spacing:-.015em; text-wrap:balance;
+}
+.portada .lede{
+  font-size:1.16rem; line-height:1.62; color:var(--ink-soft); margin:0 0 2.2rem;
+  max-width:34rem;
+}
+.ficha{
+  display:flex; flex-wrap:wrap; gap:0 2.4rem; margin:0; padding:1.2rem 0 0;
+  border-top:1px solid var(--rule); font-family:var(--sans);
+}
+.ficha div{padding:.35rem 0}
+.ficha dt{
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted);
+}
+.ficha dd{margin:.15rem 0 0; font-size:.92rem; font-family:var(--serif)}
+
+/* ---------- prólogo ---------- */
+.prologo{max-width:42rem; padding:2.8rem 0 0}
+.prologo h2{
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 1rem;
+}
+.prologo p{margin:0 0 1rem}
+.prologo p:first-of-type::first-letter{
+  float:left; font-size:3.3rem; line-height:.82; padding:.14em .12em 0 0;
+  color:var(--spot); font-weight:600;
+}
+
+/* ---------- apertura de módulo ---------- */
+.modulo{padding-top:4.5rem}
+.apertura{
+  max-width:42rem; padding-bottom:2.2rem; margin-bottom:2.6rem;
+  border-bottom:1px solid var(--rule);
+}
+.apertura .num{
+  display:flex; align-items:baseline; gap:.85rem;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--spot); margin-bottom:1.1rem;
+}
+.apertura .num::after{
+  content:""; flex:1; height:1px; background:var(--rule); transform:translateY(-.25em);
+}
+.apertura h2{
+  font-size:clamp(1.9rem,4.4vw,2.5rem); line-height:1.12; margin:0 0 1rem;
+  font-weight:600; letter-spacing:-.012em; text-wrap:balance;
+}
+.apertura .objetivo{margin:0; font-size:1.06rem; color:var(--ink-soft); line-height:1.65}
+
+/* ---------- secciones ---------- */
+.seccion{max-width:42rem; padding-top:2.9rem}
+.seccion + .seccion{margin-top:1.2rem}
+.seccion h3{
+  font-size:1.4rem; line-height:1.25; margin:0 0 1.1rem; font-weight:600;
+  letter-spacing:-.008em; text-wrap:balance;
+}
+.seccion h3 .sn{
+  font-family:var(--mono); font-size:.82rem; color:var(--spot);
+  letter-spacing:.04em; margin-right:.65rem; vertical-align:.12em;
+}
+.seccion p{margin:0 0 1.05rem}
+h4{
+  font-family:var(--sans); font-size:.74rem; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:600; color:var(--muted);
+  margin:2.1rem 0 .8rem;
+}
+.seccion ul,.seccion ol{margin:0 0 1.2rem; padding-left:1.35rem}
+.seccion li{margin-bottom:.5rem}
+.seccion li::marker{color:var(--spot)}
+
+/* listas de definición */
+.def{margin:0 0 1.4rem; border-top:1px solid var(--rule-soft)}
+.def > div{
+  display:grid; gap:.1rem .9rem; padding:.72rem 0;
+  border-bottom:1px solid var(--rule-soft);
+}
+@media (min-width:620px){.def > div{grid-template-columns:10.5rem minmax(0,1fr)}}
+.def dt{
+  font-family:var(--sans); font-size:.82rem; font-weight:600; letter-spacing:.01em;
+  color:var(--ink); padding-top:.16em;
+}
+.def dd{margin:0; font-size:.98rem; color:var(--ink-soft); line-height:1.6}
+.def.tools dt{font-family:var(--mono); font-size:.8rem; font-weight:400; color:var(--spot)}
+
+/* nota al margen */
+.nota{
+  margin:1.4rem 0; padding:.9rem 0 .9rem 1rem;
+  border-left:2px solid var(--spot);
+  font-family:var(--sans); font-size:.86rem; line-height:1.6; color:var(--ink-soft);
+}
+.nota .rot{
+  display:block; font-family:var(--mono); font-size:.64rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--spot); margin-bottom:.35rem;
+}
+.nota b{font-variant-numeric:tabular-nums; color:var(--ink)}
+@media (min-width:1280px){
+  .nota{
+    float:right; clear:right; width:15rem;
+    margin:.4rem -17.2rem 1.4rem 0; padding-left:.95rem;
+  }
+}
+
+/* concepto clave */
+.concepto{margin:1.5rem 0; padding:.2rem 0 .2rem 1.4rem; border-left:3px double var(--rule)}
+.concepto .rot{
+  font-family:var(--sans); font-size:.7rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); font-weight:600;
+  display:block; margin-bottom:.4rem;
+}
+.concepto p:last-child{margin-bottom:0}
+.concepto ul{margin-bottom:0}
+
+/* comparación */
+.comparar{
+  display:grid; gap:0; margin:1.4rem 0 1.5rem;
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+}
+@media (min-width:680px){.comparar{grid-template-columns:1fr 1fr; gap:0 2rem}}
+.comparar > div{padding:1rem 0}
+@media (min-width:680px){
+  .comparar > div + div{border-left:1px solid var(--rule-soft); padding-left:2rem; margin-left:-1rem}
+}
+@media (max-width:679px){
+  .comparar > div + div{border-top:1px solid var(--rule-soft)}
+}
+.comparar .rot{
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
+  text-transform:uppercase; display:block; margin-bottom:.5rem;
+}
+.comparar .mal .rot{color:var(--muted)}
+.comparar .bien .rot{color:var(--spot)}
+.comparar p{margin:0; font-size:.97rem; line-height:1.62}
+.comparar .mal p{color:var(--muted)}
+
+/* ejemplo */
+.ejemplo{margin:1.6rem 0}
+.ejemplo > .rot{
+  font-family:var(--sans); font-size:.72rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); font-weight:600;
+  display:block; margin-bottom:.6rem;
+}
+.ejemplo .intro{font-style:italic; color:var(--ink-soft); margin-bottom:.9rem}
+
+/* tabla */
+.tabla-wrap{overflow-x:auto; margin:1.4rem 0 1.6rem}
+table{border-collapse:collapse; width:100%; font-size:.93rem; min-width:30rem}
+caption{
+  caption-side:top; text-align:left; font-family:var(--sans);
+  font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; padding-bottom:.7rem;
+}
+th,td{
+  text-align:left; vertical-align:top; padding:.7rem .9rem .7rem 0;
+  border-bottom:1px solid var(--rule-soft); line-height:1.55;
+}
+thead th{
+  border-bottom:1px solid var(--rule);
+  font-family:var(--sans); font-size:.76rem; letter-spacing:.05em;
+  color:var(--muted); font-weight:600;
+}
+tbody th{font-family:var(--sans); font-size:.84rem; font-weight:600; white-space:nowrap; padding-right:1.4rem}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+/* fórmula */
+.formula{
+  margin:1.3rem 0; padding:1.1rem 1.2rem;
+  background:var(--paper-2); border-left:2px solid var(--spot);
+  font-family:var(--mono); font-size:.9rem; line-height:1.85;
+}
+.formula .slot{color:var(--spot)}
+
+/* niveles de precio */
+.niveles{margin:1.3rem 0 1.5rem; border-top:1px solid var(--rule)}
+.niveles > div{
+  display:grid; gap:.1rem 1rem; padding:.8rem 0;
+  border-bottom:1px solid var(--rule-soft);
+}
+@media (min-width:620px){.niveles > div{grid-template-columns:7rem 5rem minmax(0,1fr)}}
+.niveles .plan{font-family:var(--sans); font-size:.84rem; font-weight:600}
+.niveles .precio{font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--spot); font-size:.88rem}
+.niveles .detalle{font-size:.95rem; color:var(--ink-soft)}
+
+/* tarea */
+.tarea{
+  margin:2.2rem 0 .6rem; padding:1.3rem 0 1.4rem;
+  border-top:3px double var(--rule); border-bottom:1px solid var(--rule);
+}
+.tarea .rot{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--spot); display:block; margin-bottom:.7rem;
+}
+.tarea p{margin:0 0 .7rem; font-size:.98rem}
+.tarea ol,.tarea ul{margin:0; padding-left:1.3rem; font-size:.98rem}
+.tarea li{margin-bottom:.4rem}
+.tarea li:last-child{margin-bottom:0}
+
+/* flujo */
+.flujo{margin:1.3rem 0 1.6rem; padding:0; list-style:none; counter-reset:paso}
+.flujo li{
+  position:relative; padding:0 0 1.1rem 2.5rem; margin:0;
+  border-left:1px solid var(--rule); counter-increment:paso;
+}
+.flujo li:last-child{border-left-color:transparent; padding-bottom:0}
+.flujo li::before{
+  content:counter(paso); position:absolute; left:-.72rem; top:.05rem;
+  width:1.45rem; height:1.45rem; border-radius:50%;
+  background:var(--paper); border:1px solid var(--rule);
+  font-family:var(--mono); font-size:.68rem; color:var(--spot);
+  display:grid; place-items:center;
+}
+.flujo .fase{font-family:var(--sans); font-size:.84rem; font-weight:600; display:block}
+.flujo .desc{font-size:.97rem; color:var(--ink-soft)}
+
+/* figura */
+figure{margin:1.6rem 0}
+figure svg{width:100%; height:auto; max-width:26rem; display:block}
+figcaption{
+  font-family:var(--sans); font-size:.78rem; color:var(--muted);
+  margin-top:.7rem; max-width:26rem; line-height:1.55;
+}
+
+/* apéndice */
+.apendice{padding-top:4.5rem; max-width:42rem}
+.apendice .num{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--spot); display:block; margin-bottom:.9rem;
+}
+.apendice h2{font-size:1.9rem; margin:0 0 1.1rem; font-weight:600; letter-spacing:-.01em}
+.apendice > p{margin-bottom:1rem}
+.formulario{margin:1.6rem 0 0; border-top:1px solid var(--rule)}
+.formulario > div{
+  display:grid; gap:.25rem 1.2rem; padding:.9rem 0;
+  border-bottom:1px solid var(--rule-soft);
+}
+@media (min-width:700px){.formulario > div{grid-template-columns:11rem minmax(0,1fr)}}
+.formulario dt{font-family:var(--sans); font-size:.84rem; font-weight:600}
+.formulario dd{margin:0}
+.formulario code{
+  font-family:var(--mono); font-size:.85rem; color:var(--spot);
+  font-variant-numeric:tabular-nums;
+}
+.formulario .glosa{display:block; font-size:.9rem; color:var(--muted); margin-top:.2rem}
+
+.colofon{
+  max-width:42rem; margin-top:4rem; padding-top:1.4rem;
+  border-top:1px solid var(--rule);
+  font-family:var(--sans); font-size:.8rem; color:var(--muted); line-height:1.65;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+}
+
+@media print{
+  .indice{display:none}
+  body{background:#fff; color:#000; font-size:11pt}
+  main{padding:0}
+  .nota{float:none; width:auto; margin:1rem 0}
+  .modulo{break-before:page}
+  .seccion,.tarea,.comparar,figure{break-inside:avoid}
+}
+</style>
+<link rel="stylesheet" href="guia.css">
+</head>
+<body>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+
+<header class="barra-movil">
+  <span class="rotulo">Marketing estratégico y analítico</span>
+  <button type="button" id="btn-indice" aria-expanded="false" aria-controls="indice">Índice</button>
+</header>
+
+<div class="libro">
+
+<nav class="indice" id="indice" aria-label="Índice de la guía">
+  <p class="marca">Guía de estudio</p>
+  <p class="titulillo">Marketing estratégico y analítico</p>
+  <ol>
+    <li>
+      <a class="mod-link" href="#m1" data-toc="m1"><span class="n">I</span><b>Estrategia y posicionamiento de marca</b></a>
+      <ol class="sub">
+        <li><a href="#s1-1" data-toc="s1-1">1.1 Auditoría de marketing</a></li>
+        <li><a href="#s1-2" data-toc="s1-2">1.2 Propuesta de valor</a></li>
+        <li><a href="#s1-3" data-toc="s1-3">1.3 Posicionamiento de marca</a></li>
+        <li><a href="#s1-4" data-toc="s1-4">1.4 Análisis de la competencia</a></li>
+      </ol>
+    </li>
+    <li>
+      <a class="mod-link" href="#m2" data-toc="m2"><span class="n">II</span><b>El consumidor actual</b></a>
+      <ol class="sub">
+        <li><a href="#s2-1" data-toc="s2-1">2.1 Buyer personas avanzadas</a></li>
+        <li><a href="#s2-2" data-toc="s2-2">2.2 Customer journey</a></li>
+        <li><a href="#s2-3" data-toc="s2-3">2.3 Psicología del precio</a></li>
+        <li><a href="#s2-4" data-toc="s2-4">2.4 Micro-momentos (ZMOT)</a></li>
+      </ol>
+    </li>
+    <li>
+      <a class="mod-link" href="#m3" data-toc="m3"><span class="n">III</span><b>El ecosistema digital</b></a>
+      <ol class="sub">
+        <li><a href="#s3-1" data-toc="s3-1">3.1 Inbound marketing</a></li>
+        <li><a href="#s3-2" data-toc="s3-2">3.2 SEO y SEM</a></li>
+        <li><a href="#s3-3" data-toc="s3-3">3.3 CRO</a></li>
+        <li><a href="#s3-4" data-toc="s3-4">3.4 Email automatizado</a></li>
+      </ol>
+    </li>
+    <li>
+      <a class="mod-link" href="#m4" data-toc="m4"><span class="n">IV</span><b>Contenido, redes y comunidad</b></a>
+      <ol class="sub">
+        <li><a href="#s4-1" data-toc="s4-1">4.1 Estrategia de contenidos</a></li>
+        <li><a href="#s4-2" data-toc="s4-2">4.2 Storytelling de marca</a></li>
+        <li><a href="#s4-3" data-toc="s4-3">4.3 Gestión de redes sociales</a></li>
+        <li><a href="#s4-4" data-toc="s4-4">4.4 Influencers y afiliados</a></li>
+      </ol>
+    </li>
+    <li>
+      <a class="mod-link" href="#m5" data-toc="m5"><span class="n">V</span><b>Analítica y decisiones</b></a>
+      <ol class="sub">
+        <li><a href="#s5-1" data-toc="s5-1">5.1 Vanidad frente a KPI</a></li>
+        <li><a href="#s5-2" data-toc="s5-2">5.2 CAC y LTV</a></li>
+        <li><a href="#s5-3" data-toc="s5-3">5.3 Analítica y atribución</a></li>
+        <li><a href="#s5-4" data-toc="s5-4">5.4 Data storytelling</a></li>
+      </ol>
+    </li>
+  </ol>
+  <p class="cierre"><a href="#apendice" data-toc="apendice">Apéndice · Formulario y checklist</a></p>
+  <div class="progreso">
+    <span id="prog-txt">0 de 20 tareas</span>
+    <div class="barra" role="presentation"><i id="prog-bar"></i></div>
+  </div>
+  <button class="tema" type="button" id="tema" aria-live="polite">Tema: automático</button>
+</nav>
+
+<main id="contenido">
+
+  <header class="portada">
+    <p class="eyebrow">Nivel intermedio · avanzado</p>
+    <h1>Marketing estratégico y analítico</h1>
+    <p class="lede">Un temario progresivo para quien ya domina lo básico: de la definición del terreno de juego a la medición del retorno. Cinco módulos, veinte secciones, veinte entregables.</p>
+    <dl class="ficha">
+      <div><dt>Módulos</dt><dd>5</dd></div>
+      <div><dt>Secciones</dt><dd>20</dd></div>
+      <div><dt>Tareas prácticas</dt><dd>20</dd></div>
+      <div><dt>Requisito</dt><dd>Conocimientos básicos previos</dd></div>
+    </dl>
+  </header>
+
+  <section class="prologo col">
+    <h2>Cómo usar esta guía</h2>
+    <p>Este temario asume que las definiciones introductorias ya están cubiertas. No encontrarás aquí «qué es el marketing»: encontrarás cómo decidir, cómo ejecutar y cómo demostrar que funcionó. El orden importa. Los módulos están encadenados: el buyer persona del Módulo&nbsp;2 alimenta las palabras clave del Módulo&nbsp;3; el lead magnet del Módulo&nbsp;3 se convierte en el enlace de la biografía del Módulo&nbsp;4; y todo termina midiéndose con las métricas del Módulo&nbsp;5.</p>
+    <p>Cada sección sigue la misma estructura de lectura: <b>el dato</b> que justifica por qué importa (al margen), <b>el concepto clave</b> que hay que entender de verdad, <b>un ejemplo aplicado</b> a un negocio real, <b>las herramientas</b> con las que se ejecuta y una <b>tarea práctica</b>. Si haces las veinte tareas, al terminar no tendrás apuntes: tendrás un plan de marketing completo para un negocio concreto.</p>
+    <p>Elige ese negocio antes de empezar el Módulo&nbsp;1 y no lo cambies. Puede ser tu propio proyecto, el de un cliente o uno inventado, pero debe ser el mismo de la primera a la última página.</p>
+  </section>
+
+  <!-- ============ MÓDULO 1 ============ -->
+  <section class="modulo" id="m1" data-mod="m1">
+    <div class="apertura col">
+      <p class="num">Módulo uno</p>
+      <h2>Estrategia y posicionamiento de marca</h2>
+      <p class="objetivo">Pensar estratégicamente antes de ejecutar cualquier táctica. Sin una estrategia clara, lanzar anuncios o abrir redes sociales es <mark>gastar dinero a ciegas</mark>. Este módulo define el terreno de juego, evalúa las capacidades propias y decide cómo queremos que el mercado nos perciba.</p>
+    </div>
+
+    <article class="seccion" id="s1-1" data-sec="s1-1">
+      <h3><span class="sn">1.1</span>Auditoría de marketing: entendiendo el entorno</h3>
+      <p>Antes de actuar hay que saber dónde estamos parados. Esto se logra con dos herramientas de análisis complementarias: una mira hacia afuera, a fuerzas que no controlamos; la otra mira hacia adentro y las cruza para producir decisiones.</p>
+
+      <h4>Análisis PESTEL · macroentorno</h4>
+      <p>Sirve para evaluar factores externos que la empresa no puede controlar, pero que afectan directamente su viabilidad.</p>
+      <dl class="def">
+        <div><dt>Políticos</dt><dd>Regulaciones comerciales o estabilidad del gobierno.</dd></div>
+        <div><dt>Económicos</dt><dd>Inflación, tasas de interés o poder adquisitivo del mercado.</dd></div>
+        <div><dt>Sociales</dt><dd>Cambios de hábitos, demografía o tendencias culturales.</dd></div>
+        <div><dt>Tecnológicos</dt><dd>Nuevas herramientas, lenguajes, automatizaciones o plataformas.</dd></div>
+        <div><dt>Ecológicos</dt><dd>Impacto climático o regulaciones de sostenibilidad.</dd></div>
+        <div><dt>Legales</dt><dd>Leyes laborales, protección de datos o propiedad intelectual.</dd></div>
+      </dl>
+
+      <h4>Análisis FODA cruzado · microentorno</h4>
+      <p>Va más allá del FODA tradicional. El modelo cruzado obliga a dejar de listar y empezar a decidir: cada casilla de la matriz es una estrategia, no un adjetivo.</p>
+      <div class="tabla-wrap">
+        <table>
+          <caption>Matriz de estrategias cruzadas</caption>
+          <thead>
+            <tr><th scope="col"></th><th scope="col">Oportunidades</th><th scope="col">Amenazas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Fortalezas</th>
+              <td><b>Ofensiva.</b> Usar los puntos fuertes para aprovechar las tendencias del mercado.</td>
+              <td><b>Defensiva.</b> Usar las fortalezas para protegerse de los riesgos externos.</td>
+            </tr>
+            <tr>
+              <th scope="row">Debilidades</th>
+              <td><b>Reorientación.</b> Corregir debilidades internas para no dejar pasar una buena oportunidad.</td>
+              <td><b>Supervivencia.</b> Acciones urgentes para evitar que una debilidad interna colapse ante una amenaza externa.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Completa un PESTEL de tu negocio con un solo factor por letra, pero que sea real y verificable (una ley concreta, una cifra de inflación concreta).</li>
+          <li>Construye la matriz cruzada y redacta <b>una acción concreta</b> por cuadrante. Si un cuadrante te sale vacío, es señal de que el diagnóstico está incompleto.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s1-2" data-sec="s1-2">
+      <h3><span class="sn">1.2</span>Propuesta de valor</h3>
+      <p>La propuesta de valor es una promesa clara que explica cómo tu producto resuelve el problema del cliente, qué beneficios específicos ofrece y por qué es mejor que la competencia. No es un eslogan ni una lista de características.</p>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · Value Proposition Canvas</span>
+        <p>Esta metodología alinea lo que ofreces con lo que el cliente realmente necesita, y se divide en dos mitades que deben encajar como piezas:</p>
+        <ul>
+          <li><b>Perfil del cliente.</b> Sus «trabajos» (lo que intenta resolver), sus «frustraciones» (los obstáculos que enfrenta) y sus «alegrías» (los resultados que espera obtener).</li>
+          <li><b>Mapa de valor.</b> Tu producto, cómo actúa como <i>aliviador de frustraciones</i> y cómo funciona como <i>creador de alegrías</i>.</li>
+        </ul>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 1.2</span>
+        <svg viewBox="0 0 420 230" role="img" aria-label="El lienzo de la propuesta de valor: a la izquierda un cuadrado con productos y servicios, creadores de alegrías y aliviadores de frustraciones; a la derecha un círculo dividido en trabajos, frustraciones y alegrías del cliente. Una flecha doble entre ambos representa el encaje.">
+          <rect class="g-shape" x="20" y="30" width="160" height="160"/>
+          <line class="g-shape" x1="90" y1="30" x2="90" y2="190"/>
+          <line class="g-shape" x1="90" y1="110" x2="180" y2="110"/>
+          <text class="g-lab" x="55" y="104" text-anchor="middle" font-size="10">Productos</text>
+          <text class="g-lab" x="55" y="117" text-anchor="middle" font-size="10">y servicios</text>
+          <text class="g-lab" x="135" y="64" text-anchor="middle" font-size="10">Creadores</text>
+          <text class="g-lab" x="135" y="77" text-anchor="middle" font-size="10">de alegrías</text>
+          <text class="g-lab" x="135" y="145" text-anchor="middle" font-size="10">Aliviadores</text>
+          <text class="g-lab" x="135" y="158" text-anchor="middle" font-size="9.5">de frustraciones</text>
+          <text class="g-key" x="100" y="20" text-anchor="middle">Mapa de valor</text>
+
+          <circle class="g-shape" cx="310" cy="110" r="80"/>
+          <line class="g-shape" x1="310" y1="110" x2="310" y2="30"/>
+          <line class="g-shape" x1="310" y1="110" x2="253" y2="167"/>
+          <line class="g-shape" x1="310" y1="110" x2="367" y2="167"/>
+          <text class="g-lab" x="268" y="93" text-anchor="middle" font-size="10">Frustraciones</text>
+          <text class="g-lab" x="352" y="93" text-anchor="middle" font-size="10">Trabajos</text>
+          <text class="g-lab" x="310" y="158" text-anchor="middle" font-size="10">Alegrías</text>
+          <text class="g-key" x="310" y="20" text-anchor="middle">Perfil del cliente</text>
+
+          <line class="g-shape" x1="192" y1="110" x2="220" y2="110"/>
+          <path class="s2" d="M188,110 l8,-4 v8 z"/>
+          <path class="s2" d="M224,110 l-8,-4 v8 z"/>
+          <text class="g-note" x="206" y="100" text-anchor="middle">encaje</text>
+        </svg>
+        <figcaption>El lienzo solo funciona leído de derecha a izquierda: primero el perfil del cliente, después el mapa de valor. Cada aliviador debe apuntar a una frustración concreta del círculo; los que no apuntan a nada son características que nadie pidió.</figcaption>
+      </figure>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Un servicio de desarrollo web enfocado en utilidades para negocios: integrar un generador de códigos QR para menús o inventarios. La propuesta no debe centrarse en el código.</p>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Propuesta débil</span>
+            <p>«Ofrecemos scripts de generación de QR para sitios web.»</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Propuesta fuerte</span>
+            <p>«Digitalizamos el acceso a tu catálogo en 5 minutos, sin que necesites conocimientos técnicos, para que tus clientes compren directamente desde su celular.»</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Lista los tres «trabajos» principales de tu cliente, sus tres frustraciones y sus tres alegrías esperadas.</li>
+          <li>Frente a cada frustración, escribe qué hace exactamente tu producto para aliviarla. Las frustraciones sin respuesta son tu hoja de ruta de producto.</li>
+          <li>Redacta tu propuesta en una sola frase que contenga: qué logra el cliente, en cuánto tiempo y sin qué esfuerzo.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s1-3" data-sec="s1-3">
+      <h3><span class="sn">1.3</span>Posicionamiento de marca</h3>
+      <p>El posicionamiento es el espacio que ocupa tu marca en la mente del consumidor en relación con la competencia. <mark>No puedes ser todo para todos</mark>: debes elegir una batalla y ganarla.</p>
+
+      <h4>Tipos de estrategia</h4>
+      <dl class="def">
+        <div><dt>Por atributo</dt><dd>Una característica única del producto. «El software más rápido del mercado.»</dd></div>
+        <div><dt>Por beneficio</dt><dd>El resultado final para el usuario. «Ahorra 10 horas de trabajo a la semana.»</dd></div>
+        <div><dt>Por uso</dt><dd>La mejor opción para una situación específica. «La bebida ideal para la recuperación después del deporte.»</dd></div>
+        <div><dt>Por competidor</dt><dd>Comparación directa, implícita o explícita, para resaltar superioridad en un área.</dd></div>
+        <div><dt>Por precio/calidad</dt><dd>Ser el más exclusivo (lujo) o el más accesible (low-cost).</dd></div>
+      </dl>
+
+      <h4>Declaración de posicionamiento</h4>
+      <p>Es una fórmula interna que guía a toda la empresa: no se publica, se usa para decidir. Si una idea de campaña no cabe en esta frase, la campaña está fuera de estrategia.</p>
+      <div class="formula">
+        Para <span class="slot">[público objetivo]</span> que tiene <span class="slot">[necesidad]</span>,<br>
+        <span class="slot">[nuestra marca]</span> es la <span class="slot">[categoría de producto]</span><br>
+        que proporciona <span class="slot">[beneficio principal]</span><br>
+        porque <span class="slot">[razón para creer / prueba]</span>.
+      </div>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Elige <b>una sola</b> estrategia de posicionamiento de las cinco. Escribe por qué descartaste las otras cuatro.</li>
+          <li>Rellena la declaración de posicionamiento. La parte «porque» debe ser una prueba objetiva, no una opinión.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s1-4" data-sec="s1-4">
+      <h3><span class="sn">1.4</span>Análisis de la competencia · benchmarking</h3>
+      <p>No se trata de copiar, sino de entender el ecosistema para encontrar huecos —océanos azules— donde la competencia es débil.</p>
+
+      <h4>Pasos para un benchmarking efectivo</h4>
+      <ol>
+        <li><b>Identificar competidores directos e indirectos.</b> Los directos venden lo mismo que tú; los indirectos resuelven el mismo problema de forma diferente.</li>
+        <li><b>Mapeo perceptual.</b> Dibujar un plano cartesiano con dos variables importantes para el cliente y colocar ahí a las marcas. Revela visualmente dónde hay espacio libre.</li>
+        <li><b>Análisis de la huella digital.</b> Auditar qué canales usan, qué contenido publican, cómo es el diseño de sus plataformas y qué tono de voz emplean.</li>
+        <li><b>Mystery shopper.</b> Simular el proceso de compra con la competencia para evaluar su servicio, tiempos de respuesta y embudo de ventas real.</li>
+      </ol>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 1.4</span>
+        <svg viewBox="0 0 420 260" role="img" aria-label="Mapa perceptual con el precio en el eje vertical y el nivel de personalización en el horizontal. Tres competidores se agrupan en la zona de precio medio-bajo y personalización baja; el cuadrante de precio alto con alta personalización está vacío.">
+          <line class="g-axis" x1="40" y1="20" x2="40" y2="210"/>
+          <line class="g-axis" x1="40" y1="210" x2="400" y2="210"/>
+          <text class="g-lab" x="46" y="20">Precio alto</text>
+          <text class="g-lab" x="46" y="226">Precio bajo</text>
+          <text class="g-lab" x="400" y="226" text-anchor="end">Alta personalización</text>
+
+          <circle class="s2" cx="100" cy="170" r="6" data-tip="Competidor A · precio bajo, personalización nula"/>
+          <circle class="s2" cx="160" cy="130" r="6" data-tip="Competidor B · precio medio, personalización baja"/>
+          <circle class="s2" cx="215" cy="160" r="6" data-tip="Competidor C · precio bajo, personalización media"/>
+          <text class="g-lab" x="111" y="174" font-size="11">Competidor A</text>
+          <text class="g-lab" x="171" y="134" font-size="11">Competidor B</text>
+          <text class="g-lab" x="226" y="164" font-size="11">Competidor C</text>
+
+          <circle cx="330" cy="70" r="28" fill="none" stroke="var(--spot)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="330" y="74" text-anchor="middle" fill="var(--spot)" font-family="var(--mono)" font-size="11">hueco</text>
+          <text class="g-note" x="400" y="118" text-anchor="end">nadie compite aquí</text>
+        </svg>
+        <figcaption>Las dos variables del plano no se eligen al azar: deben ser los dos criterios con los que el cliente decide realmente, no los que a ti te parecen importantes. El hueco solo es una oportunidad si alguien está dispuesto a pagar por él —comprueba que hay demanda antes de mudarte a ese cuadrante.</figcaption>
+      </figure>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Lista tres competidores directos y dos indirectos.</li>
+          <li>Dibuja tu mapa perceptual con los dos ejes que de verdad usa tu cliente para decidir. Marca el hueco.</li>
+          <li>Haz de cliente misterioso con un competidor: pide presupuesto y cronometra cuánto tarda en responder. Ese dato suele ser la primera oportunidad que encuentras.</li>
+        </ol>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ MÓDULO 2 ============ -->
+  <section class="modulo" id="m2" data-mod="m2">
+    <div class="apertura col">
+      <p class="num">Módulo dos</p>
+      <h2>Entendiendo al consumidor actual</h2>
+      <p class="objetivo">El núcleo psicológico del marketing. El marketing tradicional basaba sus estrategias en datos demográficos fríos; hoy sabemos que dos personas de 40 años en la misma ciudad pueden tener miedos y hábitos de compra opuestos. Aquí pasamos de la demografía a la <mark>psicografía</mark>: el estudio del comportamiento, los miedos y los deseos.</p>
+    </div>
+
+    <article class="seccion" id="s2-1" data-sec="s2-1">
+      <h3><span class="sn">2.1</span>Creación avanzada de buyer personas</h3>
+      <p>Un «público objetivo» es una diana gigante; un buyer persona es el centro rojo exacto de esa diana. Es una representación semi-ficticia de tu cliente ideal basada en datos reales y especulación educada. Si no sabes a quién le hablas, tu mensaje será genérico y aburrido.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Según estudios de Board of Innovation, las campañas estructuradas en torno a buyer personas específicos son de <b>2 a 5 veces</b> más efectivas y generan tasas de apertura de correos un <b>14&nbsp;%</b> superiores.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · el mapa de empatía</span>
+        <p>Para crear un buen perfil debes salir de tu propia cabeza y entrar en la de tu cliente. Responde: ¿qué piensa y siente?, ¿qué escucha en su entorno?, ¿qué ve en el mercado?, ¿qué dice y hace?</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Vendes un software B2B para automatizar el pago de nóminas en empresas.</p>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Público objetivo · error</span>
+            <p>«Directores de Recursos Humanos, hombres y mujeres de 35 a 55 años.»</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Buyer persona · acierto</span>
+            <p>Laura, 42 años, gerente de RR.&nbsp;HH.</p>
+          </div>
+        </div>
+        <dl class="def">
+          <div><dt>Punto de dolor</dt><dd>Pasa los últimos tres días de cada mes trabajando hasta tarde en Excel, aterrada de cometer un error de cálculo en los impuestos que le cueste una multa a la empresa.</dd></div>
+          <div><dt>Qué consume</dt><dd>Lee artículos en LinkedIn sobre productividad y escucha podcasts de liderazgo camino al trabajo.</dd></div>
+          <div><dt>Objeción principal</dt><dd>Teme que implementar un nuevo software tome meses y detenga la operación actual.</dd></div>
+          <div><dt>Decisión de campaña</dt><dd>Los anuncios van en LinkedIn y el mensaje es: «Instalación en 24 horas. Cero errores fiscales. Recupera tus fines de semana».</dd></div>
+        </dl>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Make My Persona</dt><dd>De HubSpot. Gratuita y visual, genera tu perfil de cliente ideal paso a paso y lo exporta en PDF.</dd></div>
+        <div><dt>Xtensio</dt><dd>Plantillas excelentes para diseñar buyer personas y compartirlas con el equipo.</dd></div>
+        <div><dt>Typeform · Google Forms</dt><dd>La mejor herramienta sigue siendo hablar con clientes reales: encuestas breves a tus clientes más satisfechos preguntando por qué te compraron.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Usa Make My Persona para crear un perfil detallado.</li>
+          <li>Define su mayor <b>punto de dolor</b> (lo que lo frustra diariamente) y su mayor <b>objeción</b> (por qué dudaría en darte su dinero).</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s2-2" data-sec="s2-2">
+      <h3><span class="sn">2.2</span>El customer journey</h3>
+      <p>Comprar no es un evento de un solo clic; es un proceso psicológico. El mapa del viaje del cliente ilustra todos los pasos por los que pasa, desde que no sabe que existes hasta que se convierte en promotor de tu marca.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Según Salesforce, el <b>80&nbsp;%</b> de los clientes considera que la experiencia que brinda una empresa es tan importante como sus productos o servicios.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · puntos de contacto</span>
+        <p>Los <i>touchpoints</i> son los lugares exactos donde el cliente interactúa con tu marca en cada fase. Debes mapear qué siente y qué necesita escuchar en cada uno de ellos.</p>
+      </div>
+
+      <h4>Las fases del viaje</h4>
+      <ol class="flujo">
+        <li><span class="fase">Descubrimiento</span><span class="desc">El cliente tiene un síntoma, no una solución. Le duele la espalda al despertar.</span></li>
+        <li><span class="fase">Consideración</span><span class="desc">Descubre que la solución es cambiar de colchón y compara marcas. Mira reseñas en YouTube.</span></li>
+        <li><span class="fase">Decisión</span><span class="desc">Está listo para comprar, pero busca seguridad. Ve tu anuncio de «100 noches de prueba gratis» y compra.</span></li>
+        <li><span class="fase">Retención y fidelización</span><span class="desc">Ya tiene el producto. A los 6 meses le envías consejos para cuidarlo y un cupón para almohadas.</span></li>
+      </ol>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 2.2</span>
+        <svg viewBox="0 0 420 220" role="img" aria-label="Curva de satisfacción a lo largo de las cuatro fases del viaje: baja en descubrimiento, cae en consideración por la confusión de comparar, sube con fuerza en decisión y alcanza su máximo en retención.">
+          <line class="g-axis" x1="20" y1="180" x2="400" y2="180"/>
+          <line class="g-grid" x1="115" y1="40" x2="115" y2="180"/>
+          <line class="g-grid" x1="210" y1="40" x2="210" y2="180"/>
+          <line class="g-grid" x1="305" y1="40" x2="305" y2="180"/>
+
+          <text class="g-key" x="67" y="30" text-anchor="middle">Descubrimiento</text>
+          <text class="g-key" x="162" y="30" text-anchor="middle">Consideración</text>
+          <text class="g-key" x="257" y="30" text-anchor="middle">Decisión</text>
+          <text class="g-key" x="352" y="30" text-anchor="middle">Retención</text>
+
+          <path class="g-line" d="M67,140 C 100,148 130,164 162,168 C 195,172 225,110 257,90 C 290,68 320,66 352,60"/>
+          <circle class="g-dot" cx="67" cy="140" r="4.5" data-tip="Descubrimiento: tiene un síntoma, aún no busca marcas"/>
+          <circle class="g-dot" cx="162" cy="168" r="4.5" data-tip="Consideración: el punto más bajo, comparar agota y confunde"/>
+          <circle class="g-dot" cx="257" cy="90" r="4.5" data-tip="Decisión: la garantía elimina el riesgo y dispara la satisfacción"/>
+          <circle class="g-dot" cx="352" cy="60" r="4.5" data-tip="Retención: el seguimiento posventa convierte al cliente en promotor"/>
+
+          <text class="g-lab" x="67" y="200" text-anchor="middle" font-size="10">Síntoma</text>
+          <text class="g-lab" x="162" y="200" text-anchor="middle" font-size="10">Reseñas</text>
+          <text class="g-lab" x="257" y="200" text-anchor="middle" font-size="10">100 noches gratis</text>
+          <text class="g-lab" x="352" y="200" text-anchor="middle" font-size="10">Cupón a 6 meses</text>
+          <text class="g-lab" x="14" y="110" text-anchor="middle" font-size="10" transform="rotate(-90 14 110)">satisfacción</text>
+        </svg>
+        <figcaption>El valle de la consideración es donde se pierden la mayoría de las ventas: el cliente ya te conoce, pero comparar le agota. El contenido comparativo —tablas, reseñas, garantías— existe para acortar ese valle, no para presumir de producto.</figcaption>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Miro · Mural</dt><dd>Pizarras virtuales infinitas, perfectas para mapear el viaje con post-its digitales de forma colaborativa.</dd></div>
+        <div><dt>Smaply · UXPressia</dt><dd>Herramientas profesionales dedicadas exclusivamente a crear mapas del viaje del cliente de forma visual y analítica.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Dibuja una línea de tiempo con las cuatro fases.</li>
+          <li>Para la fase de <b>consideración</b>, lista al menos tres dudas que tendría tu cliente y qué formato de contenido —un artículo, un video explicativo, una tabla comparativa— usarás para resolver cada una.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s2-3" data-sec="s2-3">
+      <h3><span class="sn">2.3</span>Psicología del precio</h3>
+      <p>El precio no es una fórmula de costos más margen: <mark>el precio es percepción de valor</mark>. Un café de un dólar en la calle es caro si está frío; uno de cinco en una cafetería se percibe justo por el ambiente, el estatus y el servicio.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Los estudios de economía conductual —como los de Dan Ariely— demuestran que presentar las opciones de precio de forma estratégica puede aumentar el ticket promedio hasta un <b>24&nbsp;%</b> sin cambiar los productos.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · el efecto señuelo</span>
+        <p>A los humanos nos cuesta calcular el valor absoluto de las cosas, así que el cerebro compara. Si ofreces dos opciones —barata y cara—, mucha gente dudará. Si introduces una tercera diseñada para hacer que la cara parezca una ganga, las ventas de esta última se disparan.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Suscripciones a una plataforma de cursos online.</p>
+        <div class="niveles">
+          <div><span class="plan">Básica</span><span class="precio">$19/mes</span><span class="detalle">Solo cursos en texto.</span></div>
+          <div><span class="plan">Señuelo</span><span class="precio">$39/mes</span><span class="detalle">Cursos en video, sin descargas.</span></div>
+          <div><span class="plan">Premium</span><span class="precio">$45/mes</span><span class="detalle">Cursos en video + descargas + asesoría en vivo.</span></div>
+        </div>
+        <p>El cerebro del cliente ignora la primera opción y compara la segunda con la tercera: «por solo 6 dólares más que la intermedia me llevo absolutamente todo». Así vendes el plan más caro sin presionar a nadie.</p>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 2.3</span>
+          <svg viewBox="0 0 420 240" role="img" aria-label="Tres barras con los precios de los planes: básica 19 dólares, señuelo 39 dólares y premium 45 dólares. La distancia entre el señuelo y el premium es de solo 6 dólares, mucho menor que el salto desde el plan básico.">
+            <defs><clipPath id="c-senuelo"><rect x="0" y="0" width="420" height="196"/></clipPath></defs>
+            <line class="g-grid" x1="44" y1="36" x2="408" y2="36"/>
+            <line class="g-grid" x1="44" y1="116" x2="408" y2="116"/>
+            <line class="g-axis" x1="44" y1="196" x2="408" y2="196"/>
+            <text class="g-lab" x="38" y="40" text-anchor="end" font-size="11">$50</text>
+            <text class="g-lab" x="38" y="120" text-anchor="end" font-size="11">$25</text>
+            <text class="g-lab" x="38" y="200" text-anchor="end" font-size="11">$0</text>
+
+            <g clip-path="url(#c-senuelo)">
+              <rect class="s4" x="73" y="135" width="70" height="65" rx="4" data-tip="Básica · $19: nadie la compara, solo fija el suelo"/>
+              <rect class="s4" x="191" y="71" width="70" height="129" rx="4" data-tip="Señuelo · $39: existe para que el premium parezca barato"/>
+              <rect class="s2" x="309" y="52" width="70" height="148" rx="4" data-tip="Premium · $45: el plan que de verdad quieres vender"/>
+            </g>
+
+            <path class="g-dash" d="M226,71 H392"/>
+            <path class="g-dash" d="M392,71 V52"/>
+            <text class="g-val" x="406" y="66" text-anchor="end" fill="var(--spot)">+$6</text>
+
+            <text class="g-val" x="108" y="127" text-anchor="middle">$19</text>
+            <text class="g-val" x="226" y="63" text-anchor="middle">$39</text>
+            <text class="g-val" x="344" y="44" text-anchor="middle">$45</text>
+            <text class="g-lab" x="108" y="214" text-anchor="middle" font-size="11">Básica</text>
+            <text class="g-lab" x="226" y="214" text-anchor="middle" font-size="11">Señuelo</text>
+            <text class="g-lab" x="344" y="214" text-anchor="middle" font-size="11">Premium</text>
+          </svg>
+          <figcaption>El señuelo no está para venderse: está para acortar la distancia percibida hacia el plan premium. Sin él, el salto mental es de $19 a $45; con él, la última comparación que hace el cliente es de solo $6.</figcaption>
+          <details class="datos">
+            <summary>Ver los datos</summary>
+            <div class="tabla-wrap">
+              <table>
+                <thead><tr><th scope="col">Plan</th><th scope="col">Precio</th><th scope="col">Papel</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Básica</th><td class="num">$19</td><td>Ancla inferior</td></tr>
+                  <tr><th scope="row">Señuelo</th><td class="num">$39</td><td>Referencia de comparación</td></tr>
+                  <tr><th scope="row">Premium</th><td class="num">$45</td><td>Objetivo de venta</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Predictably Irrational</dt><dd>El libro de Dan Ariely (<i>Las trampas del deseo</i>): la biblia para entender cómo el cerebro toma decisiones financieras ilógicas de forma predecible.</dd></div>
+        <div><dt>Stripe · Paddle</dt><dd>Pasarelas de pago modernas que permiten hacer tests A/B con tablas de precios en tiempo real.</dd></div>
+        <div><dt>ProfitWell</dt><dd>Guías gratuitas de altísima calidad sobre estrategias de pricing para negocios digitales.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <p>Diseña una estrategia de precios de tres niveles para tu producto o servicio. Define qué incluye el nivel básico, cuál será tu precio señuelo —intencionalmente menos atractivo— y cuál el nivel premium que realmente quieres que compre la mayoría.</p>
+      </div>
+    </article>
+
+    <article class="seccion" id="s2-4" data-sec="s2-4">
+      <h3><span class="sn">2.4</span>Micro-momentos: el ZMOT de Google</h3>
+      <p>Antes de la era digital existía el estímulo —ver un comercial— y el primer momento de la verdad: estar frente a la estantería decidiendo. Google descubrió que los smartphones crearon el <b>Momento Cero de la Verdad</b>: ese instante impulsivo en el que alguien saca el teléfono para buscar respuestas, aprender, descubrir o comprar ahora mismo.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Más del <b>90&nbsp;%</b> de los usuarios de smartphones utiliza su dispositivo para buscar ideas o ayuda en medio de la realización de una tarea. Si tu marca no está ahí, pierdes la venta.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · las cuatro intenciones de búsqueda</span>
+        <p>Todo lo que buscamos se divide en cuatro micro-momentos. Tu contenido debe estar diseñado para aparecer exactamente en ellos.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado · empresa de plomería</span>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr><th scope="col">Micro-momento</th><th scope="col">Lo que teclea</th><th scope="col">Lo que debe encontrar</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Quiero saber</th><td>«Por qué mi lavabo huele mal»</td><td>Un artículo del blog explicando las causas.</td></tr>
+              <tr><th scope="row">Quiero hacer</th><td>«Cómo destapar la tubería paso a paso»</td><td>Un video corto en YouTube mostrando el proceso.</td></tr>
+              <tr><th scope="row">Quiero ir</th><td>«Plomero cerca de mí abierto 24 horas»</td><td>Tu perfil de Google Business optimizado, en el mapa de su ciudad.</td></tr>
+              <tr><th scope="row">Quiero comprar</th><td>«Precio de desazolve de urgencia»</td><td>Una página con precios claros y un botón de WhatsApp.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 2.4</span>
+        <svg viewBox="0 0 420 220" role="img" aria-label="Curva anual del interés de búsqueda de «regalos para mamá»: se mantiene bajo todo el año, sube en abril y alcanza un pico máximo en mayo, para desplomarse en junio.">
+          <line class="g-grid" x1="44" y1="30" x2="408" y2="30"/>
+          <line class="g-grid" x1="44" y1="66" x2="408" y2="66"/>
+          <line class="g-grid" x1="44" y1="103" x2="408" y2="103"/>
+          <line class="g-grid" x1="44" y1="139" x2="408" y2="139"/>
+          <line class="g-axis" x1="44" y1="176" x2="408" y2="176"/>
+          <text class="g-lab" x="38" y="34" text-anchor="end" font-size="10">100</text>
+          <text class="g-lab" x="38" y="107" text-anchor="end" font-size="10">50</text>
+          <text class="g-lab" x="38" y="180" text-anchor="end" font-size="10">0</text>
+
+          <path class="g-line" d="M44,158 L77,150 L110,144 L143,118 L176,30 L210,147 L243,156 L276,158 L309,158 L342,156 L375,144 L408,132"/>
+          <circle class="g-dot" cx="176" cy="30" r="5" data-tip="Mayo: el interés se multiplica por cinco en cuatro semanas"/>
+          <text class="g-val" x="176" y="20" text-anchor="middle" fill="var(--spot)">mayo</text>
+
+          <g class="g-lab" font-size="10" text-anchor="middle">
+            <text x="44" y="192">E</text><text x="77" y="192">F</text><text x="110" y="192">M</text>
+            <text x="143" y="192">A</text><text x="176" y="192">M</text><text x="210" y="192">J</text>
+            <text x="243" y="192">J</text><text x="276" y="192">A</text><text x="309" y="192">S</text>
+            <text x="342" y="192">O</text><text x="375" y="192">N</text><text x="408" y="192">D</text>
+          </g>
+        </svg>
+        <figcaption>Índice de interés de búsqueda (0–100), forma típica de una consulta estacional según Google Trends. La lección operativa: el contenido y el presupuesto de esa campaña se preparan en marzo, no en mayo —cuando el pico llega, ya es tarde para posicionarse.</figcaption>
+        <details class="datos">
+          <summary>Ver los datos</summary>
+          <div class="tabla-wrap">
+            <table>
+              <thead><tr><th scope="col">Mes</th><th scope="col">E</th><th scope="col">F</th><th scope="col">M</th><th scope="col">A</th><th scope="col">M</th><th scope="col">J</th><th scope="col">J</th><th scope="col">A</th><th scope="col">S</th><th scope="col">O</th><th scope="col">N</th><th scope="col">D</th></tr></thead>
+              <tbody><tr><th scope="row">Índice</th><td class="num">12</td><td class="num">18</td><td class="num">22</td><td class="num">40</td><td class="num">100</td><td class="num">20</td><td class="num">14</td><td class="num">12</td><td class="num">12</td><td class="num">14</td><td class="num">22</td><td class="num">30</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Think With Google</dt><dd>Plataforma gratuita con estudios de mercado, tendencias de consumo e insights sobre cómo se decide en internet.</dd></div>
+        <div><dt>Google Trends</dt><dd>Clave para ver cómo evolucionan las búsquedas de tu sector a lo largo del año: «regalos para mamá» explota en mayo.</dd></div>
+        <div><dt>Google Business Profile</dt><dd>Obligatorio en negocios locales. Es la única forma de dominar los micro-momentos de tipo «quiero ir».</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <p>Haz una tabla con los cuatro micro-momentos. Para cada uno, escribe exactamente qué frase teclearía tu buyer persona en Google o en TikTok y qué contenido de tu marca debería encontrar para resolver ese momento.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ MÓDULO 3 ============ -->
+  <section class="modulo" id="m3" data-mod="m3">
+    <div class="apertura col">
+      <p class="num">Módulo tres</p>
+      <h2>El ecosistema del marketing digital</h2>
+      <p class="objetivo">Aquí la estrategia se convierte en una máquina medible y escalable. Dejamos la teoría y entramos en la ingeniería del marketing moderno: cómo construir un ecosistema digital que atraiga usuarios, los convenza y los retenga de forma automática.</p>
+    </div>
+
+    <article class="seccion" id="s3-1" data-sec="s3-1">
+      <h3><span class="sn">3.1</span>Inbound marketing: la metodología de atracción</h3>
+      <p>El paradigma tradicional empuja el producto hacia el cliente con anuncios intrusivos y llamadas en frío. El inbound hace que el cliente llegue a ti voluntariamente al ofrecerle contenido que resuelve un problema que ya está intentando solucionar.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Según HubSpot, el inbound cuesta un <b>62&nbsp;%</b> menos por lead que el marketing tradicional y genera <b>3&nbsp;veces</b> más prospectos calificados.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave</span>
+        <p><mark>Dar antes de pedir.</mark> No pides una venta en el primer contacto: ofreces un tutorial, una herramienta gratuita o una plantilla a cambio de la atención del usuario.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Ofreces un servicio de desarrollo web o una librería de código para integrar un generador de QR en otras páginas.</p>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Tradicional</span>
+            <p>Enviar emails masivos diciendo «compra mi integración de QR». Alta tasa de rechazo, ningún activo acumulado.</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Inbound</span>
+            <p>Publicar «Cómo generar códigos QR dinámicos en una web usando JavaScript». El lector ve que sabes del tema y al final encuentra el CTA: «Si no quieres programarlo desde cero, descarga nuestro generador listo para implementar por $20».</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 3.1</span>
+        <svg viewBox="0 0 420 210" role="img" aria-label="Embudo inbound de cuatro etapas: 10.000 visitantes, 800 leads (8 %), 120 oportunidades (15 %) y 30 clientes (25 %).">
+          <path class="s1" d="M30,20 H270 L234,56 H66 Z" data-tip="Visitantes: 10.000 al mes desde el blog y la búsqueda orgánica"/>
+          <path class="s2" d="M66,64 H234 L204,100 H96 Z" data-tip="Leads: 800 dejaron su correo por el lead magnet (8 %)"/>
+          <path class="s3" d="M96,108 H204 L183,144 H117 Z" data-tip="Oportunidades: 120 pidieron presupuesto (15 % de los leads)"/>
+          <path class="s4" d="M117,152 H183 L176,188 H124 Z" data-tip="Clientes: 30 compraron (25 % de las oportunidades)"/>
+
+          <g class="g-grid">
+            <line x1="252" y1="38" x2="282" y2="38"/>
+            <line x1="219" y1="82" x2="282" y2="82"/>
+            <line x1="194" y1="126" x2="282" y2="126"/>
+            <line x1="180" y1="170" x2="282" y2="170"/>
+          </g>
+          <text class="g-key" x="288" y="35">Visitantes</text>
+          <text class="g-val" x="288" y="49">10.000</text>
+          <text class="g-key" x="288" y="79">Leads</text>
+          <text class="g-val" x="288" y="93">800 · 8 %</text>
+          <text class="g-key" x="288" y="123">Oportunidades</text>
+          <text class="g-val" x="288" y="137">120 · 15 %</text>
+          <text class="g-key" x="288" y="167">Clientes</text>
+          <text class="g-val" x="288" y="181">30 · 25 %</text>
+        </svg>
+        <figcaption>Cifras de ejemplo. Lo importante no son los valores absolutos sino los porcentajes entre etapas: son ellos los que te dicen dónde invertir. Duplicar visitantes cuesta mucho más que subir del 8 % al 12 % en la primera conversión, y el resultado final es el mismo.</figcaption>
+        <details class="datos">
+          <summary>Ver los datos</summary>
+          <div class="tabla-wrap">
+            <table>
+              <thead><tr><th scope="col">Etapa</th><th scope="col">Volumen</th><th scope="col">Conversión</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Visitantes</th><td class="num">10.000</td><td>—</td></tr>
+                <tr><th scope="row">Leads</th><td class="num">800</td><td class="num">8 %</td></tr>
+                <tr><th scope="row">Oportunidades</th><td class="num">120</td><td class="num">15 %</td></tr>
+                <tr><th scope="row">Clientes</th><td class="num">30</td><td class="num">25 %</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>HubSpot CRM</dt><dd>Estándar de la industria para gestionar prospectos y crear páginas de aterrizaje conectadas al contenido. Tiene plan gratuito.</dd></div>
+        <div><dt>WordPress</dt><dd>El gestor de contenidos más robusto para montar un blog optimizado.</dd></div>
+        <div><dt>Notion</dt><dd>Excelente para planificar el calendario editorial de los contenidos que vas a crear.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Diseña un <b>lead magnet</b>: un contenido gratuito de alto valor que puedas regalar a tu audiencia ideal.</li>
+          <li>Redacta la estructura de una landing page cuyo único objetivo sea convencer al usuario de dejar su correo para descargar ese recurso.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s3-2" data-sec="s3-2">
+      <h3><span class="sn">3.2</span>SEO y SEM: dominando los motores de búsqueda</h3>
+      <p>Si tienes la mejor solución del mundo pero nadie te encuentra en Google, no existes. Aquí se separa el tráfico orgánico del pagado.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Los <b>3</b> primeros resultados de Google —orgánicos o pagados— se llevan aproximadamente el <b>75&nbsp;%</b> de todos los clics. Muy pocos usuarios pasan a la segunda página.
+      </aside>
+
+      <h4>SEO · los tres pilares</h4>
+      <dl class="def">
+        <div><dt>Técnico</dt><dd>La salud de tu código y tu servidor. Google penaliza páginas lentas, con enlaces rotos o que no se adaptan perfectamente a móviles.</dd></div>
+        <div><dt>On-page</dt><dd>Usar las palabras clave correctas dentro del HTML —etiquetas H1, H2, meta descripciones— y en el texto, respondiendo exactamente a lo que el usuario busca.</dd></div>
+        <div><dt>Off-page</dt><dd>Lograr que otras webs de prestigio enlacen a tu sitio (backlinks). Google lo interpreta como un voto de confianza.</dd></div>
+      </dl>
+
+      <h4>SEM · pago por clic</h4>
+      <p>Pujas en una subasta en tiempo real para aparecer en la sección de patrocinados. La diferencia estratégica con Google Ads y Meta Ads es la intención: en buscadores el usuario ya está buscando la solución; en redes sociales tú interrumpes a alguien según sus intereses y demografía.</p>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">SEO · búsqueda informativa</span>
+            <p>Optimizas para «cómo hacer un menú digital con código QR». Es investigación: el usuario entra al blog, aprende y te conoce.</p>
+          </div>
+          <div class="bien">
+            <span class="rot">SEM · búsqueda transaccional</span>
+            <p>Pagas por «comprar software creador de QR para restaurantes». Aquí el usuario ya tiene la tarjeta en la mano: quieres aparecer primero a toda costa.</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 3.2</span>
+        <svg viewBox="0 0 420 120" role="img" aria-label="Barra de reparto de clics en la primera página de resultados: los tres primeros puestos concentran el 75 % y todo el resto se reparte el 25 %.">
+          <text class="g-key" x="24" y="24">De cada 100 clics en la primera página…</text>
+          <path class="s2" d="M301,40 H28 A4,4 0 0 0 24,44 V76 A4,4 0 0 0 28,80 H301 Z" data-tip="Puestos 1 a 3: 75 % de los clics"/>
+          <path class="s4" d="M303,40 H392 A4,4 0 0 1 396,44 V76 A4,4 0 0 1 392,80 H303 Z" data-tip="Puestos 4 a 10: 25 % de los clics"/>
+          <text class="g-val" x="162" y="98" text-anchor="middle">Top 3 · 75 %</text>
+          <text class="g-val" x="350" y="98" text-anchor="middle">Resto · 25 %</text>
+        </svg>
+        <figcaption>Aparecer en la primera página no basta: el reparto dentro de esa página es brutalmente desigual. Por eso una palabra clave difícil donde acabas en el puesto 7 rinde menos que tres palabras clave de nicho donde eres el primero.</figcaption>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Keyword Planner</dt><dd>Gratis con una cuenta de Google Ads. Muestra el volumen de búsquedas mensuales de cada palabra.</dd></div>
+        <div><dt>Ubersuggest · Ahrefs</dt><dd>Freemium y de pago. Permiten espiar las palabras clave que le están funcionando a tu competencia.</dd></div>
+        <div><dt>Search Console</dt><dd>Gratis. Te dice por qué términos te encuentran de forma orgánica y si hay errores que impidan la lectura de Google.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Abre Keyword Planner o Ubersuggest.</li>
+          <li>Haz una lista de 5 palabras clave <b>informativas</b> (usuarios que buscan aprender) y 5 <b>transaccionales</b> (usuarios listos para comprar).</li>
+          <li>Anota el volumen de búsqueda mensual de cada una y su nivel de competencia.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s3-3" data-sec="s3-3">
+      <h3><span class="sn">3.3</span>CRO: optimización de la tasa de conversión</h3>
+      <p>El CRO es la disciplina científica del marketing: detectar dónde se fugan los usuarios dentro de tu web y aplicar cambios basados en datos. <mark>Es mucho más barato mejorar la conversión que pagar por traer el doble de tráfico.</mark></p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Un retraso de solo <b>1 segundo</b> en el tiempo de carga puede reducir las conversiones hasta un <b>7&nbsp;%</b>.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · tests A/B</span>
+        <p>Nunca cambies el diseño basándote en opiniones («creo que el botón se ve mejor en rojo»). El CRO exige probar el original (versión A) contra el nuevo (versión B), dividir el tráfico al 50&nbsp;% y dejar que las métricas decidan.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Una página de servicios de programación recibe 1.000 visitas al mes y solo 2 contactos: 0,2&nbsp;% de conversión.</p>
+        <ol class="flujo">
+          <li><span class="fase">Hipótesis</span><span class="desc">El formulario pide demasiados campos —nombre, apellidos, empresa, presupuesto, mensaje, teléfono— y genera pereza.</span></li>
+          <li><span class="fase">Test</span><span class="desc">Se crea una versión B que pide solo «email» y «qué necesitas».</span></li>
+          <li><span class="fase">Resultado</span><span class="desc">Tras un mes, los contactos suben a 15: 1,5&nbsp;% de conversión, siete veces más con el mismo tráfico.</span></li>
+        </ol>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 3.3</span>
+          <svg viewBox="0 0 420 245" role="img" aria-label="Comparación de la tasa de conversión antes y después del test: la versión A convierte el 0,2 por ciento con dos contactos y la versión B el 1,5 por ciento con quince contactos, con el mismo tráfico.">
+            <defs><clipPath id="c-cro"><rect x="0" y="0" width="420" height="196"/></clipPath></defs>
+            <line class="g-grid" x1="44" y1="36" x2="408" y2="36"/>
+            <line class="g-grid" x1="44" y1="116" x2="408" y2="116"/>
+            <line class="g-axis" x1="44" y1="196" x2="408" y2="196"/>
+            <text class="g-lab" x="38" y="40" text-anchor="end" font-size="11">2 %</text>
+            <text class="g-lab" x="38" y="120" text-anchor="end" font-size="11">1 %</text>
+            <text class="g-lab" x="38" y="200" text-anchor="end" font-size="11">0 %</text>
+
+            <g clip-path="url(#c-cro)">
+              <rect class="s4" x="98" y="180" width="84" height="20" rx="4" data-tip="Versión A · formulario de 6 campos: 0,2 % de conversión"/>
+              <rect class="s2" x="248" y="76" width="84" height="124" rx="4" data-tip="Versión B · formulario de 2 campos: 1,5 % de conversión"/>
+            </g>
+
+            <text class="g-val" x="140" y="172" text-anchor="middle">0,2 %</text>
+            <text class="g-val" x="290" y="68" text-anchor="middle">1,5 %</text>
+            <text class="g-key" x="140" y="215" text-anchor="middle">Versión A</text>
+            <text class="g-key" x="290" y="215" text-anchor="middle">Versión B</text>
+            <text class="g-lab" x="140" y="231" text-anchor="middle" font-size="11">6 campos · 2 contactos</text>
+            <text class="g-lab" x="290" y="231" text-anchor="middle" font-size="11">2 campos · 15 contactos</text>
+          </svg>
+          <figcaption>Mismo tráfico, mismo presupuesto, siete veces más contactos. Traer 6.000 visitas extra para conseguir esos 13 contactos habría costado meses de trabajo y dinero en anuncios; quitar cuatro campos costó una tarde.</figcaption>
+          <details class="datos">
+            <summary>Ver los datos</summary>
+            <div class="tabla-wrap">
+              <table>
+                <thead><tr><th scope="col">Versión</th><th scope="col">Visitas</th><th scope="col">Contactos</th><th scope="col">Conversión</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">A (original)</th><td class="num">1.000</td><td class="num">2</td><td class="num">0,2 %</td></tr>
+                  <tr><th scope="row">B (simplificada)</th><td class="num">1.000</td><td class="num">15</td><td class="num">1,5 %</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Hotjar · Clarity</dt><dd>Mapas de calor y grabaciones de pantalla de usuarios anónimos: verás dónde hacen clic, dónde mueven el ratón y en qué línea se aburren y cierran la pestaña. Clarity es gratuito.</dd></div>
+        <div><dt>Google Analytics 4</dt><dd>Indispensable para medir de dónde viene el tráfico y qué rutas toma dentro de la web.</dd></div>
+        <div><dt>VWO · Optimizely</dt><dd>Nivel profesional para crear tests A/B sin programar dos páginas distintas desde cero.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Analiza la home de un competidor fuerte.</li>
+          <li>Encuentra al menos tres <b>puntos de fricción</b>: elementos que confunden, un CTA poco claro o pasos excesivos para comprar.</li>
+          <li>Redacta una hipótesis estructurada: «Si cambiamos [elemento X] por [elemento Y], la tasa de conversión aumentará porque [razón psicológica o de UX]».</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s3-4" data-sec="s3-4">
+      <h3><span class="sn">3.4</span>Email marketing automatizado</h3>
+      <p>Olvídate de la newsletter corporativa que nadie lee. El correo actual envía el mensaje correcto, a la persona correcta, en el momento en que su comportamiento lo detona. Sigue siendo el canal más rentable porque tú eres dueño de la base de datos: los seguidores en redes le pertenecen a la plataforma.</p>
+
+      <div class="cifra">
+        <span class="n">$36</span>
+        <span class="txt">es el retorno promedio de cada dólar invertido en email marketing bien ejecutado, según la Data &amp; Marketing Association. Ningún otro canal se acerca —y es el único cuya audiencia te pertenece.</span>
+      </div>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · workflows</span>
+        <p>Los flujos de trabajo son rutas lógicas programadas. El sistema obedece reglas del tipo «si ocurre X, entonces haz Y», y el usuario recibe correos que parecen escritos para él en ese momento exacto.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Un usuario se registra en la versión gratuita de un software freemium.</p>
+        <ol class="flujo">
+          <li><span class="fase">Día 1 · automático</span><span class="desc">Email de bienvenida con un tutorial de inicio rápido.</span></li>
+          <li><span class="fase">Día 3 · condicional</span><span class="desc">El sistema detecta que no ha iniciado sesión: «¿Tuviste problemas con la instalación? Aquí tienes un video explicativo».</span></li>
+          <li><span class="fase">Día 7 · segmentado</span><span class="desc">Si sí usó el software, se le ofrece un 20&nbsp;% de descuento para pasar al plan premium, válido 48 horas.</span></li>
+        </ol>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 3.4</span>
+          <svg viewBox="0 0 420 300" role="img" aria-label="Diagrama de flujo de un carrito abandonado: tras una hora se envía el correo 1; si el usuario no lo abre se reenvía con otro asunto a las 12 horas, y si lo abre se envía el correo 2 con dudas frecuentes a las 24 horas; ambas ramas terminan en el correo 3 con incentivo a las 72 horas.">
+            <defs>
+              <marker id="fl-wf" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+              </marker>
+            </defs>
+
+            <rect class="g-node" x="110" y="6" width="200" height="34" rx="3"/>
+            <text class="g-key" x="210" y="28" text-anchor="middle">Carrito abandonado</text>
+            <path class="g-flow" d="M210,40 V60" marker-end="url(#fl-wf)"/>
+            <text class="g-lab" x="216" y="54" font-size="10">1 h</text>
+
+            <rect class="g-node" x="110" y="62" width="200" height="34" rx="3"/>
+            <text class="g-key" x="210" y="84" text-anchor="middle">Correo 1 · «¿Lo guardamos?»</text>
+            <path class="g-flow" d="M210,96 V106" marker-end="url(#fl-wf)"/>
+
+            <path class="g-shape" d="M210,108 L246,130 L210,152 L174,130 Z"/>
+            <text class="g-lab" x="210" y="134" text-anchor="middle" font-size="11">¿Abrió?</text>
+
+            <path class="g-dash" d="M174,130 H98 V164" marker-end="url(#fl-wf)" stroke-dasharray="0"/>
+            <path class="g-dash" d="M246,130 H320 V164" marker-end="url(#fl-wf)" stroke-dasharray="0"/>
+            <text class="g-lab" x="136" y="124" text-anchor="middle" font-size="10">no</text>
+            <text class="g-lab" x="284" y="124" text-anchor="middle" font-size="10">sí</text>
+
+            <rect class="g-node" x="8" y="166" width="180" height="44" rx="3"/>
+            <text class="g-key" x="98" y="186" text-anchor="middle">Reenvío, otro asunto</text>
+            <text class="g-lab" x="98" y="201" text-anchor="middle" font-size="11">12 h después</text>
+
+            <rect class="g-node" x="230" y="166" width="182" height="44" rx="3"/>
+            <text class="g-key" x="321" y="186" text-anchor="middle">Correo 2 · dudas frecuentes</text>
+            <text class="g-lab" x="321" y="201" text-anchor="middle" font-size="11">24 h después</text>
+
+            <path class="g-flow" d="M98,210 V232 H210"/>
+            <path class="g-flow" d="M321,210 V232 H210"/>
+            <path class="g-flow" d="M210,232 V248" marker-end="url(#fl-wf)"/>
+
+            <rect class="g-node" x="110" y="250" width="200" height="34" rx="3" fill="var(--wash)" stroke="var(--spot)"/>
+            <text class="g-key" x="210" y="272" text-anchor="middle">Correo 3 · incentivo · 72 h</text>
+          </svg>
+          <figcaption>El incentivo va siempre al final: si lo ofreces en el primer correo, entrenas a tus clientes a abandonar el carrito para conseguir descuento. Los dos primeros envíos resuelven fricción —dudas, envío, garantía—; solo el tercero pone dinero sobre la mesa.</figcaption>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Mailchimp · Brevo</dt><dd>Excelentes para empezar: planes gratuitos generosos y automatizaciones visuales sencillas.</dd></div>
+        <div><dt>ActiveCampaign</dt><dd>Nivel intermedio-avanzado. Su automatización lógica y su segmentación de bases de datos son enormemente potentes.</dd></div>
+        <div><dt>BeeFree</dt><dd>Solo para diseñar plantillas de correo con código limpio, responsivo y visualmente atractivo.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <p>Diseña en papel o en Whimsical/Miro el diagrama de flujo de un <b>carrito abandonado</b>:</p>
+        <ol>
+          <li>El usuario agrega un producto pero no paga. ¿Cuánto tiempo esperas para enviar el primer correo y qué dice el asunto?</li>
+          <li>Si no abre el correo 1, ¿qué haces?</li>
+          <li>Si lo abre pero no compra, diseña el correo 2 —quizá con un incentivo o resolviendo dudas frecuentes—. Estructura la lógica visualmente.</li>
+        </ol>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ MÓDULO 4 ============ -->
+  <section class="modulo" id="m4" data-mod="m4">
+    <div class="apertura col">
+      <p class="num">Módulo cuatro</p>
+      <h2>Contenido, redes sociales y comunidad</h2>
+      <p class="objetivo">El puente emocional entre tu marca y el mundo. Si el módulo anterior era la ingeniería para captar y convertir, este trata de cómo <mark>retener la atención</mark>: el activo más caro del mercado. Los algoritmos premian la retención, la interacción y la comunidad, no la frecuencia de publicación.</p>
+    </div>
+
+    <article class="seccion" id="s4-1" data-sec="s4-1">
+      <h3><span class="sn">4.1</span>Estrategia de contenidos</h3>
+      <p>El contenido es el combustible de todo tu ecosistema digital. Si el SEO y las redes son las carreteras, el contenido es el vehículo. Una estrategia sólida evita que te sientes frente a la computadora preguntándote «¿qué publico hoy?».</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Las empresas con un blog activo o una estrategia de video sostenida generan un <b>67&nbsp;%</b> más de leads mensuales, y su costo de adquisición se reduce con el tiempo.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · pilares de contenido</span>
+        <p>Son las tres o cuatro categorías temáticas de las que hablará tu marca. Garantizan variedad y evitan que tu cuenta parezca un folleto de ventas permanente. La regla general es la proporción <b>80/20</b>: 80&nbsp;% de valor gratuito, 20&nbsp;% de venta.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado · agencia de software a medida</span>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr><th scope="col">Pilar</th><th scope="col">Peso</th><th scope="col">Qué se publica</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Educativo</th><td class="num">40 %</td><td>Videos cortos explicando qué es una API o por qué una web a medida es más segura que una plantilla.</td></tr>
+              <tr><th scope="row">Cultura de marca</th><td class="num">20 %</td><td>El equipo programando, el detrás de escena, cómo resuelven problemas bajo presión. Humaniza.</td></tr>
+              <tr><th scope="row">Prueba social</th><td class="num">20 %</td><td>Casos de éxito: «cómo redujimos el tiempo de carga de la web de X en un 50&nbsp;%».</td></tr>
+              <tr><th scope="row">Promocional</th><td class="num">20 %</td><td>Llamados a la acción directos para agendar una consultoría gratuita.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 4.1</span>
+        <svg viewBox="0 0 420 96" role="img" aria-label="Barra de reparto del calendario mensual: 40 por ciento educativo, 20 por ciento cultura de marca, 20 por ciento prueba social y 20 por ciento promocional.">
+          <text class="g-key" x="24" y="18">De cada 10 publicaciones del mes…</text>
+          <text class="g-val" x="97" y="36" text-anchor="middle">40 %</text>
+          <text class="g-val" x="209" y="36" text-anchor="middle">20 %</text>
+          <text class="g-val" x="284" y="36" text-anchor="middle">20 %</text>
+          <text class="g-val" x="359" y="36" text-anchor="middle">20 %</text>
+          <path class="s1" d="M170,44 H28 A4,4 0 0 0 24,48 V80 A4,4 0 0 0 28,84 H170 Z" data-tip="Educativo · 40 %: enseña algo que el cliente puede usar hoy"/>
+          <rect class="s2" x="172" y="44" width="74" height="40" data-tip="Cultura de marca · 20 %: quién está detrás del producto"/>
+          <rect class="s3" x="248" y="44" width="73" height="40" data-tip="Prueba social · 20 %: resultados verificables de clientes"/>
+          <path class="s4" d="M323,44 H392 A4,4 0 0 1 396,48 V80 A4,4 0 0 1 392,84 H323 Z" data-tip="Promocional · 20 %: la venta directa, solo una de cada cinco piezas"/>
+        </svg>
+        <ul class="leyenda">
+          <li><span class="sw sw1"></span>Educativo</li>
+          <li><span class="sw sw2"></span>Cultura de marca</li>
+          <li><span class="sw sw3"></span>Prueba social</li>
+          <li><span class="sw sw4"></span>Promocional</li>
+        </ul>
+        <figcaption>Ocho de cada diez publicaciones no venden nada: pagan el derecho a que la novena y la décima sí lo hagan. Cuando esa proporción se invierte, el alcance orgánico cae antes que las ventas —y para cuando notas lo segundo, llevas semanas perdiendo lo primero.</figcaption>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>AnswerThePublic</dt><dd>Escribes una palabra clave y genera un mapa visual con las preguntas exactas que la gente busca sobre ese tema. Material infinito.</dd></div>
+        <div><dt>Notion · Trello</dt><dd>Calendarios editoriales en formato kanban, de «en progreso» a «publicado».</dd></div>
+        <div><dt>CapCut · Premiere Pro</dt><dd>Para la edición dinámica de video corto, hoy el formato con mayor alcance orgánico.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Define los tres pilares de contenido de tu negocio.</li>
+          <li>Redacta dos ideas concretas de publicación por pilar. Terminarás con seis piezas listas para producir.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s4-2" data-sec="s4-2">
+      <h3><span class="sn">4.2</span>Storytelling de marca</h3>
+      <p>La neurociencia demuestra que no decidimos por lógica pura: decidimos con la emoción y luego justificamos con la lógica. El storytelling es el arte de usar la estructura narrativa para conectar con tu cliente.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Un mensaje envuelto en una historia puede ser hasta <b>22 veces</b> más memorable que la simple exposición de datos o características técnicas.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · el marco StoryBrand</span>
+        <p>Creado por Donald Miller, cambia el paradigma: <mark>tu marca no es el héroe de la historia, el cliente lo es.</mark> Tu marca es el guía —como Yoda para Luke Skywalker— que le entrega un plan y las herramientas para vencer su problema.</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Un software de gestión de inventarios para ferreterías.</p>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Sin storytelling</span>
+            <p>«Nuestro software tiene bases de datos relacionales, sincronización en la nube a 100&nbsp;Mbps y exportación en CSV.»</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Con storytelling</span>
+            <p>«Sabemos lo frustrante que es cerrar tu tienda a las 8 p.&nbsp;m. y quedarte hasta medianoche contando tornillos mientras tu familia cena sin ti <i>(problema)</i>. Con nuestro sistema, tu inventario se actualiza solo en la nube con cada venta <i>(el plan)</i>. Recupera tus noches y ten la tranquilidad de que ni un clavo se perderá <i>(éxito)</i>.»</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 4.2</span>
+        <svg viewBox="0 0 420 150" role="img" aria-label="Arco narrativo de StoryBrand en cinco estaciones ascendentes: héroe, villano, guía, plan y éxito.">
+          <path class="g-line" d="M30,120 C 60,122 95,116 120,113 C 155,109 185,108 210,100 C 245,89 275,84 300,74 C 330,63 365,55 390,50"/>
+          <circle class="g-dot" cx="30" cy="120" r="4.5" data-tip="El héroe es tu cliente, nunca tu marca"/>
+          <circle class="g-dot" cx="120" cy="113" r="4.5" data-tip="El villano es el problema concreto que le quita el sueño"/>
+          <circle class="g-dot" cx="210" cy="100" r="4.5" data-tip="El guía eres tú: autoridad y empatía, no protagonismo"/>
+          <circle class="g-dot" cx="300" cy="74" r="4.5" data-tip="El plan: tres pasos claros que eliminan el riesgo de empezar"/>
+          <circle class="g-dot" cx="390" cy="50" r="4.5" data-tip="El éxito: cómo se ve su vida cuando el problema desaparece"/>
+
+          <text class="g-key" x="22" y="106">Héroe</text>
+          <text class="g-key" x="120" y="99" text-anchor="middle">Villano</text>
+          <text class="g-key" x="210" y="86" text-anchor="middle">Guía</text>
+          <text class="g-key" x="300" y="60" text-anchor="middle">Plan</text>
+          <text class="g-key" x="398" y="36" text-anchor="end">Éxito</text>
+
+          <text class="g-lab" x="22" y="138" font-size="10">tu cliente</text>
+          <text class="g-lab" x="120" y="131" text-anchor="middle" font-size="10">su problema</text>
+          <text class="g-lab" x="210" y="118" text-anchor="middle" font-size="10">tu marca</text>
+          <text class="g-lab" x="300" y="92" text-anchor="middle" font-size="10">3 pasos</text>
+          <text class="g-lab" x="398" y="68" text-anchor="end" font-size="10">su vida mejor</text>
+        </svg>
+        <figcaption>La prueba de fuego del storytelling: si al leer tu web el cliente no sabe en cuál de estas cinco casillas está él, el protagonista de la historia eres tú —y las historias donde la marca es el héroe no las escucha nadie.</figcaption>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Building a StoryBrand</dt><dd>Lectura obligatoria para cualquier marketero que escriba mensajes de venta.</dd></div>
+        <div><dt>Claude · ChatGPT</dt><dd>Útiles para lluvia de ideas: «escribe 3 historias cortas usando el esquema del héroe y el guía donde mi producto X resuelva el problema Y».</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <p>Usa el marco StoryBrand para redactar un párrafo sobre tu producto identificando:</p>
+        <ul>
+          <li><b>El héroe:</b> tu cliente y lo que desea.</li>
+          <li><b>El villano:</b> el problema técnico o la frustración emocional que enfrenta.</li>
+          <li><b>El plan y el guía:</b> tu producto y cómo le ayuda de forma fácil.</li>
+          <li><b>El final feliz:</b> cómo mejora su vida tras usarlo.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="seccion" id="s4-3" data-sec="s4-3">
+      <h3><span class="sn">4.3</span>Gestión de redes sociales y comunidad</h3>
+      <p>No se trata de abrir cuentas en todas las plataformas: eso solo agota los recursos. Se trata de entender el contexto de cada red y adaptar el lenguaje. El formato dicta el éxito.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        El <b>54&nbsp;%</b> de los usuarios de redes sociales las utiliza para investigar activamente productos antes de comprar.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · contexto frente a contenido</span>
+        <p>El mismo video no funciona igual en LinkedIn que en TikTok:</p>
+        <ul>
+          <li><b>LinkedIn.</b> Crecimiento profesional, networking y negocios (B2B). Tono de autoridad y compañerismo profesional.</li>
+          <li><b>TikTok e Instagram Reels.</b> Entretenimiento rápido, inspiración o educación exprés (B2C). Tono dinámico y visual: hay que atrapar en los primeros 3 segundos.</li>
+          <li><b>X (Twitter).</b> Debate, noticias en tiempo real, hilos educativos y atención al cliente pública.</li>
+        </ul>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado · herramienta de ciberseguridad</span>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">En LinkedIn</span>
+            <p>Un carrusel en PDF con el estudio «Las 5 mayores amenazas de malware para pymes».</p>
+          </div>
+          <div class="bien">
+            <span class="rot">En TikTok</span>
+            <p>Un video de 15 segundos estilo POV: «El hacker dándose cuenta de que tu empresa instaló [tu herramienta] y ya no puede entrar», con un audio en tendencia.</p>
+          </div>
+        </div>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Metricool</dt><dd>Muy recomendada en España y Latinoamérica. Programa publicaciones en todas tus redes y, sobre todo, te dice a qué hora exacta está conectada tu audiencia.</dd></div>
+        <div><dt>Hootsuite · Buffer</dt><dd>Alternativas clásicas de gestión y programación de redes sociales.</dd></div>
+        <div><dt>Canva Pro</dt><dd>Diseños rápidos y adaptados a las medidas de cada red sin ser diseñador.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Elige las dos redes donde se concentra tu buyer persona (revisa el Módulo 2).</li>
+          <li>Escribe la biografía perfecta para cada una: debe dejar claro en una frase a quién ayudas y cómo, e incluir un enlace hacia el lead magnet del Módulo 3.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s4-4" data-sec="s4-4">
+      <h3><span class="sn">4.4</span>Marketing de influencers y afiliados</h3>
+      <p>El boca a boca sigue siendo lo más poderoso, pero hoy está digitalizado. Apalancarte en la confianza que otros creadores ya construyeron con sus audiencias es un atajo enorme hacia la credibilidad.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        El ROI promedio del marketing de influencers es de <b>$5,78</b> por cada dólar invertido.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · micro-influencers y afiliados</span>
+        <ul>
+          <li><b>Micro-influencers (10k–100k).</b> Tienen tasas de interacción mucho más altas que las celebridades y cobran mucho menos; a veces aceptan canjes por producto. Son nicho.</li>
+          <li><b>Afiliados.</b> No pagas por publicación: pagas comisión solo si hay venta. Le das al creador un enlace o código único (CPA) y compartes ganancias. Riesgo financiero cero.</li>
+        </ul>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Has creado un teclado mecánico para programadores.</p>
+        <p>En lugar de pagar miles de dólares a un influencer genérico de estilo de vida, buscas en YouTube y Twitch a tres creadores que hagan tutoriales de programación con 20.000 seguidores fieles. Les envías el teclado gratis más un enlace de afiliado. Si hacen una reseña y sus seguidores compran con ese enlace, tú ganas una venta y el creador se lleva un 15&nbsp;% de comisión. Todos ganan.</p>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 4.4</span>
+          <svg viewBox="0 0 420 150" role="img" aria-label="Circuito del marketing de afiliados: tu marca entrega producto y enlace único al creador, el creador publica ante su audiencia, la audiencia compra y la venta devuelve una comisión al creador.">
+            <defs>
+              <marker id="fl-af" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)"/>
+              </marker>
+            </defs>
+            <rect class="g-node" x="6" y="40" width="86" height="36" rx="3"/>
+            <rect class="g-node" x="112" y="40" width="86" height="36" rx="3"/>
+            <rect class="g-node" x="218" y="40" width="86" height="36" rx="3"/>
+            <rect class="g-node" x="324" y="40" width="86" height="36" rx="3" fill="var(--wash)" stroke="var(--spot)"/>
+            <text class="g-key" x="49" y="62" text-anchor="middle">Tu marca</text>
+            <text class="g-key" x="155" y="62" text-anchor="middle">Creador</text>
+            <text class="g-key" x="261" y="62" text-anchor="middle">Su audiencia</text>
+            <text class="g-key" x="367" y="62" text-anchor="middle">Venta</text>
+
+            <path class="g-shape" d="M92,58 H108" marker-end="url(#fl-af)"/>
+            <path class="g-shape" d="M198,58 H214" marker-end="url(#fl-af)"/>
+            <path class="g-shape" d="M304,58 H320" marker-end="url(#fl-af)"/>
+            <text class="g-lab" x="100" y="32" text-anchor="middle" font-size="9.5">producto</text>
+            <text class="g-lab" x="206" y="32" text-anchor="middle" font-size="9.5">reseña</text>
+            <text class="g-lab" x="312" y="32" text-anchor="middle" font-size="9.5">enlace único</text>
+
+            <path class="g-shape" stroke="var(--spot)" d="M367,76 V112 H155 V80" marker-end="url(#fl-af)"/>
+            <text x="261" y="128" text-anchor="middle" fill="var(--spot)" font-family="var(--mono)" font-size="11">comisión 15 % · solo si hay venta</text>
+          </svg>
+          <figcaption>Todo el riesgo financiero está en la flecha roja, y esa flecha solo se dispara cuando ya cobraste. Por eso el programa de afiliados escala sin presupuesto: cada creador nuevo cuesta cero hasta que vende.</figcaption>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Modash · HypeAuditor</dt><dd>Buscan influencers por nicho y —esto es lo vital— auditan sus cuentas para detectar seguidores falsos o bots antes de que les pagues.</dd></div>
+        <div><dt>Hotmart</dt><dd>Si vendes productos digitales (cursos, software, ebooks), la mejor plataforma para gestionar un ejército de afiliados.</dd></div>
+        <div><dt>Amazon Associates</dt><dd>El programa de afiliados más grande del mundo; excelente para estudiar cómo se estructuran las comisiones.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Busca en Instagram o YouTube tres micro-influencers que le hablen directamente a tu público objetivo.</li>
+          <li>Redacta un correo de prospección directo y honesto: preséntate, elogia una pieza concreta de su contenido —para demostrar que no es spam— y propón una colaboración por intercambio o un programa de afiliados, detallando qué ganan ellos.</li>
+        </ol>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ MÓDULO 5 ============ -->
+  <section class="modulo" id="m5" data-mod="m5">
+    <div class="apertura col">
+      <p class="num">Módulo cinco</p>
+      <h2>Analítica y toma de decisiones</h2>
+      <p class="objetivo">Hasta aquí el marketing puede parecer un arte creativo; este módulo demuestra que el marketing moderno es ciencia guiada por datos. <mark>Lo que no se mide no se puede mejorar.</mark> Aprenderás a separar el ego del rendimiento financiero, a calcular cuánto vale un cliente y a contar historias con números.</p>
+    </div>
+
+    <article class="seccion" id="s5-1" data-sec="s5-1">
+      <h3><span class="sn">5.1</span>Métricas de vanidad frente a KPI</h3>
+      <p>Uno de los mayores errores de los principiantes —y de muchas agencias malas— es reportar números que inflan el ego pero no impactan la cuenta bancaria. Un millón de seguidores no sirve de nada si no puedes pagar la nómina a fin de mes.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Según Gartner, más del <b>50&nbsp;%</b> de los líderes de marketing no puede demostrar con claridad cómo sus esfuerzos en redes sociales se traducen en retorno financiero real.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave</span>
+        <ul>
+          <li><b>Métricas de vanidad.</b> Likes, seguidores, visitas totales, impresiones. Se ven bonitas, pero no indican salud financiera ni intención de compra.</li>
+          <li><b>KPI.</b> Tasa de conversión, costo por lead, ROI, tasa de abandono de carrito. Son procesables: si suben o bajan, sabes exactamente qué pieza ajustar.</li>
+        </ul>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado · maquinaria industrial B2B</span>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Reporte inútil</span>
+            <p>«¡Felicidades! Este mes logramos 15.000 visualizaciones en TikTok y 500 seguidores nuevos.» Pero los seguidores son adolescentes a los que les pareció curioso el video.</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Reporte de valor</span>
+            <p>«En LinkedIn obtuvimos 300 visualizaciones, pero con un CTR del 5&nbsp;% hacia la web, que generó 3 cotizaciones calificadas por $50.000 potenciales. El costo por lead fue de $12.»</p>
+          </div>
+        </div>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Excel · Google Sheets</dt><dd>Parece básico, pero la mejor forma de entender tus KPI iniciales es construir una tabla manual semanal.</dd></div>
+        <div><dt>Campaign URL Builder</dt><dd>Constructor de UTM gratuito de Google: añade etiquetas invisibles a tus enlaces para saber si una venta vino del enlace de tu biografía de Instagram o del botón de tu boletín.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Lista tres métricas de vanidad que tu proyecto haya estado celebrando últimamente.</li>
+          <li>Traduce cada una a un KPI real. Por ejemplo: en lugar de «tráfico total», medir «porcentaje de visitantes que llenaron el formulario de contacto».</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s5-2" data-sec="s5-2">
+      <h3><span class="sn">5.2</span>La dupla de oro: CAC y LTV</h3>
+      <p>Si solo pudieras aprender dos métricas financieras en toda tu carrera, deberían ser el costo de adquisición de clientes y el valor del tiempo de vida del cliente. Entender su relación es el secreto para saber si tu negocio es escalable o si vas directo a la quiebra.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Adquirir un cliente nuevo es entre <b>5 y 25 veces</b> más caro que retener a uno existente (Harvard Business Review).
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · la regla del 3 a 1</span>
+        <p>Un modelo de negocio digital sano requiere que tu LTV sea, como mínimo, <b>3 veces</b> mayor que tu CAC.</p>
+        <ul>
+          <li><b>CAC.</b> Todo lo que gastaste en marketing y ventas dividido entre los clientes conseguidos.</li>
+          <li><b>LTV.</b> Cuánto dinero te deja en promedio ese cliente desde su primera compra hasta que se va.</li>
+        </ul>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p class="intro">Vendes mantenimiento web por suscripción a $50 mensuales. Inviertes $500 en anuncios y consigues 5 clientes.</p>
+        <ol class="flujo">
+          <li><span class="fase">Cálculo del CAC</span><span class="desc">$500 ÷ 5 clientes = <b>$100</b> te costó cada cliente.</span></li>
+          <li><span class="fase">El error de novato</span><span class="desc">«¡Perdí dinero! Me costó $100 traerlo y solo me pagó $50 este mes.»</span></li>
+          <li><span class="fase">La visión de negocio</span><span class="desc">Si tus clientes permanecen 10 meses en promedio, su LTV es de $500 ($50 × 10).</span></li>
+          <li><span class="fase">Conclusión</span><span class="desc">Estás pagando $100 para comprar $500. Tienes una máquina de imprimir dinero: sube la inversión en anuncios.</span></li>
+        </ol>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 5.2</span>
+          <svg viewBox="0 0 420 245" role="img" aria-label="Comparación entre el coste de adquisición de 100 dólares y el valor de vida del cliente de 500 dólares, con la línea de umbral mínimo saludable en 300 dólares.">
+            <defs><clipPath id="c-ltv"><rect x="0" y="0" width="420" height="196"/></clipPath></defs>
+            <line class="g-grid" x1="44" y1="36" x2="408" y2="36"/>
+            <line class="g-grid" x1="44" y1="116" x2="408" y2="116"/>
+            <line class="g-axis" x1="44" y1="196" x2="408" y2="196"/>
+            <text class="g-lab" x="38" y="40" text-anchor="end" font-size="11">$500</text>
+            <text class="g-lab" x="38" y="120" text-anchor="end" font-size="11">$250</text>
+            <text class="g-lab" x="38" y="200" text-anchor="end" font-size="11">$0</text>
+
+            <g clip-path="url(#c-ltv)">
+              <rect class="s4" x="98" y="164" width="84" height="36" rx="4" data-tip="CAC · $100: lo que cuesta traer un cliente nuevo"/>
+              <rect class="s2" x="248" y="36" width="84" height="164" rx="4" data-tip="LTV · $500: $50 al mes durante 10 meses de media"/>
+            </g>
+
+            <path d="M44,100 H408" stroke="var(--spot)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+            <text class="g-val" x="48" y="94" fill="var(--spot)">umbral sano 3:1 · $300</text>
+
+            <text class="g-val" x="140" y="156" text-anchor="middle">$100</text>
+            <text class="g-val" x="290" y="28" text-anchor="middle">$500</text>
+            <text class="g-key" x="140" y="215" text-anchor="middle">CAC</text>
+            <text class="g-key" x="290" y="215" text-anchor="middle">LTV</text>
+            <text class="g-lab" x="140" y="231" text-anchor="middle" font-size="11">traer 1 cliente</text>
+            <text class="g-lab" x="290" y="231" text-anchor="middle" font-size="11">10 meses de suscripción</text>
+          </svg>
+          <figcaption>La relación es de 5:1, muy por encima del umbral. Esta gráfica es la que convierte «gasté $500 en anuncios» en «compré $2.500 de ingresos futuros», y es el único argumento que de verdad desbloquea presupuesto.</figcaption>
+          <details class="datos">
+            <summary>Ver los datos</summary>
+            <div class="tabla-wrap">
+              <table>
+                <thead><tr><th scope="col">Métrica</th><th scope="col">Cálculo</th><th scope="col">Valor</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">CAC</th><td>$500 ÷ 5 clientes</td><td class="num">$100</td></tr>
+                  <tr><th scope="row">LTV</th><td>$50 × 10 meses</td><td class="num">$500</td></tr>
+                  <tr><th scope="row">LTV:CAC</th><td>500 ÷ 100</td><td class="num">5,0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>ProfitWell · Baremetrics</dt><dd>Se conectan a tu procesador de pagos y calculan LTV y tasa de cancelación (churn) automáticamente. Ideal para suscripciones, agencias y software.</dd></div>
+        <div><dt>Hoja de cálculo</dt><dd>Para negocios de compra puntual: LTV = ticket promedio × compras al año × años de relación.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Estima tu ticket promedio: cuánto gasta un cliente en una sola transacción.</li>
+          <li>Estima cuántas veces al año vuelve a comprarte y cuántos años dura la relación.</li>
+          <li>Calcula un CAC hipotético. ¿Cuánto estarías dispuesto a pagarle a Google Ads por ese cliente asegurando rentabilidad?</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s5-3" data-sec="s5-3">
+      <h3><span class="sn">5.3</span>Analítica web y atribución</h3>
+      <p>El viaje del cliente no es lineal. Un usuario puede ver tu anuncio en el celular el lunes, entrar directo a tu web desde la computadora de la oficina el miércoles y comprar desde un correo el viernes. ¿A quién le das el crédito de la venta? Eso es la atribución.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        Los consumidores interactúan un promedio de <b>6 veces</b> con una marca a través de distintos canales antes de tomar una decisión de compra importante.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · modelos de atribución</span>
+        <ul>
+          <li><b>Último clic.</b> Todo el mérito al último punto que pisó el usuario antes de comprar. Injusto con los canales que lo descubrieron.</li>
+          <li><b>Primer clic.</b> Todo el mérito al canal por el que te conoció.</li>
+          <li><b>Basado en datos.</b> El algoritmo reparte el mérito en porcentajes entre todos los canales que ayudaron a la venta.</li>
+        </ul>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado</span>
+        <p>Sin analítica crees que el dinero llega «mágicamente» de la web. Al instalar el seguimiento correcto descubres que, aunque Instagram acumula muchos likes, el <b>80&nbsp;%</b> de tus ventas reales viene de usuarios que llegaron por Google buscando artículos de tu blog. Decisión basada en datos: recortas presupuesto de Instagram y contratas a un redactor SEO, porque el blog es tu verdadera mina de oro.</p>
+
+        <figure class="figura">
+          <span class="fig-num">Figura 5.3</span>
+          <svg viewBox="0 0 420 210" role="img" aria-label="La misma venta repartida según tres modelos de atribución: con último clic el email se lleva el 100 por cien del mérito, con primer clic se lo lleva el anuncio de Meta, y con el modelo basado en datos el mérito se reparte 35 por ciento Meta, 40 por ciento blog y 25 por ciento email.">
+            <text class="g-key" x="24" y="14">La misma venta, tres formas de repartir el mérito</text>
+
+            <text class="g-key" x="24" y="40">Último clic</text>
+            <rect class="s3" x="24" y="46" width="372" height="26" rx="4" data-tip="Último clic: todo el mérito al email, el canal que cerró"/>
+            <text class="g-on2" x="210" y="64" text-anchor="middle">email 100 %</text>
+
+            <text class="g-key" x="24" y="100">Primer clic</text>
+            <rect class="s1" x="24" y="106" width="372" height="26" rx="4" data-tip="Primer clic: todo el mérito al anuncio que lo descubrió"/>
+            <text class="g-on" x="210" y="124" text-anchor="middle">Meta Ads 100 %</text>
+
+            <text class="g-key" x="24" y="160">Basado en datos</text>
+            <path class="s1" d="M153,166 H28 A4,4 0 0 0 24,170 V188 A4,4 0 0 0 28,192 H153 Z" data-tip="Meta Ads: 35 % del mérito, generó el descubrimiento"/>
+            <rect class="s2" x="155" y="166" width="147" height="26" data-tip="Blog y búsqueda: 40 % del mérito, resolvió las dudas"/>
+            <path class="s3" d="M304,166 H392 A4,4 0 0 1 396,170 V188 A4,4 0 0 1 392,192 H304 Z" data-tip="Email: 25 % del mérito, cerró la venta"/>
+            <text class="g-on" x="88" y="184" text-anchor="middle">35 %</text>
+            <text class="g-on" x="228" y="184" text-anchor="middle">40 %</text>
+            <text class="g-on2" x="350" y="184" text-anchor="middle">25 %</text>
+          </svg>
+          <ul class="leyenda">
+            <li><span class="sw sw1"></span>Meta Ads · descubrimiento</li>
+            <li><span class="sw sw2"></span>Blog y búsqueda · consideración</li>
+            <li><span class="sw sw3"></span>Email · cierre</li>
+          </ul>
+          <figcaption>Ninguno de los tres modelos miente: miden cosas distintas. El peligro es decidir el presupuesto con «último clic», porque apagarías el anuncio de Meta —que aparece con un 0 % de mérito— y con él desaparecerían también las ventas que el email cerraba.</figcaption>
+          <details class="datos">
+            <summary>Ver los datos</summary>
+            <div class="tabla-wrap">
+              <table>
+                <thead><tr><th scope="col">Modelo</th><th scope="col">Meta Ads</th><th scope="col">Blog</th><th scope="col">Email</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Último clic</th><td class="num">0 %</td><td class="num">0 %</td><td class="num">100 %</td></tr>
+                  <tr><th scope="row">Primer clic</th><td class="num">100 %</td><td class="num">0 %</td><td class="num">0 %</td></tr>
+                  <tr><th scope="row">Basado en datos</th><td class="num">35 %</td><td class="num">40 %</td><td class="num">25 %</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </figure>
+      </div>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Google Analytics 4</dt><dd>El estándar de oro. Gratuito, complejo y absolutamente necesario: mide el comportamiento de los usuarios en tu web.</dd></div>
+        <div><dt>Píxel de Meta</dt><dd>Con la API de Conversiones. Permite que Facebook e Instagram sepan quién compró y busquen perfiles similares (lookalike audiences).</dd></div>
+        <div><dt>Google Tag Manager</dt><dd>Un contenedor para instalar todos los códigos de rastreo sin tocar el código fuente ni depender de un programador cada vez.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <ol>
+          <li>Si tienes web, verifica si Google Analytics 4 está instalado con la extensión gratuita <i>Google Tag Assistant</i>.</li>
+          <li>Si no lo tienes, crea una cuenta gratuita en GA4 e integra el código base en tu sitio.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="seccion" id="s5-4" data-sec="s5-4">
+      <h3><span class="sn">5.4</span>Visualización de datos y data storytelling</h3>
+      <p>El último paso del marketing profesional. A directores, clientes o inversores no les importa ver sábanas interminables de Excel: quieren respuestas, contexto y recomendaciones. El data storytelling convierte números en una historia que impulsa decisiones.</p>
+
+      <aside class="nota">
+        <span class="rot">El dato</span>
+        La información presentada con elementos visuales y una narrativa clara aumenta la retención de los datos hasta un <b>65&nbsp;%</b> y acelera la toma de decisiones directivas.
+      </aside>
+
+      <div class="concepto">
+        <span class="rot">Concepto clave · el dashboard perfecto</span>
+        <p>Un tablero no debe requerir explicaciones. Debe responder tres preguntas en menos de cinco segundos de lectura: <b>¿qué pasó?</b> (el dato crudo), <b>¿por qué pasó?</b> (el contexto) y <b>¿qué vamos a hacer?</b> (la recomendación).</p>
+      </div>
+
+      <div class="ejemplo">
+        <span class="rot">Ejemplo aplicado · junta de resultados</span>
+        <div class="comparar">
+          <div class="mal">
+            <span class="rot">Reporte malo</span>
+            <p>«La tasa de rebote subió al 75&nbsp;% y las ventas bajaron un 15&nbsp;%.» Genera pánico y no ofrece soluciones.</p>
+          </div>
+          <div class="bien">
+            <span class="rot">Data storytelling</span>
+            <p>«El lunes actualizamos el diseño web. Los datos muestran que el nuevo banner retrasa la carga móvil a 6 segundos y provoca que el 75&nbsp;% abandone antes de ver los productos. Acción: hoy comprimimos las imágenes para cargar en 2 segundos, y proyectamos recuperar la tasa de ventas para el viernes.»</p>
+          </div>
+        </div>
+      </div>
+
+      <figure class="figura">
+        <span class="fig-num">Figura 5.4</span>
+        <svg viewBox="0 0 420 215" role="img" aria-label="Ventas diarias durante veinte días: se mantienen alrededor de 100 hasta el día 13, cuando se actualiza el sitio web, y caen a un rango de 53 a 68 durante el resto del periodo.">
+          <rect class="g-wash" x="274" y="30" width="134" height="156"/>
+          <line class="g-grid" x1="44" y1="30" x2="408" y2="30"/>
+          <line class="g-grid" x1="44" y1="108" x2="408" y2="108"/>
+          <line class="g-axis" x1="44" y1="186" x2="408" y2="186"/>
+          <text class="g-lab" x="38" y="34" text-anchor="end" font-size="10">120</text>
+          <text class="g-lab" x="38" y="112" text-anchor="end" font-size="10">60</text>
+          <text class="g-lab" x="38" y="190" text-anchor="end" font-size="10">0</text>
+
+          <path class="g-line" d="M44,59 L63,51 L82,55 L102,61 L121,52 L140,57 L159,50 L178,56 L198,60 L217,53 L236,56 L255,52 L274,98 L294,111 L313,114 L332,112 L351,116 L370,113 L389,117 L408,114"/>
+          <path d="M274,30 V186" stroke="var(--spot)" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+          <circle class="g-dot" cx="274" cy="98" r="5" data-tip="Día 13: se publica el nuevo diseño y las ventas caen de golpe"/>
+          <text x="270" y="24" text-anchor="end" fill="var(--spot)" font-family="var(--mono)" font-size="11">actualización web</text>
+          <text class="g-note" x="404" y="150" text-anchor="end">−45 % en ventas diarias</text>
+          <text class="g-lab" x="44" y="202" font-size="10">día 1</text>
+          <text class="g-lab" x="408" y="202" text-anchor="end" font-size="10">día 20</text>
+        </svg>
+        <figcaption>La misma gráfica responde a las tres preguntas del tablero: qué pasó (las ventas caen), por qué pasó (la caída empieza exactamente el día del cambio) y qué hacer (comprimir las imágenes). Un número suelto en una diapositiva no habría permitido ninguna de las tres.</figcaption>
+      </figure>
+
+      <h4>Herramientas recomendadas</h4>
+      <dl class="def tools">
+        <div><dt>Looker Studio</dt><dd>Gratuita. Se conecta con Analytics, Google Ads y hojas de cálculo, y crea reportes visuales que se actualizan en tiempo real.</dd></div>
+        <div><dt>Tableau · Power BI</dt><dd>Nivel empresarial para bases de datos masivas. Recomendables solo en corporativos grandes.</dd></div>
+      </dl>
+
+      <div class="tarea">
+        <span class="rot">Tarea práctica</span>
+        <p>Dibuja en una hoja en blanco tu «dashboard de director». Divide la hoja en cuatro cuadrantes y define las cuatro métricas vitales —y solo esas cuatro— que mirarías cada lunes por la mañana para saber si el negocio va bien. Por ejemplo: presupuesto gastado frente a ventas logradas, costo por lead, origen del tráfico principal y productos más vendidos.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ APÉNDICE ============ -->
+  <section class="apendice" id="apendice" data-mod="apendice">
+    <span class="num">Apéndice</span>
+    <h2>Formulario esencial</h2>
+    <p>Las fórmulas que aparecen dispersas en el Módulo 5, reunidas para consulta rápida. Todas se calculan sobre el mismo período: mezclar ventanas de tiempo distintas es el error más común al reportar.</p>
+    <dl class="formulario">
+      <div>
+        <dt>CAC</dt>
+        <dd><code>(Gasto en marketing + ventas) ÷ Clientes nuevos</code>
+        <span class="glosa">Costo de adquisición. Incluye sueldos y herramientas, no solo el gasto en anuncios.</span></dd>
+      </div>
+      <div>
+        <dt>LTV</dt>
+        <dd><code>Ticket promedio × Compras al año × Años de relación</code>
+        <span class="glosa">En suscripciones: cuota mensual × meses promedio antes de la cancelación.</span></dd>
+      </div>
+      <div>
+        <dt>Relación LTV:CAC</dt>
+        <dd><code>LTV ÷ CAC ≥ 3</code>
+        <span class="glosa">Por debajo de 3 el modelo no sostiene la inversión; muy por encima suele significar que estás invirtiendo menos de lo que podrías.</span></dd>
+      </div>
+      <div>
+        <dt>ROI</dt>
+        <dd><code>(Ingreso − Inversión) ÷ Inversión × 100</code>
+        <span class="glosa">Retorno de la inversión, en porcentaje.</span></dd>
+      </div>
+      <div>
+        <dt>Tasa de conversión</dt>
+        <dd><code>Conversiones ÷ Visitantes × 100</code>
+        <span class="glosa">Define «conversión» antes de medirla: una compra y un formulario no son lo mismo.</span></dd>
+      </div>
+      <div>
+        <dt>CPL</dt>
+        <dd><code>Inversión ÷ Leads generados</code>
+        <span class="glosa">Costo por lead. Compáralo siempre contra el LTV, nunca en abstracto.</span></dd>
+      </div>
+      <div>
+        <dt>CTR</dt>
+        <dd><code>Clics ÷ Impresiones × 100</code>
+        <span class="glosa">Mide el atractivo del mensaje, no la calidad del producto.</span></dd>
+      </div>
+      <div>
+        <dt>Churn</dt>
+        <dd><code>Cancelaciones del período ÷ Clientes al inicio × 100</code>
+        <span class="glosa">Tasa de cancelación. Su inversa aproximada marca la duración media de la relación.</span></dd>
+      </div>
+    </dl>
+
+    <h2 style="margin-top:3.4rem">Checklist de entregables</h2>
+    <p>Las veinte tareas de la guía, en orden. Al marcarlas aquí se marcan también dentro de cada sección —y al revés—: el progreso se guarda en este navegador, así que puedes cerrar la página y continuar después.</p>
+    <div class="maestro" id="checklist-maestro"></div>
+    <button class="reiniciar" type="button" id="reiniciar">Reiniciar progreso</button>
+
+    <p class="colofon">Guía de estudio de marketing estratégico y analítico · 5 módulos, 20 secciones, 20 entregables. Los datos citados corresponden a las fuentes mencionadas en cada sección: HubSpot, Salesforce, Gartner, Harvard Business Review, Board of Innovation, DMA y Think With Google.</p>
+  </section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  /* --- índice activo según la lectura --- */
+  var links = {};
+  document.querySelectorAll('[data-toc]').forEach(function (a) {
+    links[a.getAttribute('data-toc')] = a;
+  });
+  var targets = document.querySelectorAll('[data-sec], [data-mod]');
+  if ('IntersectionObserver' in window && targets.length) {
+    var visible = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) visible[e.target.id] = true;
+        else delete visible[e.target.id];
+      });
+      Object.keys(links).forEach(function (k) { links[k].classList.remove('activo'); });
+      targets.forEach(function (t) {
+        if (visible[t.id] && links[t.id]) links[t.id].classList.add('activo');
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+
+  /* --- tema: automático / claro / oscuro, persistente --- */
+  var root = document.documentElement;
+  var boton = document.getElementById('tema');
+  var modos = ['auto', 'light', 'dark'];
+  var etiqueta = { auto: 'Tema: automático', light: 'Tema: claro', dark: 'Tema: oscuro' };
+  var guardado;
+  try { guardado = localStorage.getItem('tema'); } catch (e) { guardado = null; }
+  var actual = modos.indexOf(guardado) > -1 ? guardado : 'auto';
+
+  function aplicar(modo) {
+    if (modo === 'auto') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', modo);
+    if (boton) boton.textContent = etiqueta[modo];
+    try { localStorage.setItem('tema', modo); } catch (e) {}
+  }
+  aplicar(actual);
+
+  if (boton) {
+    boton.addEventListener('click', function () {
+      actual = modos[(modos.indexOf(actual) + 1) % modos.length];
+      aplicar(actual);
+    });
+  }
+})();
+</script>
+<script src="guia.js" defer></script>
+</body>
+</html>
