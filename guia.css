@@ -32,8 +32,69 @@
 }
 
 /* ---------- anclas bajo la barra fija ---------- */
-.modulo,.seccion,.apendice{scroll-margin-top:4.5rem}
-@media (min-width:900px){.modulo,.seccion,.apendice{scroll-margin-top:1.5rem}}
+.modulo,.seccion,.apendice,.glosario{scroll-margin-top:4.5rem}
+@media (min-width:900px){.modulo,.seccion,.apendice,.glosario{scroll-margin-top:1.5rem}}
+
+/* ---------- cita de apertura de sección ---------- */
+.cita{
+  max-width:34rem; margin:0 0 1.7rem; padding:.15rem 0 .15rem 1.4rem;
+  border-left:2px solid var(--rule);
+}
+.cita p{
+  margin:0; font-size:1.03rem; line-height:1.58; font-style:italic;
+  color:var(--ink-soft); text-wrap:pretty;
+}
+.cita p::before{content:"«"}
+.cita p::after{content:"»"}
+.cita cite{
+  display:block; margin-top:.55rem; font-style:normal;
+  font-family:var(--mono); font-size:.67rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--spot);
+}
+.cita cite .obra{color:var(--muted); text-transform:none; letter-spacing:.04em}
+
+/* ---------- caso de estudio real ---------- */
+.caso{
+  max-width:34rem; margin:1.8rem 0;
+  padding:1.05rem 1.2rem 1.1rem;
+  background:var(--paper-2); border-left:2px solid var(--spot);
+}
+.caso > .rot{
+  display:block; font-family:var(--mono); font-size:.66rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--spot); margin-bottom:.55rem;
+}
+.caso p{margin:0 0 .75rem; font-size:.97rem; line-height:1.62}
+.caso p:last-child{margin-bottom:0}
+.caso .clave{
+  display:block; margin:.85rem 0 0; padding-top:.7rem;
+  border-top:1px solid var(--rule-soft);
+  font-family:var(--sans); font-size:.83rem; line-height:1.55; color:var(--ink-soft);
+}
+.caso .clave b{color:var(--ink)}
+.caso .fuente{
+  display:block; margin-top:.55rem;
+  font-family:var(--sans); font-size:.74rem; line-height:1.5; color:var(--muted);
+}
+.caso .num{font-variant-numeric:tabular-nums}
+
+/* ---------- glosario técnico del módulo ---------- */
+.glosario{
+  max-width:42rem; margin-top:3.4rem; padding-top:1.5rem;
+  border-top:3px double var(--rule);
+}
+.glosario h3{
+  font-family:var(--sans); font-size:.74rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 .35rem;
+}
+.glosario .entrada{
+  font-family:var(--sans); font-size:.82rem; color:var(--muted);
+  margin:0 0 1.1rem; line-height:1.55;
+}
+.glosario .def{margin-bottom:0}
+.glosario .def dd{font-size:.95rem}
+@media (min-width:620px){
+  .glosario .def > div{grid-template-columns:12.5rem minmax(0,1fr)}
+}
 
 /* ---------- barra móvil ---------- */
 .barra-movil{
@@ -217,5 +278,7 @@ details.datos th,details.datos td{padding:.4rem .8rem .4rem 0}
   .barra-movil,.progreso,.reiniciar,#tip{display:none !important}
   .figura svg{max-width:15cm}
   details.datos{display:none}
+  .cita,.caso,.glosario .def > div{break-inside:avoid}
+  .caso{background:none; border-left:1px solid #000}
   .chk input{-webkit-print-color-adjust:exact; print-color-adjust:exact}
 }
