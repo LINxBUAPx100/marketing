@@ -95,7 +95,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - Sucursales y selector de sucursal activa. Configuración del negocio (logo, RFC, IVA, folios).
 - Layout responsivo para tablet, bitácora de auditoría.
 
-### Fase 1 — Punto de venta básico (2–3 semanas) → equivale al plan *Básico*
+### Fase 1 — Punto de venta básico (2–3 semanas) → equivale al plan *Básico* ✅ terminada
 - **Productos y categorías** con imagen, precio público y precio revendedor; servicios sin inventario.
 - **Clientes**: catálogo, búsqueda rápida, historial.
 - **Ventas**: carrito, descuentos, varios métodos de pago en una misma venta, **anticipos/parcialidades**,

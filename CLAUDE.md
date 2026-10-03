@@ -11,7 +11,7 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - `npm run db:migrar` — aplica migraciones
 - `npm run db:demo` — carga datos de ejemplo (accesos en `scripts/datos-demo.mts`)
 - `npm run db:reiniciar` — borra la base local y la recrea con datos de ejemplo
-- `npm run typecheck`, `npx eslint src scripts`, `npm run build`
+- `npm test` (Vitest: lógica de dinero en `src/lib/**/*.test.ts`), `npm run typecheck`, `npx eslint src scripts`, `npm run build`
 
 ## Base de datos
 
@@ -29,3 +29,8 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Cada cambio de datos llama a `registrar()` (`src/lib/bitacora.ts`).
 - Formularios: acción de servidor `(estado, formData) => EstadoFormulario` validada con Zod; en el cliente `useFormulario` (`src/hooks/use-formulario.ts`), que no vacía el formulario cuando hay errores. Diálogos con `DialogoFormulario`; como reciben una función, se escriben en un componente de cliente propio del módulo.
 - Menú: `src/lib/navegacion.ts`. Al terminar un módulo, quita su `fase` para activarlo.
+- Lógica de dinero en funciones puras con pruebas: `src/lib/ventas/calculo.ts` (totales, IVA, pagos) y `src/lib/caja/resumen.ts` (periodo de caja). El servidor recalcula todo; el navegador solo propone.
+- Ventas: `src/lib/ventas/servidor.ts` (crear, abonar, cancelar). Folios por sucursal con `siguienteFolio`. Inventario siempre con `moverExistencia` (deja movimiento).
+- Caja: un periodo es todo lo que tiene `corteId` nulo en la sucursal. Cancelar una venta cuyo pago ya entró a un corte genera un egreso "Devolución".
+- Fechas en hora de México: `src/lib/fechas.ts`.
+- Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

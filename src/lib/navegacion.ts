@@ -41,24 +41,24 @@ export const NAVEGACION: GrupoNav[] = [
     titulo: "Operación",
     items: [
       { href: "/", etiqueta: "Inicio", icono: House },
-      { href: "/ventas", etiqueta: "Ventas", icono: ShoppingCart, permiso: "ventas.ver", fase: 1 },
+      { href: "/ventas", etiqueta: "Ventas", icono: ShoppingCart, permiso: "ventas.ver" },
       { href: "/cotizaciones", etiqueta: "Cotizaciones", icono: FileText, permiso: "cotizaciones.ver", fase: 2 },
       { href: "/produccion", etiqueta: "Producción", icono: ClipboardList, permiso: "produccion.ver", fase: 2 },
-      { href: "/caja", etiqueta: "Caja", icono: Wallet, permiso: "caja.ver", fase: 1 },
+      { href: "/caja", etiqueta: "Caja", icono: Wallet, permiso: "caja.ver" },
     ],
   },
   {
     titulo: "Clientes",
     items: [
-      { href: "/clientes", etiqueta: "Clientes", icono: UserRound, permiso: "clientes.ver", fase: 1 },
-      { href: "/cuentas-por-cobrar", etiqueta: "Cuentas por cobrar", icono: Banknote, permiso: "cxc.ver", fase: 1 },
+      { href: "/clientes", etiqueta: "Clientes", icono: UserRound, permiso: "clientes.ver" },
+      { href: "/cuentas-por-cobrar", etiqueta: "Cuentas por cobrar", icono: Banknote, permiso: "cxc.ver" },
       { href: "/convenios", etiqueta: "Convenios", icono: Handshake, permiso: "convenios.ver", fase: 5 },
     ],
   },
   {
     titulo: "Inventario",
     items: [
-      { href: "/productos", etiqueta: "Productos", icono: Package, permiso: "productos.ver", fase: 1 },
+      { href: "/productos", etiqueta: "Productos", icono: Package, permiso: "productos.ver" },
       { href: "/insumos", etiqueta: "Insumos", icono: Layers, permiso: "insumos.ver", fase: 3 },
       { href: "/almacen", etiqueta: "Almacén", icono: Boxes, permiso: "almacen.ver", fase: 3 },
       { href: "/cuentas-por-pagar", etiqueta: "Cuentas por pagar", icono: Receipt, permiso: "cxp.ver", fase: 3 },

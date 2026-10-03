@@ -1,0 +1,269 @@
+import "server-only";
+import { and, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
+import { db, t } from "@/db";
+import type { Db } from "@/db/conexion";
+import type { Sesion } from "@/lib/auth";
+import { registrar } from "@/lib/bitacora";
+import type { Metodo } from "@/lib/caja/resumen";
+import { calcularTotales, importePartida, validarPagos, validarPartida } from "./calculo";
+
+type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
+type Resultado<T = object> = ({ ok: true } & T) | { ok: false; mensaje: string };
+
+export type PartidaEntrada = {
+  productoId: string | null;
+  descripcion: string;
+  cantidad: number;
+  precioUnitario: number;
+  descuento: number;
+  notas: string | null;
+};
+
+export type PagoEntrada = { metodo: Metodo; monto: number; recibido: number | null; referencia: string | null };
+
+export type VentaEntrada = {
+  clienteId: string | null;
+  fechaEntrega: Date | null;
+  notas: string | null;
+  partidas: PartidaEntrada[];
+  pagos: PagoEntrada[];
+};
+
+/** Siguiente folio de la sucursal, p. ej. "MAT-0042". Atómico dentro de la transacción. */
+export async function siguienteFolio(tx: Tx, sucursalId: string, prefijo: string, tipo: string) {
+  const [f] = await tx
+    .insert(t.folio)
+    .values({ sucursalId, tipo, ultimo: 1 })
+    .onConflictDoUpdate({ target: [t.folio.sucursalId, t.folio.tipo], set: { ultimo: sql`${t.folio.ultimo} + 1` } })
+    .returning();
+  return `${prefijo}-${String(f.ultimo).padStart(4, "0")}`;
+}
+
+export async function moverExistencia(
+  tx: Tx,
+  datos: { negocioId: string; sucursalId: string; productoId: string; cantidad: number; motivo: "venta" | "cancelacion" | "ajuste" | "inicial"; ventaId?: string; usuarioId: string; nota?: string },
+) {
+  await tx
+    .insert(t.existencia)
+    .values({ productoId: datos.productoId, sucursalId: datos.sucursalId, cantidad: datos.cantidad })
+    .onConflictDoUpdate({
+      target: [t.existencia.productoId, t.existencia.sucursalId],
+      set: { cantidad: sql`${t.existencia.cantidad} + ${datos.cantidad}` },
+    });
+  await tx.insert(t.movimientoInventario).values({
+    negocioId: datos.negocioId,
+    sucursalId: datos.sucursalId,
+    productoId: datos.productoId,
+    cantidad: datos.cantidad,
+    motivo: datos.motivo,
+    ventaId: datos.ventaId,
+    usuarioId: datos.usuarioId,
+    nota: datos.nota,
+  });
+}
+
+export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise<Resultado<{ id: string; folio: string }>> {
+  const sucursal = sesion.sucursal;
+  if (!sucursal) return { ok: false, mensaje: "No tienes una sucursal asignada." };
+  if (!entrada.partidas.length) return { ok: false, mensaje: "Agrega al menos un producto o concepto." };
+
+  const negocioId = sesion.negocio.id;
+  const cliente = entrada.clienteId
+    ? (await db.select().from(t.cliente).where(and(eq(t.cliente.id, entrada.clienteId), eq(t.cliente.negocioId, negocioId))))[0]
+    : null;
+  if (entrada.clienteId && !cliente) return { ok: false, mensaje: "El cliente ya no existe." };
+
+  const ids = entrada.partidas.map((p) => p.productoId).filter((id): id is string => !!id);
+  const productos = ids.length
+    ? await db.select().from(t.producto).where(and(inArray(t.producto.id, ids), eq(t.producto.negocioId, negocioId)))
+    : [];
+  const porId = new Map(productos.map((p) => [p.id, p]));
+  const puedeDescontar = sesion.puede("ventas.descuento");
+
+  // El servidor decide descripción, unidad y precio de lista; el cliente solo propone.
+  type Producto = (typeof productos)[number];
+  const partidas: (PartidaEntrada & { unidad: string; importe: number; producto: Producto | null | undefined; orden: number })[] = [];
+  for (const [i, p] of entrada.partidas.entries()) {
+    const producto = p.productoId ? porId.get(p.productoId) : null;
+    if (p.productoId && (!producto || !producto.activo)) return { ok: false, mensaje: "Un producto ya no está disponible. Quítalo e inténtalo de nuevo." };
+
+    if (producto) {
+      const lista = cliente?.tipoPrecio === "revendedor" && producto.precioRevendedor != null ? producto.precioRevendedor : producto.precio;
+      if ((p.precioUnitario !== lista || p.descuento > 0) && !puedeDescontar) {
+        return { ok: false, mensaje: `No tienes permiso para cambiar el precio de "${producto.nombre}".` };
+      }
+    } else if (!p.descripcion.trim()) {
+      return { ok: false, mensaje: "Escribe la descripción del concepto libre." };
+    }
+
+    const error = validarPartida(p);
+    if (error) return { ok: false, mensaje: `${producto?.nombre ?? p.descripcion}: ${error}` };
+    partidas.push({
+      ...p,
+      descripcion: producto?.nombre ?? p.descripcion.trim(),
+      unidad: producto?.unidad ?? "servicio",
+      importe: importePartida(p),
+      producto,
+      orden: i,
+    });
+  }
+
+  const totales = calcularTotales(partidas, sesion.negocio);
+  const errorPagos = validarPagos(entrada.pagos, totales.total);
+  if (errorPagos) return { ok: false, mensaje: errorPagos };
+  const pagado = entrada.pagos.reduce((s, p) => s + p.monto, 0);
+  if (pagado < totales.total && !cliente) {
+    return { ok: false, mensaje: "Para dejar saldo pendiente, elige a qué cliente se le cobra." };
+  }
+
+  const venta = await db.transaction(async (tx) => {
+    const folio = await siguienteFolio(tx, sucursal.id, sucursal.prefijoFolio, "venta");
+    const [v] = await tx
+      .insert(t.venta)
+      .values({
+        negocioId,
+        sucursalId: sucursal.id,
+        folio,
+        clienteId: cliente?.id ?? null,
+        usuarioId: sesion.usuario.id,
+        subtotal: totales.subtotal,
+        descuento: totales.descuento,
+        iva: totales.iva,
+        total: totales.total,
+        pagado,
+        fechaEntrega: entrada.fechaEntrega,
+        notas: entrada.notas,
+      })
+      .returning();
+
+    await tx.insert(t.ventaPartida).values(
+      partidas.map((p) => ({
+        ventaId: v.id,
+        productoId: p.producto?.id ?? null,
+        descripcion: p.descripcion,
+        unidad: p.unidad,
+        cantidad: p.cantidad,
+        precioUnitario: p.precioUnitario,
+        descuento: p.descuento,
+        importe: p.importe,
+        notas: p.notas,
+        orden: p.orden,
+      })),
+    );
+
+    if (entrada.pagos.length) {
+      await tx.insert(t.pago).values(
+        entrada.pagos.map((p) => ({ ...p, negocioId, sucursalId: sucursal.id, ventaId: v.id, usuarioId: sesion.usuario.id })),
+      );
+    }
+
+    for (const p of partidas) {
+      if (p.producto?.tipo !== "producto") continue;
+      await moverExistencia(tx, {
+        negocioId,
+        sucursalId: sucursal.id,
+        productoId: p.producto.id,
+        cantidad: -p.cantidad,
+        motivo: "venta",
+        ventaId: v.id,
+        usuarioId: sesion.usuario.id,
+      });
+    }
+    return v;
+  });
+
+  await registrar(sesion, "crear", "venta", venta.id, { nombre: venta.folio, total: venta.total, pagado });
+  return { ok: true, id: venta.id, folio: venta.folio };
+}
+
+export async function registrarAbono(sesion: Sesion, ventaId: string, pagos: PagoEntrada[]): Promise<Resultado> {
+  const sucursal = sesion.sucursal;
+  if (!sucursal) return { ok: false, mensaje: "No tienes una sucursal asignada." };
+  if (!pagos.length) return { ok: false, mensaje: "Agrega el pago." };
+
+  const [venta] = await db
+    .select()
+    .from(t.venta)
+    .where(and(eq(t.venta.id, ventaId), eq(t.venta.negocioId, sesion.negocio.id)));
+  if (!venta || venta.estado !== "activa") return { ok: false, mensaje: "La venta no existe o está cancelada." };
+
+  const error = validarPagos(pagos, venta.total - venta.pagado);
+  if (error) return { ok: false, mensaje: error };
+  const monto = pagos.reduce((s, p) => s + p.monto, 0);
+
+  await db.transaction(async (tx) => {
+    await tx.insert(t.pago).values(
+      pagos.map((p) => ({ ...p, negocioId: sesion.negocio.id, sucursalId: sucursal.id, ventaId, usuarioId: sesion.usuario.id })),
+    );
+    await tx.update(t.venta).set({ pagado: sql`${t.venta.pagado} + ${monto}` }).where(eq(t.venta.id, ventaId));
+  });
+
+  await registrar(sesion, "abonar", "venta", ventaId, { nombre: venta.folio, monto });
+  return { ok: true };
+}
+
+export async function cancelarVenta(sesion: Sesion, ventaId: string, motivo: string): Promise<Resultado> {
+  const sucursal = sesion.sucursal;
+  if (!sucursal) return { ok: false, mensaje: "No tienes una sucursal asignada." };
+
+  const [venta] = await db
+    .select()
+    .from(t.venta)
+    .where(and(eq(t.venta.id, ventaId), eq(t.venta.negocioId, sesion.negocio.id)));
+  if (!venta || venta.estado !== "activa") return { ok: false, mensaje: "La venta no existe o ya está cancelada." };
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(t.venta)
+      .set({ estado: "cancelada", motivoCancelacion: motivo, canceladaPor: sesion.usuario.id, canceladaEn: new Date() })
+      .where(eq(t.venta.id, ventaId));
+
+    // Pagos del periodo abierto: se anulan y dejan de contar en la caja.
+    await tx
+      .update(t.pago)
+      .set({ cancelado: true })
+      .where(and(eq(t.pago.ventaId, ventaId), isNull(t.pago.corteId)));
+
+    // Pagos que ya entraron en un corte: se devuelven como gasto del periodo actual.
+    const cortados = await tx
+      .select({ metodo: t.pago.metodo, monto: sql<number>`sum(${t.pago.monto})::int` })
+      .from(t.pago)
+      .where(and(eq(t.pago.ventaId, ventaId), isNotNull(t.pago.corteId), eq(t.pago.cancelado, false)))
+      .groupBy(t.pago.metodo);
+    for (const c of cortados) {
+      await tx.insert(t.movimientoCaja).values({
+        negocioId: sesion.negocio.id,
+        sucursalId: sucursal.id,
+        tipo: "egreso",
+        categoria: "Devolución",
+        concepto: `Devolución por cancelación de ${venta.folio}`,
+        metodo: c.metodo,
+        monto: c.monto,
+        ventaId,
+        usuarioId: sesion.usuario.id,
+      });
+    }
+
+    // Lo vendido regresa al inventario de la sucursal donde se vendió.
+    const partidas = await tx
+      .select({ productoId: t.ventaPartida.productoId, cantidad: t.ventaPartida.cantidad, tipo: t.producto.tipo })
+      .from(t.ventaPartida)
+      .innerJoin(t.producto, eq(t.producto.id, t.ventaPartida.productoId))
+      .where(eq(t.ventaPartida.ventaId, ventaId));
+    for (const p of partidas) {
+      if (p.tipo !== "producto" || !p.productoId) continue;
+      await moverExistencia(tx, {
+        negocioId: sesion.negocio.id,
+        sucursalId: venta.sucursalId,
+        productoId: p.productoId,
+        cantidad: p.cantidad,
+        motivo: "cancelacion",
+        ventaId,
+        usuarioId: sesion.usuario.id,
+      });
+    }
+  });
+
+  await registrar(sesion, "cancelar", "venta", ventaId, { nombre: venta.folio, motivo });
+  return { ok: true };
+}

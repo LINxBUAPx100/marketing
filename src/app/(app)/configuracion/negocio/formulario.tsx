@@ -6,17 +6,9 @@ import { Campo, MensajeFormulario, Selector } from "@/components/campo";
 import { Button } from "@/components/ui/button";
 import { useFormulario } from "@/hooks/use-formulario";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { REGIMENES_FISCALES } from "@/lib/sat";
 import { guardarNegocio } from "../acciones";
 
-// Catálogo c_RegimenFiscal del SAT (los más comunes en imprentas).
-const REGIMENES = [
-  ["601", "General de Ley Personas Morales"],
-  ["603", "Personas Morales con Fines no Lucrativos"],
-  ["605", "Sueldos y Salarios"],
-  ["612", "Personas Físicas con Actividades Empresariales y Profesionales"],
-  ["621", "Incorporación Fiscal"],
-  ["626", "Régimen Simplificado de Confianza (RESICO)"],
-] as const;
 
 type Valores = {
   nombre: string;
@@ -64,7 +56,7 @@ export function FormularioNegocio({ valores, puedeEditar }: { valores: Valores; 
             <Campo etiqueta="RFC" nombre="rfc" defaultValue={valores.rfc} className="uppercase" maxLength={13} errores={e.rfc} />
             <Selector etiqueta="Régimen fiscal" nombre="regimenFiscal" defaultValue={valores.regimenFiscal} errores={e.regimenFiscal}>
               <option value="">Sin definir</option>
-              {REGIMENES.map(([clave, nombre]) => (
+              {REGIMENES_FISCALES.map(([clave, nombre]) => (
                 <option key={clave} value={clave}>
                   {clave} · {nombre}
                 </option>

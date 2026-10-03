@@ -29,10 +29,12 @@ type Props = {
   /** Recibe los errores por campo para pintarlos junto a cada input. */
   children: (errores: Record<string, string[] | undefined>) => React.ReactNode;
   ancho?: string;
+  /** Se llama después de guardar con éxito, con lo que regresó la acción. */
+  alGuardar?: (resultado: NonNullable<EstadoFormulario>) => void;
 };
 
 /** Diálogo con formulario: se cierra y avisa al guardar con éxito; muestra errores si no. */
-export function DialogoFormulario({ titulo, descripcion, disparador, accion, textoGuardar = "Guardar", children, ancho = "sm:max-w-lg" }: Props) {
+export function DialogoFormulario({ titulo, descripcion, disparador, accion, textoGuardar = "Guardar", children, ancho = "sm:max-w-lg", alGuardar }: Props) {
   const [abierto, setAbierto] = useState(false);
   return (
     <Dialog open={abierto} onOpenChange={setAbierto}>
@@ -43,7 +45,11 @@ export function DialogoFormulario({ titulo, descripcion, disparador, accion, tex
           {descripcion ? <DialogDescription>{descripcion}</DialogDescription> : null}
         </DialogHeader>
         {/* Se monta solo con el diálogo abierto: cada apertura empieza sin errores previos. */}
-        <Formulario accion={accion} textoGuardar={textoGuardar} alGuardar={() => setAbierto(false)}>
+        <Formulario accion={accion} textoGuardar={textoGuardar} alGuardar={(r) => {
+            setAbierto(false);
+            alGuardar?.(r);
+          }}
+        >
           {children}
         </Formulario>
       </DialogContent>
@@ -56,12 +62,12 @@ function Formulario({
   textoGuardar,
   alGuardar,
   children,
-}: Pick<Props, "accion" | "textoGuardar" | "children"> & { alGuardar: () => void }) {
+}: Pick<Props, "accion" | "textoGuardar" | "children"> & { alGuardar: (r: NonNullable<EstadoFormulario>) => void }) {
   const { estado, onSubmit, enviando, errores } = useFormulario(async (previo, formData) => {
     const resultado = await accion(previo, formData);
     if (resultado?.ok) {
       toast.success(resultado.mensaje ?? "Guardado.");
-      alGuardar();
+      alGuardar(resultado);
     }
     return resultado;
   });
