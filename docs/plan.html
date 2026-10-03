@@ -1,0 +1,388 @@
+<title>Plan Sistema Imprenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: hoja de prensa — columna de lectura de 1100px, marcas de registro como detalle, color CMYK codifica las fases */
+:root{
+  --paper:#f7f8fa; --sheet:#ffffff; --ink:#151a24; --ink-2:#4a5263; --rule:#dde1e8; --chip:#eef0f4;
+  --c:#0098c7; --m:#d6247a; --y:#e0a800; --k:#151a24;
+  --ok:#1f8a4c;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10131a; --sheet:#171b24; --ink:#e8ebf1; --ink-2:#a3abba; --rule:#2a303c; --chip:#222835;
+  --c:#3cc3ef; --m:#f0559f; --y:#f2c335; --k:#e8ebf1; --ok:#47c07a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10131a; --sheet:#171b24; --ink:#e8ebf1; --ink-2:#a3abba; --rule:#2a303c; --chip:#222835;
+  --c:#3cc3ef; --m:#f0559f; --y:#f2c335; --k:#e8ebf1; --ok:#47c07a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 var(--body);margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:20px;padding-block:40px 80px;display:grid;gap:64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.75rem;font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font:600 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.muted{color:var(--ink-2)}
+section{display:grid;gap:24px}
+.sec-head{display:grid;gap:8px}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+
+/* Hero */
+.hero{display:grid;gap:20px;position:relative;padding-block:12px}
+.cmyk{display:flex;gap:6px}
+.cmyk i{width:22px;height:22px;border-radius:50%;display:block;mix-blend-mode:multiply}
+.cmyk i:nth-child(1){background:var(--c)}.cmyk i:nth-child(2){background:var(--m);margin-left:-12px}
+.cmyk i:nth-child(3){background:var(--y);margin-left:-12px}.cmyk i:nth-child(4){background:var(--k);margin-left:-12px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cmyk i{mix-blend-mode:screen}}
+:root[data-theme="dark"] .cmyk i{mix-blend-mode:screen}
+.lede{font-size:1.15rem;color:var(--ink-2)}
+.facts{display:flex;flex-wrap:wrap;gap:12px 32px;padding-top:8px;border-top:1px solid var(--rule)}
+.fact{display:grid;gap:2px}
+.fact b{font:700 1.5rem/1.2 var(--display);font-variant-numeric:tabular-nums}
+.fact span{font-size:.85rem;color:var(--ink-2)}
+
+/* Fase legend / filtros */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:600 .82rem/1 var(--body);border:1px solid var(--rule);background:var(--sheet);color:var(--ink);
+  padding:8px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.filters button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--ph)}
+
+/* Módulos */
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.mod{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px 16px 14px;display:grid;gap:8px;align-content:start;
+  transition:opacity .2s}
+.mod.dim{opacity:.25}
+.mod header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tag{font:600 .7rem/1 var(--mono);padding:4px 7px;border-radius:4px;background:var(--chip);color:var(--ink);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px}
+.mod ul{margin:0;padding-left:18px;font-size:.92rem;color:var(--ink-2);display:grid;gap:3px}
+
+/* Flujo */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+.step{flex:1 1 140px;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px;display:grid;gap:4px;min-width:0}
+.step b{font-family:var(--display);font-size:1rem}
+.step small{color:var(--ink-2);font-size:.85rem;line-height:1.4}
+.arrow{align-self:center;color:var(--ink-2);font-family:var(--mono)}
+.stages{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.stages span{font:600 .7rem/1 var(--mono);padding:4px 6px;border-radius:4px;background:var(--chip)}
+
+/* Gantt */
+.gantt-box{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:10px}
+.gantt{min-width:760px;display:grid;grid-template-columns:230px repeat(16,1fr);font-size:.9rem}
+.gantt .wk{font:600 .68rem/1 var(--mono);color:var(--ink-2);text-align:center;padding:12px 0 8px;border-bottom:1px solid var(--rule)}
+.gantt .corner{border-bottom:1px solid var(--rule);padding:12px 14px 8px}
+.gantt .row-l{padding:10px 14px;border-bottom:1px solid var(--rule);display:flex;gap:10px;align-items:center;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;
+  text-align:left;font:inherit;color:inherit}
+.gantt .row-l:hover,.gantt .row-l.on{background:var(--chip)}
+.gantt .row-l code{font:600 .72rem var(--mono);color:var(--ink-2)}
+.gantt .cell{border-bottom:1px solid var(--rule);border-left:1px dashed var(--rule);position:relative}
+.gantt .bar{position:absolute;inset:9px 2px;border-radius:5px;background:var(--ph)}
+.gantt .bar.soft{opacity:.35}
+
+/* Detalle de fase */
+.phase-detail{background:var(--sheet);border:1px solid var(--rule);border-left:6px solid var(--ph);border-radius:10px;padding:20px;display:grid;gap:12px}
+.phase-detail ul{margin:0;padding-left:20px;display:grid;gap:6px;max-width:75ch}
+.phase-detail .meta{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Stack */
+.stack{width:100%;border-collapse:collapse;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.stack-box{overflow-x:auto}
+.stack th,.stack td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+.stack th{font:600 .7rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.stack td:first-child{font-weight:700;white-space:nowrap}
+.stack td:nth-child(2){font-family:var(--mono);font-size:.85rem}
+.stack td:last-child{color:var(--ink-2)}
+.stack tr:last-child td{border-bottom:0}
+
+/* Datos */
+.entities{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.ent{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px;display:grid;gap:8px;align-content:start}
+.ent div{display:flex;flex-wrap:wrap;gap:6px}
+.ent code{font:.78rem var(--mono);background:var(--chip);padding:3px 6px;border-radius:4px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 28px;padding:0;margin:0;list-style:none}
+.rules li{padding-left:16px;border-left:2px solid var(--rule);font-size:.95rem}
+
+/* Checklist + riesgos */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.check{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;cursor:pointer}
+.check label:hover{background:var(--chip)}
+.check input{margin-top:4px;accent-color:var(--ok);width:16px;height:16px;flex:none}
+.check input:checked + span{color:var(--ink-2);text-decoration:line-through}
+.progress{font:600 .8rem var(--mono);color:var(--ink-2)}
+.risk{display:grid;gap:4px;padding:14px 16px;border-radius:10px;background:var(--sheet);border:1px solid var(--rule)}
+.risk b{display:flex;gap:8px;align-items:center}
+.risk b::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--m);transform:rotate(45deg)}
+.risks{display:grid;gap:10px}
+
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.plan{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px;display:grid;gap:4px}
+.plan b{font:700 1.4rem var(--display);font-variant-numeric:tabular-nums}
+.plan.own{border-color:var(--ok)}
+
+footer{font-size:.85rem;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:16px;display:grid;gap:4px}
+footer a{color:inherit}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="cmyk" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <span class="eyebrow">Plan maestro · octubre 2026</span>
+  <h1>Sistema de administración para la imprenta</h1>
+  <p class="lede">Una web propia, hecha desde cero, que cubre todas las funciones de AdmiPrint: ventas, cotizaciones, caja, producción, contadores de máquinas, insumos, almacén y facturación CFDI 4.0. Un negocio, varias sucursales, usuarios ilimitados.</p>
+  <div class="facts">
+    <div class="fact"><b>18</b><span>módulos a construir</span></div>
+    <div class="fact"><b>8</b><span>fases (de la 0 a la 7)</span></div>
+    <div class="fact"><b>12–16</b><span>semanas a tiempo parcial</span></div>
+    <div class="fact"><b>~$0–25</b><span>USD/mes de hosting</span></div>
+  </div>
+</header>
+
+<section id="modulos">
+  <div class="sec-head">
+    <span class="eyebrow">Qué hace AdmiPrint</span>
+    <h2>Módulos y en qué fase se construyen</h2>
+    <p class="muted">Cada color es una fase. Filtra para ver qué queda listo en cada etapa.</p>
+  </div>
+  <div class="filters" id="filters" role="group" aria-label="Filtrar por fase"></div>
+  <div class="mods" id="mods"></div>
+</section>
+
+<section id="flujo">
+  <div class="sec-head">
+    <span class="eyebrow">Recorrido de un pedido</span>
+    <h2>De la cotización a la entrega</h2>
+    <p class="muted">Así fluye un trabajo dentro del sistema. Cada paso queda registrado con usuario, sucursal y hora.</p>
+  </div>
+  <div class="flow">
+    <div class="step"><b>Cotización</b><small>Se envía por WhatsApp y se agenda seguimiento</small></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="step"><b>Venta</b><small>Anticipo en efectivo, tarjeta, cheque o transferencia</small></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="step"><b>Orden de producción</b><small>Fecha compromiso y responsable por etapa</small>
+      <div class="stages"><span>diseño</span><span>impresión</span><span>acabado</span></div></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="step"><b>Listo</b><small>Aviso automático al cliente por WhatsApp</small></div>
+    <span class="arrow" aria-hidden="true">→</span>
+    <div class="step"><b>Entregado</b><small>Se liquida el saldo, se factura y se descuentan insumos</small></div>
+  </div>
+</section>
+
+<section id="fases">
+  <div class="sec-head">
+    <span class="eyebrow">Calendario</span>
+    <h2>Fases de construcción</h2>
+    <p class="muted">Cada fase termina con algo que ya se usa en el mostrador. Toca una fase para ver su detalle. La parte clara de cada barra es la holgura.</p>
+  </div>
+  <div class="gantt-box"><div class="gantt" id="gantt"></div></div>
+  <div class="phase-detail" id="detail" aria-live="polite"></div>
+</section>
+
+<section id="stack">
+  <div class="sec-head">
+    <span class="eyebrow">Arquitectura</span>
+    <h2>Con qué se construye</h2>
+  </div>
+  <div class="stack-box">
+  <table class="stack">
+    <thead><tr><th>Capa</th><th>Elección</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr><td>App web</td><td>Next.js 15 + TypeScript</td><td>Frontend y backend en un solo proyecto</td></tr>
+      <tr><td>Interfaz</td><td>Tailwind + shadcn/ui</td><td>Tablas, formularios y diálogos listos, cómodos en tablet</td></tr>
+      <tr><td>Base de datos</td><td>PostgreSQL en Supabase</td><td>Incluye usuarios, tiempo real, imágenes y respaldos</td></tr>
+      <tr><td>Datos tipados</td><td>Drizzle ORM + Zod</td><td>Migraciones y validación seguras</td></tr>
+      <tr><td>Tiempo real</td><td>Supabase Realtime</td><td>Tablero de producción y cajas de sucursales en vivo</td></tr>
+      <tr><td>Celular y tablet</td><td>PWA instalable</td><td>Se instala como app sin pasar por las tiendas</td></tr>
+      <tr><td>Documentos</td><td>@react-pdf/renderer</td><td>Notas, cotizaciones, órdenes de trabajo y cortes en PDF</td></tr>
+      <tr><td>Facturación</td><td>Facturapi o Facturama</td><td>El PAC timbra y cancela; el sistema le manda los datos</td></tr>
+      <tr><td>WhatsApp</td><td>wa.me → Cloud API</td><td>Primero enlaces gratis; luego envío automático con plantillas</td></tr>
+      <tr><td>Tickets</td><td>Térmica 58/80 mm</td><td>Impresión desde el navegador o con QZ Tray</td></tr>
+      <tr><td>Hosting</td><td>Vercel + Supabase</td><td>Sin servidores que mantener</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="datos">
+  <div class="sec-head">
+    <span class="eyebrow">Modelo de datos</span>
+    <h2>Lo que guarda el sistema</h2>
+  </div>
+  <div class="entities">
+    <div class="ent"><h3>Negocio y acceso</h3><div><code>negocio</code><code>sucursal</code><code>usuario</code><code>rol</code><code>permiso</code><code>bitacora</code></div></div>
+    <div class="ent"><h3>Catálogos</h3><div><code>categoria</code><code>producto</code><code>precio</code><code>insumo</code><code>receta_insumo</code></div></div>
+    <div class="ent"><h3>Clientes</h3><div><code>cliente</code><code>convenio</code><code>cotizacion</code><code>seguimiento</code></div></div>
+    <div class="ent"><h3>Ventas y dinero</h3><div><code>venta</code><code>venta_partida</code><code>pago</code><code>caja</code><code>movimiento_caja</code><code>corte_caja</code><code>comision</code></div></div>
+    <div class="ent"><h3>Producción</h3><div><code>orden_produccion</code><code>etapa_produccion</code><code>notificacion</code><code>mensaje_whatsapp</code></div></div>
+    <div class="ent"><h3>Máquinas</h3><div><code>maquina</code><code>lectura_contador</code><code>merma</code><code>consumible_instalado</code></div></div>
+    <div class="ent"><h3>Almacén y compras</h3><div><code>existencia</code><code>traspaso</code><code>proveedor</code><code>cuenta_por_pagar</code><code>pago_proveedor</code></div></div>
+    <div class="ent"><h3>Facturación</h3><div><code>factura</code><code>complemento_pago</code></div></div>
+  </div>
+  <ul class="rules">
+    <li>El dinero se guarda en centavos para que no haya errores de redondeo.</li>
+    <li>Nada se borra: se cancela con motivo y queda en el historial.</li>
+    <li>Cada movimiento guarda quién lo hizo, en qué sucursal y cuándo.</li>
+    <li>Impresiones fantasma = contador − (vendidas + mermas registradas).</li>
+  </ul>
+</section>
+
+<section id="costo">
+  <div class="sec-head">
+    <span class="eyebrow">Costo de referencia</span>
+    <h2>AdmiPrint contra sistema propio</h2>
+  </div>
+  <div class="compare">
+    <div class="plan"><span class="eyebrow">AdmiPrint Básico</span><b>$348 MXN/mes</b><span class="muted">Hasta 3 sucursales · $4,176 al año</span></div>
+    <div class="plan"><span class="eyebrow">AdmiPrint Avanzado</span><b>$580 MXN/mes</b><span class="muted">Hasta 5 sucursales · $6,960 al año</span></div>
+    <div class="plan own"><span class="eyebrow">Sistema propio</span><b>~$0–500 MXN/mes</b><span class="muted">Hosting, más timbres del PAC y WhatsApp si se usa la API</span></div>
+  </div>
+</section>
+
+<section id="pendientes">
+  <div class="two">
+    <div class="sec-head" style="align-content:start">
+      <span class="eyebrow">Antes de empezar</span>
+      <h2>Lo que necesitamos de la imprenta</h2>
+      <span class="progress" id="prog"></span>
+      <ul class="check" id="check">
+        <li><label><input type="checkbox" id="ck1"><span>Lista de productos y servicios con precio público y de revendedor</span></label></li>
+        <li><label><input type="checkbox" id="ck2"><span>Etapas reales de producción y quién hace cada una</span></label></li>
+        <li><label><input type="checkbox" id="ck3"><span>Máquinas (marca y modelo) y cómo leen hoy los contadores</span></label></li>
+        <li><label><input type="checkbox" id="ck4"><span>Número de sucursales y usuarios, y qué puede ver cada uno</span></label></li>
+        <li><label><input type="checkbox" id="ck5"><span>Datos fiscales: RFC, régimen, sello digital (CSD) y PAC actual</span></label></li>
+        <li><label><input type="checkbox" id="ck6"><span>Número de WhatsApp del negocio (una línea dedicada para la API)</span></label></li>
+      </ul>
+    </div>
+    <div class="sec-head" style="align-content:start">
+      <span class="eyebrow">A cuidar</span>
+      <h2>Riesgos</h2>
+      <div class="risks">
+        <div class="risk"><b>Facturación</b><span class="muted">Tiene consecuencias legales. Se prueba primero en modo pruebas y se valida con su contador.</span></div>
+        <div class="risk"><b>Mantenimiento</b><span class="muted">Un sistema propio necesita a alguien que lo actualice y revise los respaldos.</span></div>
+        <div class="risk"><b>WhatsApp API</b><span class="muted">Meta cobra por conversación y aprueba cada plantilla. Por eso al inicio se usan enlaces.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Funciones tomadas de lo que AdmiPrint publica. Su panel interno requiere cuenta y no se revisó. Se replica la funcionalidad, no su marca ni su código.</span>
+  <span>Fuentes: <a href="https://www.admiprint.com/" target="_blank" rel="noopener">admiprint.com</a> · <a href="https://admiprint.com/condiciones.html" target="_blank" rel="noopener">términos</a> · <a href="https://apps.apple.com/mx/app/admiprint/id6743774662" target="_blank" rel="noopener">App Store</a></span>
+</footer>
+
+</div>
+
+<script>
+const PH = [
+  {id:0,name:"Cimientos",color:"var(--ink-2)",start:1,len:1,max:1,goal:"Base técnica y acceso",
+   items:["Proyecto Next.js, Supabase y despliegue en Vercel","Login, usuarios, roles y permisos por módulo (ver, crear, editar, cancelar)","Sucursales y selector de sucursal activa","Configuración del negocio: logo, RFC, IVA y folios","Diseño responsivo para tablet y bitácora de auditoría"]},
+  {id:1,name:"Punto de venta",color:"var(--c)",start:2,len:2,max:3,goal:"Equivale al plan Básico de AdmiPrint",
+   items:["Productos y categorías con imagen, precio público y precio revendedor","Catálogo de clientes con búsqueda rápida e historial","Ventas con descuentos, varios métodos de pago y anticipos","Nota de venta en PDF y ticket térmico; cancelaciones con motivo","Cuentas por cobrar: saldos y abonos por cliente","Caja: apertura, ingresos, egresos por categoría y cortes diarios o semanales","Botón para mandar la nota por WhatsApp"]},
+  {id:2,name:"Producción y cotizaciones",color:"var(--m)",start:5,len:2,max:2,goal:"Entregas a tiempo",
+   items:["Cotizaciones en PDF con vigencia y seguimientos programados","Convertir una cotización en venta con un clic","Orden de producción automática con etapas configurables","Tablero en tiempo real: por vencer, retrasados y último usuario","Aviso al cliente por WhatsApp cuando su pedido está listo","Reporte de qué etapa se tarda más"]},
+  {id:3,name:"Insumos y almacén",color:"var(--y)",start:7,len:2,max:2,goal:"Saber cuánto cuesta y cuánto queda",
+   items:["Insumos con unidad y costo; recetas por producto","Descuento automático de insumos al vender","Inventario por sucursal, ajustes, traspasos y alertas de mínimo","Costo por producto y utilidad por venta y por periodo","Proveedores y cuentas por pagar con vencimientos"]},
+  {id:4,name:"Máquinas y contadores",color:"var(--c)",start:9,len:1,max:2,goal:"Evitar impresiones fantasma",
+   items:["Registro de equipos por sucursal","Lecturas de contador al abrir y cerrar el día","Comparación del contador contra lo vendido","Mermas por equipo y por usuario, con motivo","Consumibles: rendimiento esperado contra real, reposición y ranking"]},
+  {id:5,name:"Comisiones y convenios",color:"var(--m)",start:11,len:1,max:1,goal:"Precios y pagos especiales",
+   items:["Porcentaje de comisión por usuario y cálculo por periodo","Convenios con clientes: lista de precios, descuento, días y límite de crédito","Precios por volumen (por ejemplo 1–99, 100–499, 500+ volantes)"]},
+  {id:6,name:"Facturación CFDI 4.0",color:"var(--y)",start:12,len:1,max:2,goal:"Facturas sin errores",
+   items:["Datos fiscales del cliente y claves SAT por producto","Facturar una o varias ventas y factura global","Complementos de pago y cancelación con motivo SAT","Envío de XML y PDF; pruebas en sandbox del PAC primero"]},
+  {id:7,name:"WhatsApp, reportes y pulido",color:"var(--ink-2)",start:14,len:1,max:2,goal:"Automatizar y medir",
+   items:["WhatsApp Cloud API con plantillas aprobadas y envío automático","Panel: ventas por día, sucursal y vendedor, productos más vendidos","Exportar a Excel todos los catálogos","Instalación como app y cobro sin internet con sincronización posterior","Respaldos automáticos con restauración probada"]},
+];
+const MODS = [
+  ["Roles y sucursales",0,["Usuarios y roles ilimitados","Permisos por módulo","Sucursales en tiempo real"]],
+  ["Ventas",1,["Cobro en parcialidades","Efectivo, tarjeta, cheque y depósito","Ventas canceladas"]],
+  ["Productos",1,["Precio, imagen y categoría","Precio para revendedor","Existencias"]],
+  ["Clientes",1,["Catálogo e historial","Búsqueda rápida"]],
+  ["Cuentas por cobrar",1,["Saldos por cliente","Registro de abonos"]],
+  ["Caja",1,["Ingresos y egresos","Cortes diarios y semanales","Gastos por categoría","Histórico de caja"]],
+  ["Cotizaciones",2,["Envío desde el sistema","Seguimientos programados","Convertir en venta"]],
+  ["Producción",2,["Fecha compromiso","Responsable por etapa","Pedidos retrasados","Proceso deficiente"]],
+  ["Insumos",3,["Catálogo de insumos","Productos con varios insumos","Costo por producto"]],
+  ["Almacén",3,["Existencias y costos","Traspasos entre sucursales","Cálculo de utilidad"]],
+  ["Cuentas por pagar",3,["Proveedores","Deudas y fechas de pago","Registro de pagos"]],
+  ["Máquinas y contadores",4,["Impresiones por equipo","Errores y mermas","Impresiones fantasma"]],
+  ["Consumibles",4,["Rendimiento","Fecha de reposición","Equipo que más consume"]],
+  ["Comisiones",5,["% por usuario","Cálculo automático"]],
+  ["Convenios",5,["Precios especiales por cliente","Crédito y límites"]],
+  ["Facturación 4.0",6,["Facturas de ventas","Complementos de pago","Cancelación"]],
+  ["WhatsApp",7,["Notas, cotizaciones y facturas","Aviso de pedido listo","Enlaces desde la fase 1"]],
+  ["Reportes",7,["Ventas por sucursal y vendedor","Exportar a Excel"]],
+];
+const $ = s => document.querySelector(s);
+const label = p => `F${p.id}`;
+let current = 1, filter = null;
+
+const store = {
+  get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+};
+
+// Filtros
+const filters = $("#filters");
+const mkBtn = (txt, val, color) => {
+  const b = document.createElement("button");
+  b.type="button"; b.setAttribute("aria-pressed", String(filter===val));
+  b.innerHTML = (color?`<span class="dot" style="--ph:${color}"></span>`:"") + txt;
+  b.onclick = () => { filter = filter===val ? null : val; if(val!==null) current = val; renderAll(); };
+  return b;
+};
+function renderFilters(){
+  filters.innerHTML="";
+  const all = mkBtn("Todas", null); all.setAttribute("aria-pressed", String(filter===null)); filters.append(all);
+  PH.forEach(p => filters.append(mkBtn(`${label(p)} · ${p.name}`, p.id, p.color)));
+}
+function renderMods(){
+  $("#mods").innerHTML = MODS.map(([n,ph,li]) => {
+    const p = PH[ph];
+    return `<article class="mod ${filter!==null && filter!==ph ? "dim":""}">
+      <header><h3>${n}</h3><span class="tag"><span class="dot" style="--ph:${p.color}"></span>${label(p)}</span></header>
+      <ul>${li.map(x=>`<li>${x}</li>`).join("")}</ul></article>`;
+  }).join("");
+}
+function renderGantt(){
+  const g = $("#gantt");
+  let h = `<div class="corner eyebrow">Semana</div>`;
+  for(let w=1; w<=16; w++) h += `<div class="wk">${w}</div>`;
+  PH.forEach(p => {
+    h += `<button type="button" class="row-l ${current===p.id?"on":""}" data-ph="${p.id}"><span class="dot" style="--ph:${p.color}"></span><span><code>${label(p)}</code> ${p.name}</span></button>`;
+    for(let w=1; w<=16; w++){
+      const inBar = w>=p.start && w<p.start+p.len;
+      const soft = !inBar && w>=p.start+p.len && w<p.start+p.max;
+      h += `<div class="cell">${inBar||soft?`<span class="bar ${soft?"soft":""}" style="--ph:${p.color}"></span>`:""}</div>`;
+    }
+  });
+  g.innerHTML = h;
+  g.querySelectorAll(".row-l").forEach(b => b.onclick = () => { current = +b.dataset.ph; filter = current; renderAll(); });
+}
+function renderDetail(){
+  const p = PH[current];
+  const weeks = p.len===p.max ? `${p.len} ${p.len>1?"semanas":"semana"}` : `${p.len}–${p.max} semanas`;
+  const mods = MODS.filter(m=>m[1]===p.id).map(m=>`<span class="tag">${m[0]}</span>`).join("");
+  const d = $("#detail");
+  d.style.setProperty("--ph", p.color);
+  d.innerHTML = `<span class="eyebrow">${label(p)} · ${weeks} · desde la semana ${p.start}</span>
+    <h3 style="font-size:1.4rem">${p.name}</h3><p class="muted">${p.goal}</p>
+    <ul>${p.items.map(x=>`<li>${x}</li>`).join("")}</ul>
+    ${mods?`<div class="meta">${mods}</div>`:""}`;
+}
+function renderAll(){ renderFilters(); renderMods(); renderGantt(); renderDetail(); }
+renderAll();
+
+// Checklist (se recuerda en este navegador)
+const boxes = [...document.querySelectorAll("#check input")];
+const upd = () => { $("#prog").textContent = `${boxes.filter(b=>b.checked).length} de ${boxes.length} listos`; };
+boxes.forEach(b => { b.checked = store.get("chk-"+b.id)==="1"; b.onchange = () => { store.set("chk-"+b.id, b.checked?"1":"0"); upd(); }; });
+upd();
+</script>
