@@ -1,5 +1,5 @@
 import { and, desc, eq, gte, ilike, inArray, lt, or, sql } from "drizzle-orm";
-import { Plus } from "lucide-react";
+import { Plus, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
@@ -68,6 +68,11 @@ export default async function PaginaVentas({ searchParams }: PageProps<"/ventas"
   return (
     <>
       <Encabezado titulo="Ventas" descripcion={desde === hasta ? (desde === hoy ? "Ventas de hoy." : `Ventas del ${desde}.`) : `Del ${desde} al ${hasta}.`}>
+        {sesion.puede("productos.costos") && (
+          <Button variant="outline" nativeButton={false} render={<Link href="/ventas/utilidad" />}>
+            <TrendingUp /> Utilidad
+          </Button>
+        )}
         {sesion.puede("ventas.crear") && (
           <Button nativeButton={false} render={<Link href="/ventas/nueva" />}>
             <Plus /> Nueva venta

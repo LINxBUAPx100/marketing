@@ -114,7 +114,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - Aviso "tu pedido está listo" por WhatsApp. Notificaciones internas en tiempo real.
 - Reporte de cuellos de botella (tiempo promedio por etapa).
 
-### Fase 3 — Insumos, almacén y costos (2 semanas)
+### Fase 3 — Insumos, almacén y costos (2 semanas) ✅ terminada
 - **Insumos** con unidad y costo; **recetas** (producto = N insumos); descuento automático al vender.
 - **Almacén** por sucursal: entradas, ajustes, **traspasos entre sucursales**, alertas de mínimo.
 - Costo por producto y **utilidad** por venta/periodo.

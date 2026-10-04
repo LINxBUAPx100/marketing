@@ -9,14 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { db, t } from "@/db";
 import { urlArchivo } from "@/lib/archivos";
+import { ETIQUETA_MOTIVO } from "@/lib/almacen/reglas";
 import { requerirPermiso } from "@/lib/auth";
 import { centavosATexto, formatoCantidad, formatoFechaHora } from "@/lib/numeros";
 import { FormularioProducto } from "../formulario";
 import { DialogoAjuste } from "./dialogo-ajuste";
+import { EditorReceta } from "./receta";
 
 export const metadata: Metadata = { title: "Producto" };
 
-const MOTIVOS = { inicial: "Existencia inicial", ajuste: "Ajuste por conteo", venta: "Venta", cancelacion: "Venta cancelada" } as const;
 
 export default async function PaginaProducto({ params }: PageProps<"/productos/[id]">) {
   const { id } = await params;
@@ -30,7 +31,7 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
     .where(and(eq(t.producto.id, id), eq(t.producto.negocioId, negocioId)));
   if (!producto) notFound();
 
-  const [categorias, sucursales, existencias, movimientos] = await Promise.all([
+  const [categorias, sucursales, existencias, movimientos, insumos, receta] = await Promise.all([
     db
       .select({ id: t.categoria.id, nombre: t.categoria.nombre })
       .from(t.categoria)
@@ -61,6 +62,12 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
       .where(eq(t.movimientoInventario.productoId, id))
       .orderBy(desc(t.movimientoInventario.creadoEn))
       .limit(30),
+    db
+      .select({ id: t.insumo.id, nombre: t.insumo.nombre, unidad: t.insumo.unidad, costo: t.insumo.costo })
+      .from(t.insumo)
+      .where(and(eq(t.insumo.negocioId, negocioId), eq(t.insumo.activo, true)))
+      .orderBy(asc(t.insumo.nombre)),
+    db.select({ insumoId: t.receta.insumoId, cantidad: t.receta.cantidad }).from(t.receta).where(eq(t.receta.productoId, id)),
   ]);
 
   const existenciaEn = (sucursalId: string) => existencias.find((e) => e.sucursalId === sucursalId)?.cantidad ?? 0;
@@ -96,6 +103,20 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
           imagenUrl: urlArchivo(producto.imagen),
         }}
       />
+
+      {verCostos && (
+        <div className="mt-6 max-w-2xl">
+          <EditorReceta
+            productoId={producto.id}
+            unidadProducto={producto.unidad}
+            precio={producto.precio}
+            iva={{ ivaBp: sesion.negocio.ivaBp, preciosIncluyenIva: sesion.negocio.preciosIncluyenIva }}
+            insumos={insumos}
+            inicial={receta}
+            puedeEditar={sesion.puede("productos.editar")}
+          />
+        </div>
+      )}
 
       {producto.tipo === "producto" && (
         <div className="mt-6 grid gap-6 lg:grid-cols-[18rem_1fr]">
@@ -146,7 +167,7 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
                   <TableRow key={m.id}>
                     <TableCell className="text-muted-foreground whitespace-nowrap">{formatoFechaHora(m.creadoEn)}</TableCell>
                     <TableCell>
-                      {MOTIVOS[m.motivo]}
+                      {ETIQUETA_MOTIVO[m.motivo]}
                       {m.folio && (
                         <Link href={`/ventas/${m.ventaId}`} className="text-primary ml-1 hover:underline">
                           {m.folio}

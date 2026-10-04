@@ -4,7 +4,8 @@ import { db, t } from "@/db";
 import type { Sesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import { calcularTotales, importePartida, validarPartida } from "@/lib/ventas/calculo";
-import { siguienteFolio, type PartidaEntrada } from "@/lib/ventas/servidor";
+import { siguienteFolio } from "@/lib/almacen/existencias";
+import type { PartidaEntrada } from "@/lib/ventas/servidor";
 
 type Resultado<T = object> = ({ ok: true } & T) | { ok: false; mensaje: string };
 

@@ -12,9 +12,14 @@ import {
   cliente,
   etapaProduccion,
   existencia,
+  existenciaInsumo,
+  insumo,
+  movimientoInsumo,
   movimientoInventario,
   negocio,
   producto,
+  proveedor,
+  receta,
   sucursal,
   usuario,
   usuarioSucursal,
@@ -28,6 +33,7 @@ if (!existente.length) await cargarBase();
 const hayProductos = await db.select({ id: producto.id }).from(producto).limit(1);
 if (!hayProductos.length) await cargarCatalogo();
 await prepararProduccion();
+await prepararAlmacen();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -137,4 +143,62 @@ async function prepararProduccion() {
     .update(producto)
     .set({ requiereProduccion: true })
     .where(inArray(producto.codigo, ["VOL-MC", "VOL-CT", "TAR-44", "TAR-LM", "LON-13", "VIN-AD", "DIS-LOGO", "DIS-AJ"]));
+}
+
+// Fase 3: insumos con existencias, recetas de los productos y proveedores (costos de ejemplo).
+async function prepararAlmacen() {
+  const [n] = await db.select().from(negocio).limit(1);
+  const hay = await db.select({ id: insumo.id }).from(insumo).where(eq(insumo.negocioId, n.id)).limit(1);
+  if (hay.length) return;
+  const sucursales = await db.select().from(sucursal).where(eq(sucursal.negocioId, n.id)).orderBy(sucursal.creadoEn);
+  const [admin] = await db.select().from(usuario).where(eq(usuario.correo, "admin@demo.test"));
+
+  const [papelera, tintas] = await db
+    .insert(proveedor)
+    .values([
+      { negocioId: n.id, nombre: "Papelera del Centro", contacto: "Rosa Méndez", telefono: "222 410 2030", diasCredito: 15, notas: "Surte couché, bond y cartulina. Entrega martes y viernes." },
+      { negocioId: n.id, nombre: "Distribuidora de Tintas MX", telefono: "222 555 7788", diasCredito: 0 },
+    ])
+    .returning();
+
+  // costo: centavos por unidad (72.5 = $0.725 por hoja). existencias: [Matriz, Centro].
+  const datos = [
+    { codigo: "COU-150", nombre: "Papel couché 150 g carta", unidad: "hoja", costo: 72.5, minimo: 500, existencias: [1800, 400], proveedorId: papelera.id },
+    { codigo: "BOND-75", nombre: "Papel bond 75 g carta", unidad: "hoja", costo: 18, minimo: 1000, existencias: [5000, 2000], proveedorId: papelera.id },
+    { codigo: "CART-12", nombre: "Cartulina sulfatada 12 pt tabloide", unidad: "hoja", costo: 450, minimo: 100, existencias: [260, 40], proveedorId: papelera.id },
+    { codigo: "TINTA", nombre: "Tinta / tóner color", unidad: "ml", costo: 150, minimo: 500, existencias: [2400, 900], proveedorId: tintas.id },
+    { codigo: "LONA-13", nombre: "Lona front 13 oz (rollo 1.60 m)", unidad: "m²", costo: 3200, minimo: 20, existencias: [85, 0], proveedorId: papelera.id },
+    { codigo: "VINIL", nombre: "Vinil adhesivo blanco", unidad: "m²", costo: 4800, minimo: 15, existencias: [9, 0], proveedorId: papelera.id },
+  ];
+  const insumos = await db
+    .insert(insumo)
+    .values(datos.map((d) => ({ codigo: d.codigo, nombre: d.nombre, unidad: d.unidad, costo: d.costo, proveedorId: d.proveedorId, existenciaMinima: d.minimo, negocioId: n.id })))
+    .returning();
+  const porCodigo = (c: string) => insumos.find((i) => i.codigo === c)!.id;
+  for (const d of datos) {
+    for (const [i, s] of sucursales.entries()) {
+      const cantidad = d.existencias[i] ?? 0;
+      if (!cantidad) continue;
+      await db.insert(existenciaInsumo).values({ insumoId: porCodigo(d.codigo), sucursalId: s.id, cantidad });
+      await db.insert(movimientoInsumo).values({ negocioId: n.id, sucursalId: s.id, insumoId: porCodigo(d.codigo), cantidad, motivo: "inicial", usuarioId: admin.id });
+    }
+  }
+
+  const productos = await db.select().from(producto).where(eq(producto.negocioId, n.id));
+  const prod = (codigo: string) => productos.find((p) => p.codigo === codigo)?.id;
+  // Por UNA unidad de venta de cada producto.
+  const recetas: [string, string, number][] = [
+    ["VOL-MC", "COU-150", 250], ["VOL-MC", "TINTA", 25],
+    ["VOL-CT", "COU-150", 100], ["VOL-CT", "TINTA", 12],
+    ["TAR-44", "CART-12", 24], ["TAR-44", "TINTA", 10],
+    ["TAR-LM", "CART-12", 24], ["TAR-LM", "TINTA", 10],
+    ["LON-13", "LONA-13", 1.05], ["LON-13", "TINTA", 8],
+    ["VIN-AD", "VINIL", 1.05], ["VIN-AD", "TINTA", 8],
+    ["COP-BN", "BOND-75", 1],
+    ["IMP-CO", "BOND-75", 1], ["IMP-CO", "TINTA", 0.6],
+  ];
+  const filas = recetas
+    .map(([p, i, cantidad]) => ({ productoId: prod(p), insumoId: porCodigo(i), cantidad }))
+    .filter((r): r is { productoId: string; insumoId: string; cantidad: number } => !!r.productoId);
+  await db.insert(receta).values(filas);
 }

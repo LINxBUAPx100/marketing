@@ -17,8 +17,8 @@ const FASES = [
   { n: 0, nombre: "Cimientos", detalle: "Acceso, roles, sucursales y bitácora", estado: "lista" },
   { n: 1, nombre: "Punto de venta", detalle: "Productos, clientes, ventas, anticipos y caja", estado: "lista" },
   { n: 2, nombre: "Producción y cotizaciones", detalle: "Órdenes, etapas y tablero en tiempo real", estado: "lista" },
-  { n: 3, nombre: "Insumos y almacén", detalle: "Recetas, existencias, traspasos y proveedores", estado: "siguiente" },
-  { n: 4, nombre: "Máquinas y contadores", detalle: "Lecturas, mermas y consumibles", estado: "pendiente" },
+  { n: 3, nombre: "Insumos y almacén", detalle: "Recetas, existencias, traspasos y proveedores", estado: "lista" },
+  { n: 4, nombre: "Máquinas y contadores", detalle: "Lecturas, mermas y consumibles", estado: "siguiente" },
   { n: 5, nombre: "Comisiones y convenios", detalle: "Comisiones, precios especiales y por volumen", estado: "pendiente" },
   { n: 6, nombre: "Facturación CFDI 4.0", detalle: "Facturas, complementos y cancelaciones", estado: "pendiente" },
   { n: 7, nombre: "WhatsApp y reportes", detalle: "Envíos automáticos, panel y exportación", estado: "pendiente" },
@@ -104,6 +104,24 @@ export default async function Inicio() {
       .limit(8),
   ]);
 
+  // Insumos en el mínimo o abajo en la sucursal actual, y compras a proveedores vencidas.
+  const [porAgotarse, comprasVencidas] = await Promise.all([
+    sesion.puede("insumos.ver") && sucursalId
+      ? db
+          .select({ id: t.insumo.id, nombre: t.insumo.nombre, unidad: t.insumo.unidad, cantidad: sql<number>`coalesce(${t.existenciaInsumo.cantidad}, 0)::float` })
+          .from(t.insumo)
+          .leftJoin(t.existenciaInsumo, and(eq(t.existenciaInsumo.insumoId, t.insumo.id), eq(t.existenciaInsumo.sucursalId, sucursalId)))
+          .where(and(eq(t.insumo.negocioId, negocioId), eq(t.insumo.activo, true), sql`coalesce(${t.existenciaInsumo.cantidad}, 0) <= ${t.insumo.existenciaMinima}`))
+          .limit(6)
+      : Promise.resolve([]),
+    sesion.puede("cxp.ver")
+      ? db
+          .select({ n: sql<number>`count(*)::int`, saldo: sql<number>`coalesce(sum(${t.compra.total} - ${t.compra.pagado}), 0)::int` })
+          .from(t.compra)
+          .where(and(eq(t.compra.negocioId, negocioId), eq(t.compra.estado, "activa"), sql`${t.compra.pagado} < ${t.compra.total}`, lt(t.compra.vencimiento, new Date())))
+      : Promise.resolve([{ n: 0, saldo: 0 }]),
+  ]);
+
   return (
     <>
       <Encabezado titulo={`Hola, ${primerNombre}`} descripcion={sesion.sucursal ? `Trabajando en ${sesion.sucursal.nombre}.` : "No tienes sucursal asignada."}>
@@ -113,6 +131,27 @@ export default async function Inicio() {
           </Button>
         )}
       </Encabezado>
+
+      {(porAgotarse.length > 0 || comprasVencidas[0].n > 0) && (
+        <div className="mb-6 grid gap-3 sm:grid-cols-2">
+          {porAgotarse.length > 0 && (
+            <Link href="/insumos?estado=bajos" className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm hover:bg-amber-500/15">
+              <p className="font-medium text-amber-900">Insumos por agotarse</p>
+              <p className="text-amber-900/80">
+                {porAgotarse.map((i) => `${i.nombre} (${i.cantidad} ${i.unidad})`).join(", ")}
+              </p>
+            </Link>
+          )}
+          {comprasVencidas[0].n > 0 && (
+            <Link href="/cuentas-por-pagar" className="border-destructive/40 bg-destructive/5 hover:bg-destructive/10 rounded-xl border px-4 py-3 text-sm">
+              <p className="text-destructive font-medium">Pagos a proveedores vencidos</p>
+              <p className="text-destructive/80">
+                {comprasVencidas[0].n} {comprasVencidas[0].n === 1 ? "compra" : "compras"} · {formatoMoneda(comprasVencidas[0].saldo)}
+              </p>
+            </Link>
+          )}
+        </div>
+      )}
 
       {(misOrdenes.length > 0 || misSeguimientos.length > 0) && (
         <Card className="mb-6">

@@ -59,9 +59,9 @@ export const NAVEGACION: GrupoNav[] = [
     titulo: "Inventario",
     items: [
       { href: "/productos", etiqueta: "Productos", icono: Package, permiso: "productos.ver" },
-      { href: "/insumos", etiqueta: "Insumos", icono: Layers, permiso: "insumos.ver", fase: 3 },
-      { href: "/almacen", etiqueta: "Almacén", icono: Boxes, permiso: "almacen.ver", fase: 3 },
-      { href: "/cuentas-por-pagar", etiqueta: "Cuentas por pagar", icono: Receipt, permiso: "cxp.ver", fase: 3 },
+      { href: "/insumos", etiqueta: "Insumos", icono: Layers, permiso: "insumos.ver" },
+      { href: "/almacen", etiqueta: "Almacén", icono: Boxes, permiso: "almacen.ver" },
+      { href: "/cuentas-por-pagar", etiqueta: "Cuentas por pagar", icono: Receipt, permiso: "cxp.ver" },
     ],
   },
   {

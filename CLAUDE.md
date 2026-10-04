@@ -36,5 +36,8 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Catálogo y partidas compartidos por punto de venta y cotizaciones: `src/components/ventas/partidas.tsx` (`usePartidas`, `Catalogo`, `ListaPartidas`).
 - Producción: reglas puras en `src/lib/produccion/reglas.ts` (urgencia, tiempo por etapa); servidor en `src/lib/produccion/servidor.ts`. Las órdenes nacen dentro de la transacción de la venta (`crearOrden`), cada cambio deja `ordenEvento` y avisa con `notificar`.
 - "Tiempo real" = `AutoRefresco` (router.refresh cada N s con la pestaña visible). Funciona igual en Vercel; Supabase Realtime es opcional después.
+- Almacén: movimientos de stock y folios en `src/lib/almacen/existencias.ts` (`moverExistencia`, `moverInsumo`, `siguienteFolio`); compras, pagos a proveedor y traspasos en `src/lib/almacen/servidor.ts`; reglas puras (costo por receta, consumo, utilidad sin IVA, estado de cuentas por pagar) en `src/lib/almacen/reglas.ts`.
+- Costos de insumos en centavos con decimales (`numeric`, 72.5 = $0.725). Cada `venta_partida` guarda su `costo` al venderse; la utilidad se calcula sin IVA. Las ventas anteriores a la fase 3 no tienen costo.
+- Al vender se descuentan los insumos de la receta (`motivo: "consumo"`); al cancelar se regresan.
 - Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

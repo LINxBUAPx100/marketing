@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ingresoSinIva, utilidad } from "@/lib/almacen/reglas";
 import { requerirPermiso } from "@/lib/auth";
 import { ETIQUETA_METODO } from "@/lib/caja/resumen";
 import { formatoCantidad, formatoFechaHora, formatoMoneda } from "@/lib/numeros";
@@ -24,6 +25,9 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
   if (!datos) notFound();
   const { venta, cliente, sucursal, partidas, pagos, saldo } = datos;
   const estado = estadoPago(venta);
+  // Utilidad: sobre la base sin IVA y solo si todas las partidas tienen costo.
+  const costoTotal = partidas.every((p) => p.costo != null) ? partidas.reduce((s, p) => s + (p.costo ?? 0), 0) : null;
+  const ganancia = utilidad(ingresoSinIva(venta.total, sesion.negocio), costoTotal);
 
   const mensaje = [
     `Hola ${cliente?.nombre.split(" ")[0] ?? ""}, gracias por tu compra en ${sesion.negocio.nombre}.`,
@@ -170,6 +174,30 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
               </div>
             </CardContent>
           </Card>
+          {sesion.puede("productos.costos") && venta.estado === "activa" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Utilidad</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-2 text-sm">
+                {costoTotal == null ? (
+                  <p className="text-muted-foreground">Alguna partida no tiene costo (sin receta ni costo capturado).</p>
+                ) : (
+                  <>
+                    <Linea etiqueta="Venta sin IVA" valor={formatoMoneda(ingresoSinIva(venta.total, sesion.negocio))} />
+                    <Linea etiqueta="Costo" valor={formatoMoneda(costoTotal)} />
+                    <div className="flex justify-between border-t pt-2 font-semibold">
+                      <span>Utilidad</span>
+                      <span className="tabular-nums">
+                        {formatoMoneda(ganancia.utilidad ?? 0)}
+                        {ganancia.margen != null && <span className="text-muted-foreground ml-1 font-normal">({Math.round(ganancia.margen * 100)} %)</span>}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
           <Card>
             <CardHeader>
               <CardTitle>Cliente y entrega</CardTitle>

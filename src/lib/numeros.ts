@@ -42,3 +42,10 @@ export const formatoCantidad = (n: number) => cantidadFormato.format(n);
 
 const soloFecha = new Intl.DateTimeFormat("es-MX", { dateStyle: "medium", timeZone: "America/Mexico_City" });
 export const formatoFecha = (d: Date | string | null | undefined) => (d ? soloFecha.format(new Date(d)) : "—");
+
+/** Costo unitario en centavos con decimales (72.5) → "0.725" para inputs. */
+export const costoUnitarioATexto = (centavos: number) => String(Math.round(centavos * 100) / 10_000);
+
+/** 72.5 → "$0.725", 12000 → "$120.00": hasta 4 decimales solo cuando hacen falta. */
+export const formatoCostoUnitario = (centavos: number) =>
+  new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(centavos / 100);

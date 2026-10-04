@@ -9,7 +9,7 @@ import { guardarImagen, validarImagen } from "@/lib/archivos";
 import { requerirSesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import { datosDe, dinero, dineroOpcional, erroresDe, vacioANull, type EstadoFormulario } from "@/lib/formulario";
-import { moverExistencia } from "@/lib/ventas/servidor";
+import { moverExistencia } from "@/lib/almacen/existencias";
 
 const sinPermiso = { mensaje: "No tienes permiso para hacer este cambio." };
 const textoOpcional = z.preprocess(vacioANull, z.string().trim().nullable().optional());

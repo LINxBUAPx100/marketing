@@ -1,15 +1,16 @@
 import "server-only";
 import { and, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { db, t } from "@/db";
-import type { Db } from "@/db/conexion";
 import type { Sesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
+import { moverExistencia, moverInsumo, siguienteFolio } from "@/lib/almacen/existencias";
+import { consumoDeInsumos, costoPartida } from "@/lib/almacen/reglas";
+import { devolverInsumosDeVenta, recetasDe } from "@/lib/almacen/servidor";
 import type { Metodo } from "@/lib/caja/resumen";
 import { cancelarOrdenDeVenta, crearOrden, etapasDe } from "@/lib/produccion/servidor";
 import { estadoCotizacion } from "@/lib/produccion/reglas";
 import { calcularTotales, importePartida, validarPagos, validarPartida } from "./calculo";
 
-type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 type Resultado<T = object> = ({ ok: true } & T) | { ok: false; mensaje: string };
 
 export type PartidaEntrada = {
@@ -34,39 +35,6 @@ export type VentaEntrada = {
   /** Si la venta viene de una cotización: respeta sus precios y la marca como aceptada. */
   cotizacionId: string | null;
 };
-
-/** Siguiente folio de la sucursal, p. ej. "MAT-0042". Atómico dentro de la transacción. */
-export async function siguienteFolio(tx: Tx, sucursalId: string, prefijo: string, tipo: string) {
-  const [f] = await tx
-    .insert(t.folio)
-    .values({ sucursalId, tipo, ultimo: 1 })
-    .onConflictDoUpdate({ target: [t.folio.sucursalId, t.folio.tipo], set: { ultimo: sql`${t.folio.ultimo} + 1` } })
-    .returning();
-  return `${prefijo}-${String(f.ultimo).padStart(4, "0")}`;
-}
-
-export async function moverExistencia(
-  tx: Tx,
-  datos: { negocioId: string; sucursalId: string; productoId: string; cantidad: number; motivo: "venta" | "cancelacion" | "ajuste" | "inicial"; ventaId?: string; usuarioId: string; nota?: string },
-) {
-  await tx
-    .insert(t.existencia)
-    .values({ productoId: datos.productoId, sucursalId: datos.sucursalId, cantidad: datos.cantidad })
-    .onConflictDoUpdate({
-      target: [t.existencia.productoId, t.existencia.sucursalId],
-      set: { cantidad: sql`${t.existencia.cantidad} + ${datos.cantidad}` },
-    });
-  await tx.insert(t.movimientoInventario).values({
-    negocioId: datos.negocioId,
-    sucursalId: datos.sucursalId,
-    productoId: datos.productoId,
-    cantidad: datos.cantidad,
-    motivo: datos.motivo,
-    ventaId: datos.ventaId,
-    usuarioId: datos.usuarioId,
-    nota: datos.nota,
-  });
-}
 
 export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise<Resultado<{ id: string; folio: string }>> {
   const sucursal = sesion.sucursal;
@@ -139,6 +107,14 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
     return { ok: false, mensaje: "Para dejar saldo pendiente, elige a qué cliente se le cobra." };
   }
 
+  // Costo de cada partida (receta o costo del producto) y consumo de insumos de la venta.
+  const recetas = await recetasDe(db, productos.map((p) => p.id));
+  const costos = partidas.map((p) => (p.producto ? costoPartida(p.cantidad, recetas.get(p.producto.id) ?? [], p.producto.costo) : null));
+  const consumo = consumoDeInsumos(
+    partidas.map((p) => ({ productoId: p.producto?.id ?? null, cantidad: p.cantidad })),
+    recetas,
+  );
+
   const etapas = entrada.enviarProduccion ? await etapasDe(negocioId) : [];
   const etapaInicial = etapas.find((e) => e.tipo === "proceso") ?? etapas[0];
 
@@ -163,8 +139,9 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
       .returning();
 
     await tx.insert(t.ventaPartida).values(
-      partidas.map((p) => ({
+      partidas.map((p, i) => ({
         ventaId: v.id,
+        costo: costos[i],
         productoId: p.producto?.id ?? null,
         descripcion: p.descripcion,
         unidad: p.unidad,
@@ -176,6 +153,10 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
         orden: p.orden,
       })),
     );
+
+    for (const [insumoId, cantidad] of consumo) {
+      await moverInsumo(tx, { negocioId, sucursalId: sucursal.id, insumoId, cantidad: -cantidad, motivo: "consumo", ventaId: v.id, usuarioId: sesion.usuario.id });
+    }
 
     if (etapaInicial) {
       await crearOrden(tx, {
@@ -262,6 +243,7 @@ export async function cancelarVenta(sesion: Sesion, ventaId: string, motivo: str
       .set({ estado: "cancelada", motivoCancelacion: motivo, canceladaPor: sesion.usuario.id, canceladaEn: new Date() })
       .where(eq(t.venta.id, ventaId));
     await cancelarOrdenDeVenta(tx, ventaId);
+    await devolverInsumosDeVenta(tx, { negocioId: sesion.negocio.id, ventaId, usuarioId: sesion.usuario.id });
 
     // Pagos del periodo abierto: se anulan y dejan de contar en la caja.
     await tx
