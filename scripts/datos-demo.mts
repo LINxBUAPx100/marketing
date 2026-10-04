@@ -44,6 +44,7 @@ await prepararProduccion();
 await prepararAlmacen();
 await prepararMaquinas();
 await prepararPrecios();
+await prepararFacturacion();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -313,5 +314,26 @@ async function prepararPrecios() {
     await db.insert(convenioPrecio).values(
       especiales.map(([codigo, precio]) => ({ convenioId: c.id, productoId: id(codigo)!, precio: $(precio) })).filter((p) => p.productoId),
     );
+  }
+}
+
+// Fase 6: datos fiscales de ejemplo del negocio y claves del SAT de los productos.
+async function prepararFacturacion() {
+  const [n] = await db.select().from(negocio).limit(1);
+  if (!n.rfc) {
+    await db
+      .update(negocio)
+      .set({ rfc: "IDE2601019Z8", razonSocial: "IMPRENTA DEMO", regimenFiscal: "601", codigoPostal: "72000", correo: "facturas@demo.test" })
+      .where(eq(negocio.id, n.id));
+  }
+  const claves: [string, string, string][] = [
+    ["COP-BN", "82121700", "H87"], ["IMP-CO", "82121500", "H87"], ["ENG", "82121900", "H87"],
+    ["LON-13", "82121500", "MTK"], ["VIN-AD", "82121500", "MTK"],
+    ["PAP-BOND", "14111507", "XPK"], ["FOL-CT", "44122011", "H87"], ["SOB-MN", "44121506", "H87"],
+    ["DIS-LOGO", "82141500", "E48"], ["DIS-AJ", "82141500", "E48"],
+    ["VOL-MC", "82121500", "MIL"], ["VOL-CT", "82121500", "H87"], ["TAR-44", "82121500", "MIL"], ["TAR-LM", "82121500", "MIL"],
+  ];
+  for (const [codigo, claveSat, claveUnidad] of claves) {
+    await db.update(producto).set({ claveSat, claveUnidad }).where(eq(producto.codigo, codigo));
   }
 }

@@ -43,6 +43,8 @@ export default async function PaginaNuevoProducto() {
           activo: true,
           requiereProduccion: false,
           tipoImpresion: "",
+          claveSat: "82121500",
+          claveUnidad: "H87",
           impresionesPorUnidad: "0",
           imagenUrl: null,
         }}

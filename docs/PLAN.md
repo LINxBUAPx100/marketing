@@ -132,7 +132,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - **Convenios** con clientes: lista de precios especial, descuento, días de crédito, límite de crédito.
 - Precios por volumen (ej. 1–99, 100–499, 500+ volantes).
 
-### Fase 6 — Facturación CFDI 4.0 (1–2 semanas)
+### Fase 6 — Facturación CFDI 4.0 (1–2 semanas) ✅ terminada (en simulación hasta tener PAC y CSD)
 - Datos fiscales del cliente (RFC, régimen, uso CFDI, CP) y claves SAT por producto.
 - Facturar una o varias ventas, factura global al público en general.
 - **Complementos de pago** (PPD), **cancelación** con motivo SAT, envío de XML+PDF.

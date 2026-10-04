@@ -28,6 +28,8 @@ export type ValoresProducto = {
   activo: boolean;
   requiereProduccion: boolean;
   tipoImpresion: string;
+  claveSat: string;
+  claveUnidad: string;
   impresionesPorUnidad: string;
   imagenUrl: string | null;
 };
@@ -104,6 +106,17 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
               {verCostos && (
                 <Campo etiqueta="Costo" nombre="costo" inputMode="decimal" defaultValue={valores.costo} errores={e.costo} ayuda="Solo lo ven quienes tienen permiso" />
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Facturación</CardTitle>
+              <CardDescription>Claves del catálogo del SAT que aparecen en la factura.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              <Campo etiqueta="Clave de producto o servicio" nombre="claveSat" defaultValue={valores.claveSat} inputMode="numeric" maxLength={8} ayuda="82121500 Impresión · 82121700 Fotocopiado · 14111500 Papel" errores={e.claveSat} />
+              <Campo etiqueta="Clave de unidad" nombre="claveUnidad" defaultValue={valores.claveUnidad} maxLength={3} className="uppercase" ayuda="H87 Pieza · E48 Servicio · MTK m² · XPK Paquete · MIL Millar" errores={e.claveUnidad} />
             </CardContent>
           </Card>
 

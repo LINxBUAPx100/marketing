@@ -264,6 +264,12 @@ export async function cancelarVenta(sesion: Sesion, ventaId: string, motivo: str
     .from(t.venta)
     .where(and(eq(t.venta.id, ventaId), eq(t.venta.negocioId, sesion.negocio.id)));
   if (!venta || venta.estado !== "activa") return { ok: false, mensaje: "La venta no existe o ya está cancelada." };
+  const [facturada] = await db
+    .select({ serie: t.factura.serie, folio: t.factura.folio })
+    .from(t.facturaVenta)
+    .innerJoin(t.factura, eq(t.factura.id, t.facturaVenta.facturaId))
+    .where(and(eq(t.facturaVenta.ventaId, ventaId), eq(t.factura.estado, "vigente"), eq(t.factura.tipo, "I")));
+  if (facturada) return { ok: false, mensaje: `Primero cancela la factura ${facturada.serie}-${facturada.folio} de esta venta.` };
 
   await db.transaction(async (tx) => {
     await tx

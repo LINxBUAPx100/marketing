@@ -66,6 +66,8 @@ const ProductoSchema = z.object({
   existenciaInicial: numero("Escribe un número.").optional(),
   activo: casilla,
   requiereProduccion: casilla,
+  claveSat: z.string().trim().regex(/^\d{8}$/, { error: "La clave del SAT tiene 8 dígitos." }),
+  claveUnidad: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{2,3}$/, { error: "La clave de unidad tiene 2 o 3 caracteres (ej. H87)." }),
   tipoImpresion: z.preprocess(vacioANull, z.enum(["byn", "color", "gran_formato"]).nullable().optional().transform((v) => v ?? null)),
   impresionesPorUnidad: numero("Escribe un número.").pipe(z.number().min(0, { error: "No puede ser negativo." })),
   quitarImagen: casilla,

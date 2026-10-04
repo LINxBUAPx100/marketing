@@ -42,5 +42,8 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Máquinas: reglas puras en `src/lib/maquinas/reglas.ts` (impresiones de un periodo desde lecturas, fantasma, desgaste de consumibles). Fantasma por tipo de impresión (byn, color, gran formato) = contador − (ventas × `impresionesPorUnidad` del producto) − mermas.
 - Precios: una sola regla en `src/lib/ventas/precios.ts` (`precioPara`): precio especial del convenio > escalón de volumen > lista, y luego descuento del convenio. La usan el navegador (`usePartidas`) y el servidor (`crearVenta`, `guardarCotizacion`) con datos de `src/lib/ventas/reglas-cliente.ts`.
 - Comisiones: una fila por partida al vender (base sin IVA × % de la categoría o del vendedor); se pagan solo si la venta está cobrada (`src/lib/comisiones/servidor.ts`).
+- Facturación: `src/lib/facturacion/pac.ts` elige el PAC. Con `FACTURAPI_KEY` usa Facturapi (sk_test_ = pruebas, sk_live_ = real); sin llave usa el simulador (facturas `simulada = true`, SIN validez fiscal). Reglas puras (PUE/PPD, forma de pago, validación del receptor, complementos) en `src/lib/facturacion/reglas.ts`.
+- Una venta con factura vigente no se cancela; una factura con complementos vigentes tampoco.
+- En desarrollo, editar archivos con `npm run dev` corriendo puede recargar el panel del navegador hacia "/" (recarga en caliente); no es un error de la app.
 - Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

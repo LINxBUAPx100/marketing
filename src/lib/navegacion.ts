@@ -75,7 +75,7 @@ export const NAVEGACION: GrupoNav[] = [
     titulo: "Administración",
     items: [
       { href: "/comisiones", etiqueta: "Comisiones", icono: Percent, permiso: "comisiones.ver" },
-      { href: "/facturacion", etiqueta: "Facturación", icono: FileSpreadsheet, permiso: "facturacion.ver", fase: 6 },
+      { href: "/facturacion", etiqueta: "Facturación", icono: FileSpreadsheet, permiso: "facturacion.ver" },
       { href: "/reportes", etiqueta: "Reportes", icono: BarChart3, permiso: "reportes.ver", fase: 7 },
     ],
   },

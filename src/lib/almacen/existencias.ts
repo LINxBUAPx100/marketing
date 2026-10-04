@@ -7,14 +7,19 @@ import type { Db } from "@/db/conexion";
 
 export type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-/** Siguiente folio de la sucursal, p. ej. "MAT-0042". Atómico dentro de la transacción. */
-export async function siguienteFolio(tx: Tx, sucursalId: string, prefijo: string, tipo: string) {
+/** Siguiente número consecutivo de la sucursal para un tipo de documento. Atómico. */
+export async function siguienteNumero(tx: Tx, sucursalId: string, tipo: string) {
   const [f] = await tx
     .insert(t.folio)
     .values({ sucursalId, tipo, ultimo: 1 })
     .onConflictDoUpdate({ target: [t.folio.sucursalId, t.folio.tipo], set: { ultimo: sql`${t.folio.ultimo} + 1` } })
     .returning();
-  return `${prefijo}-${String(f.ultimo).padStart(4, "0")}`;
+  return f.ultimo;
+}
+
+/** Siguiente folio de la sucursal, p. ej. "MAT-0042". Atómico dentro de la transacción. */
+export async function siguienteFolio(tx: Tx, sucursalId: string, prefijo: string, tipo: string) {
+  return `${prefijo}-${String(await siguienteNumero(tx, sucursalId, tipo)).padStart(4, "0")}`;
 }
 
 export async function moverExistencia(

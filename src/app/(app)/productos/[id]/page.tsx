@@ -106,6 +106,8 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
           activo: producto.activo,
           requiereProduccion: producto.requiereProduccion,
           tipoImpresion: producto.tipoImpresion ?? "",
+          claveSat: producto.claveSat,
+          claveUnidad: producto.claveUnidad,
           impresionesPorUnidad: String(producto.impresionesPorUnidad),
           imagenUrl: urlArchivo(producto.imagen),
         }}

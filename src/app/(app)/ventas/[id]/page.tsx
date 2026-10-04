@@ -1,4 +1,4 @@
-import { ArrowLeft, Factory, MessageCircle, Printer, ReceiptText } from "lucide-react";
+import { ArrowLeft, Factory, FileCheck2, MessageCircle, Printer, ReceiptText } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ingresoSinIva, utilidad } from "@/lib/almacen/reglas";
+import { DialogoFacturar } from "@/components/facturacion/dialogo-facturar";
 import { requerirPermiso } from "@/lib/auth";
+import { datosParaFacturar, facturaDeVenta } from "@/lib/facturacion/consultas";
 import { ETIQUETA_METODO } from "@/lib/caja/resumen";
 import { formatoCantidad, formatoFechaHora, formatoMoneda } from "@/lib/numeros";
 import { obtenerVenta } from "@/lib/ventas/consultas";
@@ -24,6 +26,9 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
   const datos = await obtenerVenta(sesion, id);
   if (!datos) notFound();
   const { venta, cliente, sucursal, partidas, pagos, saldo } = datos;
+  const factura = await facturaDeVenta(venta.id);
+  const paraFacturar =
+    !factura && venta.estado === "activa" && cliente && sesion.puede("facturacion.timbrar") ? await datosParaFacturar(sesion, [venta.id]) : null;
   const estado = estadoPago(venta);
   // Utilidad: sobre la base sin IVA y solo si todas las partidas tienen costo.
   const costoTotal = partidas.every((p) => p.costo != null) ? partidas.reduce((s, p) => s + (p.costo ?? 0), 0) : null;
@@ -60,6 +65,12 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
               <Factory /> {datos.orden.estado === "activa" ? datos.orden.etapa : datos.orden.estado === "entregada" ? "Entregada" : "Orden cancelada"}
             </Button>
           )}
+          {factura && sesion.puede("facturacion.ver") && (
+            <Button variant="outline" nativeButton={false} render={<Link href={`/facturacion/${factura.id}`} />}>
+              <FileCheck2 /> {factura.global ? "En factura global" : `Factura ${factura.serie}-${factura.folio}`}
+            </Button>
+          )}
+          {paraFacturar && <DialogoFacturar datos={paraFacturar} />}
           <Button variant="outline" nativeButton={false} render={<Link href={`/imprimir/venta/${venta.id}`} target="_blank" />}>
             <Printer /> Nota
           </Button>

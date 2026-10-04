@@ -43,6 +43,13 @@
       "when": 1791086581091,
       "tag": "0005_fase5_comisiones_convenios",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791087377263,
+      "tag": "0006_fase6_facturacion",
+      "breakpoints": true
     }
   ]
 }

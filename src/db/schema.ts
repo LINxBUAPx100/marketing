@@ -159,6 +159,9 @@ export const producto = pgTable(
     // Si al venderlo se genera una orden para el taller.
     requiereProduccion: boolean().notNull().default(false),
     // Cuántas impresiones de qué tipo gasta UNA unidad (para comparar contra los contadores).
+    // Claves del SAT para facturar (c_ClaveProdServ y c_ClaveUnidad).
+    claveSat: text().notNull().default("82121500"),
+    claveUnidad: text().notNull().default("H87"),
     tipoImpresion: text({ enum: ["byn", "color", "gran_formato"] }),
     impresionesPorUnidad: cantidad().notNull().default(0),
     activo: boolean().notNull().default(true),
@@ -907,4 +910,84 @@ export const comision = pgTable(
     creadoEn: creadoEn(),
   },
   (t) => [index().on(t.usuarioId, t.estado), index().on(t.ventaId)],
+);
+
+// ─── Fase 6: facturación CFDI 4.0 ───────────────────────────────────────────
+
+export const factura = pgTable(
+  "factura",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    sucursalId: uuid()
+      .notNull()
+      .references(() => sucursal.id),
+    // "I" ingreso (factura normal o global), "P" complemento de pago.
+    tipo: text({ enum: ["I", "P"] }).notNull(),
+    clienteId: uuid().references(() => cliente.id),
+    serie: text().notNull(),
+    folio: integer().notNull(),
+    uuid: text(),
+    pacId: text(),
+    // Copia del receptor tal como se timbró.
+    receptor: jsonb().notNull(),
+    // Copia de los conceptos (o pagos, en un complemento) tal como se timbraron.
+    conceptos: jsonb().notNull(),
+    subtotal: integer().notNull(),
+    iva: integer().notNull(),
+    total: integer().notNull(),
+    metodoPago: text({ enum: ["PUE", "PPD"] }),
+    formaPago: text(),
+    usoCfdi: text().notNull(),
+    global: jsonb(),
+    estado: text({ enum: ["vigente", "cancelada"] }).notNull().default("vigente"),
+    motivoCancelacion: text(),
+    sustituidaPor: text(),
+    canceladaEn: timestamp({ withTimezone: true }),
+    // Timbrada por el simulador interno: no tiene validez fiscal.
+    simulada: boolean().notNull().default(false),
+    xml: text(),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.negocioId, t.creadoEn), uniqueIndex().on(t.sucursalId, t.serie, t.folio)],
+);
+
+export const facturaVenta = pgTable(
+  "factura_venta",
+  {
+    facturaId: uuid()
+      .notNull()
+      .references(() => factura.id),
+    ventaId: uuid()
+      .notNull()
+      .references(() => venta.id),
+  },
+  (t) => [primaryKey({ columns: [t.facturaId, t.ventaId] })],
+);
+
+// Cada pago que se ampara con un complemento: liga el comprobante "P" con la factura PPD.
+export const complementoPago = pgTable(
+  "complemento_pago",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    comprobanteId: uuid()
+      .notNull()
+      .references(() => factura.id),
+    facturaId: uuid()
+      .notNull()
+      .references(() => factura.id),
+    pagoId: uuid()
+      .notNull()
+      .references(() => pago.id),
+    parcialidad: integer().notNull(),
+    saldoAnterior: integer().notNull(),
+    monto: integer().notNull(),
+    saldoInsoluto: integer().notNull(),
+  },
+  (t) => [uniqueIndex().on(t.pagoId, t.facturaId)],
 );
