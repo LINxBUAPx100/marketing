@@ -26,6 +26,7 @@ export type ValoresProducto = {
   costo: string;
   existenciaMinima: string;
   activo: boolean;
+  requiereProduccion: boolean;
   imagenUrl: string | null;
 };
 
@@ -193,6 +194,13 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="activo" defaultChecked={valores.activo} className="accent-primary size-4" />
             Disponible para vender
+          </label>
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" name="requiereProduccion" defaultChecked={valores.requiereProduccion} className="accent-primary mt-0.5 size-4" />
+            <span>
+              Genera orden de producción
+              <span className="text-muted-foreground block text-xs">Al venderlo, la venta se manda al taller.</span>
+            </span>
           </label>
         </div>
       </fieldset>

@@ -33,4 +33,8 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Ventas: `src/lib/ventas/servidor.ts` (crear, abonar, cancelar). Folios por sucursal con `siguienteFolio`. Inventario siempre con `moverExistencia` (deja movimiento).
 - Caja: un periodo es todo lo que tiene `corteId` nulo en la sucursal. Cancelar una venta cuyo pago ya entró a un corte genera un egreso "Devolución".
 - Fechas en hora de México: `src/lib/fechas.ts`.
+- Catálogo y partidas compartidos por punto de venta y cotizaciones: `src/components/ventas/partidas.tsx` (`usePartidas`, `Catalogo`, `ListaPartidas`).
+- Producción: reglas puras en `src/lib/produccion/reglas.ts` (urgencia, tiempo por etapa); servidor en `src/lib/produccion/servidor.ts`. Las órdenes nacen dentro de la transacción de la venta (`crearOrden`), cada cambio deja `ordenEvento` y avisa con `notificar`.
+- "Tiempo real" = `AutoRefresco` (router.refresh cada N s con la pestaña visible). Funciona igual en Vercel; Supabase Realtime es opcional después.
+- Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

@@ -1,4 +1,4 @@
-import { ArrowLeft, MessageCircle, Printer, ReceiptText } from "lucide-react";
+import { ArrowLeft, Factory, MessageCircle, Printer, ReceiptText } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -51,6 +51,11 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {datos.orden && sesion.puede("produccion.ver") && (
+            <Button variant="outline" nativeButton={false} render={<Link href={`/produccion/${datos.orden.id}`} />}>
+              <Factory /> {datos.orden.estado === "activa" ? datos.orden.etapa : datos.orden.estado === "entregada" ? "Entregada" : "Orden cancelada"}
+            </Button>
+          )}
           <Button variant="outline" nativeButton={false} render={<Link href={`/imprimir/venta/${venta.id}`} target="_blank" />}>
             <Printer /> Nota
           </Button>

@@ -45,6 +45,8 @@ const VentaSchema = z.object({
     )
     .max(100),
   pagos: z.array(PagoSchema).max(10),
+  enviarProduccion: z.boolean(),
+  cotizacionId: z.uuid().nullable(),
 });
 
 export type VentaNueva = z.input<typeof VentaSchema>;
@@ -60,6 +62,8 @@ export async function registrarVenta(entrada: VentaNueva) {
   if (resultado.ok) {
     revalidatePath("/ventas");
     revalidatePath("/caja");
+    revalidatePath("/produccion");
+    revalidatePath("/cotizaciones");
   }
   return resultado;
 }

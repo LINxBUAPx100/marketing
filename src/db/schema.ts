@@ -154,6 +154,8 @@ export const producto = pgTable(
     costo: integer(),
     existenciaMinima: cantidad().notNull().default(0),
     imagen: text(),
+    // Si al venderlo se genera una orden para el taller.
+    requiereProduccion: boolean().notNull().default(false),
     activo: boolean().notNull().default(true),
     creadoEn: creadoEn(),
   },
@@ -356,4 +358,160 @@ export const movimientoCaja = pgTable(
     creadoEn: creadoEn(),
   },
   (t) => [index().on(t.sucursalId, t.corteId)],
+);
+
+// ─── Fase 2: producción ─────────────────────────────────────────────────────
+
+// Etapas configurables por negocio. "listo" avisa al cliente; "entregado" cierra la orden.
+export const etapaProduccion = pgTable("etapa_produccion", {
+  id: uuid().primaryKey().defaultRandom(),
+  negocioId: uuid()
+    .notNull()
+    .references(() => negocio.id),
+  nombre: text().notNull(),
+  orden: integer().notNull(),
+  tipo: text({ enum: ["proceso", "listo", "entregado"] }).notNull().default("proceso"),
+  // Quién la toma por omisión cuando una orden llega a esta etapa.
+  responsableId: uuid().references(() => usuario.id),
+  activa: boolean().notNull().default(true),
+  creadoEn: creadoEn(),
+});
+
+export const ordenProduccion = pgTable(
+  "orden_produccion",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    sucursalId: uuid()
+      .notNull()
+      .references(() => sucursal.id),
+    ventaId: uuid()
+      .notNull()
+      .references(() => venta.id),
+    etapaId: uuid()
+      .notNull()
+      .references(() => etapaProduccion.id),
+    responsableId: uuid().references(() => usuario.id),
+    fechaCompromiso: timestamp({ withTimezone: true }),
+    estado: text({ enum: ["activa", "entregada", "cancelada"] }).notNull().default("activa"),
+    notas: text(),
+    actualizadoEn: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    actualizadoPor: uuid().references(() => usuario.id),
+    entregadaEn: timestamp({ withTimezone: true }),
+    creadoEn: creadoEn(),
+  },
+  (t) => [uniqueIndex().on(t.ventaId), index().on(t.negocioId, t.estado)],
+);
+
+// Historial: cada cambio de etapa o de responsable. Sirve para medir cuánto tarda cada etapa.
+export const ordenEvento = pgTable(
+  "orden_evento",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    ordenId: uuid()
+      .notNull()
+      .references(() => ordenProduccion.id),
+    etapaId: uuid()
+      .notNull()
+      .references(() => etapaProduccion.id),
+    responsableId: uuid().references(() => usuario.id),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    nota: text(),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.ordenId, t.creadoEn)],
+);
+
+export const notificacion = pgTable(
+  "notificacion",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    titulo: text().notNull(),
+    mensaje: text(),
+    enlace: text(),
+    leida: boolean().notNull().default(false),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.usuarioId, t.leida)],
+);
+
+// ─── Fase 2: cotizaciones ───────────────────────────────────────────────────
+
+export const cotizacion = pgTable(
+  "cotizacion",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    sucursalId: uuid()
+      .notNull()
+      .references(() => sucursal.id),
+    folio: text().notNull(),
+    clienteId: uuid()
+      .notNull()
+      .references(() => cliente.id),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    subtotal: integer().notNull(),
+    descuento: integer().notNull().default(0),
+    iva: integer().notNull(),
+    total: integer().notNull(),
+    vigenciaHasta: timestamp({ withTimezone: true }).notNull(),
+    // "vencida" no se guarda: se calcula con la vigencia.
+    estado: text({ enum: ["abierta", "aceptada", "rechazada", "cancelada"] }).notNull().default("abierta"),
+    motivoRechazo: text(),
+    ventaId: uuid().references(() => venta.id),
+    notas: text(),
+    condiciones: text(),
+    actualizadoEn: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    creadoEn: creadoEn(),
+  },
+  (t) => [uniqueIndex().on(t.sucursalId, t.folio), index().on(t.negocioId, t.creadoEn)],
+);
+
+export const cotizacionPartida = pgTable("cotizacion_partida", {
+  id: uuid().primaryKey().defaultRandom(),
+  cotizacionId: uuid()
+    .notNull()
+    .references(() => cotizacion.id),
+  productoId: uuid().references(() => producto.id),
+  descripcion: text().notNull(),
+  unidad: text().notNull(),
+  cantidad: cantidad().notNull(),
+  precioUnitario: integer().notNull(),
+  descuento: integer().notNull().default(0),
+  importe: integer().notNull(),
+  notas: text(),
+  orden: integer().notNull(),
+});
+
+export const seguimiento = pgTable(
+  "seguimiento",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    cotizacionId: uuid()
+      .notNull()
+      .references(() => cotizacion.id),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    fecha: timestamp({ withTimezone: true }).notNull(),
+    nota: text().notNull(),
+    hechoEn: timestamp({ withTimezone: true }),
+    resultado: text(),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.usuarioId, t.hechoEn)],
 );

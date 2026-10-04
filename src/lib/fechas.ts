@@ -16,3 +16,6 @@ export const rangoDeDias = (desde: string, hasta: string) => ({
 });
 
 export const esFecha = (v: string | undefined): v is string => /^\d{4}-\d{2}-\d{2}$/.test(v ?? "");
+
+/** Instante de hace `dias` días. */
+export const haceDias = (dias: number) => new Date(Date.now() - dias * DIA_MS);

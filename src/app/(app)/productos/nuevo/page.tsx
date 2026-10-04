@@ -41,6 +41,7 @@ export default async function PaginaNuevoProducto() {
           costo: "",
           existenciaMinima: "0",
           activo: true,
+          requiereProduccion: false,
           imagenUrl: null,
         }}
       />

@@ -42,8 +42,8 @@ export const NAVEGACION: GrupoNav[] = [
     items: [
       { href: "/", etiqueta: "Inicio", icono: House },
       { href: "/ventas", etiqueta: "Ventas", icono: ShoppingCart, permiso: "ventas.ver" },
-      { href: "/cotizaciones", etiqueta: "Cotizaciones", icono: FileText, permiso: "cotizaciones.ver", fase: 2 },
-      { href: "/produccion", etiqueta: "Producción", icono: ClipboardList, permiso: "produccion.ver", fase: 2 },
+      { href: "/cotizaciones", etiqueta: "Cotizaciones", icono: FileText, permiso: "cotizaciones.ver" },
+      { href: "/produccion", etiqueta: "Producción", icono: ClipboardList, permiso: "produccion.ver" },
       { href: "/caja", etiqueta: "Caja", icono: Wallet, permiso: "caja.ver" },
     ],
   },

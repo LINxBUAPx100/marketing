@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 import { ROLES_INICIALES } from "@/lib/permisos";
+import { ETAPAS_INICIALES } from "@/lib/produccion/reglas";
 import type { Db } from "./conexion";
-import { negocio, rol, sucursal, usuario, usuarioSucursal } from "./schema";
+import { etapaProduccion, negocio, rol, sucursal, usuario, usuarioSucursal } from "./schema";
 
 export type DatosIniciales = {
   negocio: string;
@@ -35,6 +36,7 @@ export async function crearNegocioInicial(db: Db, datos: DatosIniciales) {
       })
       .returning();
     await tx.insert(usuarioSucursal).values({ usuarioId: u.id, sucursalId: s.id });
+    await tx.insert(etapaProduccion).values(ETAPAS_INICIALES.map((e, i) => ({ ...e, negocioId: n.id, orden: i + 1 })));
     return { negocio: n, sucursal: s, roles, admin: u };
   });
 }

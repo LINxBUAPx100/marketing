@@ -92,6 +92,7 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
           costo: verCostos ? centavosATexto(producto.costo) : "",
           existenciaMinima: String(producto.existenciaMinima),
           activo: producto.activo,
+          requiereProduccion: producto.requiereProduccion,
           imagenUrl: urlArchivo(producto.imagen),
         }}
       />

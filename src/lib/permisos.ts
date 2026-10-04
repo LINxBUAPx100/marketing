@@ -12,7 +12,7 @@ const cancelar = { clave: "cancelar", etiqueta: "Cancelar" };
 export const MODULOS_PERMISOS: ModuloPermisos[] = [
   { clave: "ventas", etiqueta: "Ventas", acciones: [ver, crear, cancelar, { clave: "descuento", etiqueta: "Dar descuentos" }] },
   { clave: "cotizaciones", etiqueta: "Cotizaciones", acciones: [ver, crear, editar, cancelar] },
-  { clave: "produccion", etiqueta: "Producción", acciones: [ver, editar] },
+  { clave: "produccion", etiqueta: "Producción", acciones: [ver, { clave: "editar", etiqueta: "Mover y asignar órdenes" }, { clave: "etapas", etiqueta: "Configurar etapas" }] },
   { clave: "caja", etiqueta: "Caja", acciones: [ver, { clave: "movimientos", etiqueta: "Ingresos y egresos" }, { clave: "corte", etiqueta: "Hacer corte" }, { clave: "todas", etiqueta: "Ver todas las sucursales" }] },
   { clave: "clientes", etiqueta: "Clientes", acciones: [ver, crear, editar] },
   { clave: "cxc", etiqueta: "Cuentas por cobrar", acciones: [ver, { clave: "abonar", etiqueta: "Registrar abonos" }] },
@@ -48,7 +48,7 @@ export const ROLES_INICIALES = [
     esAdmin: false,
     permisos: p(
       "ventas.ver", "ventas.crear",
-      "cotizaciones.ver", "cotizaciones.crear", "cotizaciones.editar",
+      "cotizaciones.ver", "cotizaciones.crear", "cotizaciones.editar", "cotizaciones.cancelar",
       "produccion.ver",
       "caja.ver", "caja.movimientos",
       "clientes.ver", "clientes.crear", "clientes.editar",

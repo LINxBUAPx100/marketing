@@ -105,7 +105,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
   vista de todas las sucursales.
 - WhatsApp fase 1: botón "enviar nota" (enlace `wa.me` + link al PDF).
 
-### Fase 2 — Producción y cotizaciones (2 semanas)
+### Fase 2 — Producción y cotizaciones (2 semanas) ✅ terminada
 - **Cotizaciones**: crear, PDF, enviar por WhatsApp/correo, vigencia, **seguimientos programados**
   (recordatorio al vendedor), convertir en venta con un clic.
 - **Órdenes de producción** generadas al vender: etapas configurables

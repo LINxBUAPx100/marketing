@@ -15,6 +15,13 @@
       "when": 1791069595025,
       "tag": "0001_fase1_punto_de_venta",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791077578730,
+      "tag": "0002_fase2_produccion_cotizaciones",
+      "breakpoints": true
     }
   ]
 }

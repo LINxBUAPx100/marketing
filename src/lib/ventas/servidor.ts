@@ -5,6 +5,8 @@ import type { Db } from "@/db/conexion";
 import type { Sesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import type { Metodo } from "@/lib/caja/resumen";
+import { cancelarOrdenDeVenta, crearOrden, etapasDe } from "@/lib/produccion/servidor";
+import { estadoCotizacion } from "@/lib/produccion/reglas";
 import { calcularTotales, importePartida, validarPagos, validarPartida } from "./calculo";
 
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -27,6 +29,10 @@ export type VentaEntrada = {
   notas: string | null;
   partidas: PartidaEntrada[];
   pagos: PagoEntrada[];
+  /** Crear orden de trabajo para el taller. */
+  enviarProduccion: boolean;
+  /** Si la venta viene de una cotización: respeta sus precios y la marca como aceptada. */
+  cotizacionId: string | null;
 };
 
 /** Siguiente folio de la sucursal, p. ej. "MAT-0042". Atómico dentro de la transacción. */
@@ -80,6 +86,21 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
   const porId = new Map(productos.map((p) => [p.id, p]));
   const puedeDescontar = sesion.puede("ventas.descuento");
 
+  // Precios ya autorizados en una cotización vigente del mismo cliente.
+  const cotizado = new Map<string, { precioUnitario: number; descuento: number }>();
+  if (entrada.cotizacionId) {
+    const [c] = await db
+      .select()
+      .from(t.cotizacion)
+      .where(and(eq(t.cotizacion.id, entrada.cotizacionId), eq(t.cotizacion.negocioId, negocioId)));
+    if (!c || c.estado !== "abierta") return { ok: false, mensaje: "La cotización ya no está abierta." };
+    if (c.clienteId !== cliente?.id) return { ok: false, mensaje: "La venta debe ser para el mismo cliente de la cotización." };
+    if (estadoCotizacion(c) === "abierta") {
+      const lineas = await db.select().from(t.cotizacionPartida).where(eq(t.cotizacionPartida.cotizacionId, c.id));
+      for (const l of lineas) if (l.productoId) cotizado.set(l.productoId, { precioUnitario: l.precioUnitario, descuento: l.descuento });
+    }
+  }
+
   // El servidor decide descripción, unidad y precio de lista; el cliente solo propone.
   type Producto = (typeof productos)[number];
   const partidas: (PartidaEntrada & { unidad: string; importe: number; producto: Producto | null | undefined; orden: number })[] = [];
@@ -89,7 +110,9 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
 
     if (producto) {
       const lista = cliente?.tipoPrecio === "revendedor" && producto.precioRevendedor != null ? producto.precioRevendedor : producto.precio;
-      if ((p.precioUnitario !== lista || p.descuento > 0) && !puedeDescontar) {
+      const autorizado = cotizado.get(producto.id);
+      const comoCotizado = !!autorizado && p.precioUnitario === autorizado.precioUnitario && p.descuento <= autorizado.descuento;
+      if ((p.precioUnitario !== lista || p.descuento > 0) && !puedeDescontar && !comoCotizado) {
         return { ok: false, mensaje: `No tienes permiso para cambiar el precio de "${producto.nombre}".` };
       }
     } else if (!p.descripcion.trim()) {
@@ -115,6 +138,9 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
   if (pagado < totales.total && !cliente) {
     return { ok: false, mensaje: "Para dejar saldo pendiente, elige a qué cliente se le cobra." };
   }
+
+  const etapas = entrada.enviarProduccion ? await etapasDe(negocioId) : [];
+  const etapaInicial = etapas.find((e) => e.tipo === "proceso") ?? etapas[0];
 
   const venta = await db.transaction(async (tx) => {
     const folio = await siguienteFolio(tx, sucursal.id, sucursal.prefijoFolio, "venta");
@@ -150,6 +176,24 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
         orden: p.orden,
       })),
     );
+
+    if (etapaInicial) {
+      await crearOrden(tx, {
+        negocioId,
+        sucursalId: sucursal.id,
+        ventaId: v.id,
+        folio,
+        fechaCompromiso: entrada.fechaEntrega,
+        usuarioId: sesion.usuario.id,
+        etapaInicial,
+      });
+    }
+    if (entrada.cotizacionId) {
+      await tx
+        .update(t.cotizacion)
+        .set({ estado: "aceptada", ventaId: v.id, actualizadoEn: new Date() })
+        .where(eq(t.cotizacion.id, entrada.cotizacionId));
+    }
 
     if (entrada.pagos.length) {
       await tx.insert(t.pago).values(
@@ -217,6 +261,7 @@ export async function cancelarVenta(sesion: Sesion, ventaId: string, motivo: str
       .update(t.venta)
       .set({ estado: "cancelada", motivoCancelacion: motivo, canceladaPor: sesion.usuario.id, canceladaEn: new Date() })
       .where(eq(t.venta.id, ventaId));
+    await cancelarOrdenDeVenta(tx, ventaId);
 
     // Pagos del periodo abierto: se anulan y dejan de contar en la caja.
     await tx

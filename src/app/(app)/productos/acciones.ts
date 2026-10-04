@@ -62,6 +62,7 @@ const ProductoSchema = z.object({
   existenciaMinima: numero("Escribe un número.").pipe(z.number().min(0, { error: "No puede ser negativo." })),
   existenciaInicial: numero("Escribe un número.").optional(),
   activo: casilla,
+  requiereProduccion: casilla,
   quitarImagen: casilla,
 });
 

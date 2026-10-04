@@ -1,63 +1,45 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Encabezado } from "@/components/encabezado";
 import { db, t } from "@/db";
-import { urlArchivo } from "@/lib/archivos";
 import { requerirPermiso } from "@/lib/auth";
+import { catalogoParaVender, clientePorId } from "@/lib/ventas/consultas";
 import { PuntoDeVenta } from "./punto-de-venta";
 
 export const metadata: Metadata = { title: "Nueva venta" };
 
 export default async function PaginaNuevaVenta({ searchParams }: PageProps<"/ventas/nueva">) {
   const sesion = await requerirPermiso("ventas.crear");
-  const { cliente: clienteId } = (await searchParams) as Record<string, string | undefined>;
-  const negocioId = sesion.negocio.id;
-  const sucursalId = sesion.sucursal?.id ?? null;
-
-  const [productos, categorias, clientes] = await Promise.all([
-    db
-      .select({
-        id: t.producto.id,
-        nombre: t.producto.nombre,
-        codigo: t.producto.codigo,
-        tipo: t.producto.tipo,
-        unidad: t.producto.unidad,
-        precio: t.producto.precio,
-        precioRevendedor: t.producto.precioRevendedor,
-        imagen: t.producto.imagen,
-        categoriaId: t.producto.categoriaId,
-        existencia: sql<number | null>`${t.existencia.cantidad}::float`,
-      })
-      .from(t.producto)
-      .leftJoin(t.existencia, and(eq(t.existencia.productoId, t.producto.id), sucursalId ? eq(t.existencia.sucursalId, sucursalId) : sql`false`))
-      .where(and(eq(t.producto.negocioId, negocioId), eq(t.producto.activo, true)))
-      .orderBy(asc(t.producto.nombre)),
-    db
-      .select({ id: t.categoria.id, nombre: t.categoria.nombre })
-      .from(t.categoria)
-      .where(and(eq(t.categoria.negocioId, negocioId), eq(t.categoria.activa, true)))
-      .orderBy(asc(t.categoria.nombre)),
-    clienteId && /^[0-9a-f-]{36}$/i.test(clienteId)
-      ? db
-          .select({ id: t.cliente.id, nombre: t.cliente.nombre, empresa: t.cliente.empresa, telefono: t.cliente.telefono, tipoPrecio: t.cliente.tipoPrecio })
-          .from(t.cliente)
-          .where(and(eq(t.cliente.id, clienteId), eq(t.cliente.negocioId, negocioId)))
-      : Promise.resolve([]),
-  ]);
-
+  const { cliente: clienteParam, cotizacion: cotizacionId } = (await searchParams) as Record<string, string | undefined>;
   if (!sesion.sucursal) {
     return <Encabezado titulo="Nueva venta" descripcion="No tienes una sucursal asignada. Pide a la administración que te asigne una." />;
   }
 
+  // Venta a partir de una cotización: trae su cliente y sus partidas.
+  let cotizacion = null;
+  if (cotizacionId && /^[0-9a-f-]{36}$/i.test(cotizacionId)) {
+    const [c] = await db
+      .select()
+      .from(t.cotizacion)
+      .where(and(eq(t.cotizacion.id, cotizacionId), eq(t.cotizacion.negocioId, sesion.negocio.id), eq(t.cotizacion.estado, "abierta")));
+    if (!c) notFound();
+    const partidas = await db.select().from(t.cotizacionPartida).where(eq(t.cotizacionPartida.cotizacionId, c.id)).orderBy(asc(t.cotizacionPartida.orden));
+    cotizacion = { id: c.id, folio: c.folio, clienteId: c.clienteId, notas: c.notas, partidas };
+  }
+
+  const [{ productos, categorias }, cliente] = await Promise.all([catalogoParaVender(sesion), clientePorId(sesion, cotizacion?.clienteId ?? clienteParam)]);
+
   return (
     <PuntoDeVenta
       sucursal={sesion.sucursal.nombre}
-      productos={productos.map((p) => ({ ...p, imagen: urlArchivo(p.imagen) }))}
+      productos={productos}
       categorias={categorias}
-      clienteInicial={clientes[0] ?? null}
+      clienteInicial={cliente}
       iva={{ ivaBp: sesion.negocio.ivaBp, preciosIncluyenIva: sesion.negocio.preciosIncluyenIva }}
       puedeDescontar={sesion.puede("ventas.descuento")}
       puedeCrearCliente={sesion.puede("clientes.crear")}
+      cotizacion={cotizacion && { id: cotizacion.id, folio: cotizacion.folio, notas: cotizacion.notas, partidas: cotizacion.partidas }}
     />
   );
 }

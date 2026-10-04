@@ -3,12 +3,14 @@
 //   admin@demo.test    / demo1234   (Administrador)
 //   ventas@demo.test   / demo1234   (Vendedor, solo Matriz)
 //   taller@demo.test   / demo1234   (Producción, ambas sucursales)
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { crearConexion } from "../src/db/conexion";
 import { crearNegocioInicial, hashPassword } from "../src/db/inicial";
+import { ETAPAS_INICIALES } from "../src/lib/produccion/reglas";
 import {
   categoria,
   cliente,
+  etapaProduccion,
   existencia,
   movimientoInventario,
   negocio,
@@ -25,6 +27,7 @@ const existente = await db.select({ id: usuario.id }).from(usuario).limit(1);
 if (!existente.length) await cargarBase();
 const hayProductos = await db.select({ id: producto.id }).from(producto).limit(1);
 if (!hayProductos.length) await cargarCatalogo();
+await prepararProduccion();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -111,4 +114,27 @@ async function cargarCatalogo() {
       { nombre: "Colegio Benito Juárez", empresa: "Colegio Benito Juárez A.C.", telefono: "222 300 2000", rfc: "CBJ850101AB1", razonSocial: "COLEGIO BENITO JUAREZ", regimenFiscal: "603", codigoPostal: "72000", usoCfdi: "G03" },
     ].map((c) => ({ ...c, negocioId: n.id })),
   );
+}
+
+// Fase 2: qué productos van al taller y quién toma cada etapa (solo donde aún no hay responsable).
+async function prepararProduccion() {
+  const [n] = await db.select().from(negocio).limit(1);
+  const [taller] = await db.select().from(usuario).where(eq(usuario.correo, "taller@demo.test"));
+  const [ventas] = await db.select().from(usuario).where(eq(usuario.correo, "ventas@demo.test"));
+  let etapas = await db.select().from(etapaProduccion).where(eq(etapaProduccion.negocioId, n.id));
+  if (!etapas.length) {
+    etapas = await db
+      .insert(etapaProduccion)
+      .values(ETAPAS_INICIALES.map((e, i) => ({ ...e, negocioId: n.id, orden: i + 1 })))
+      .returning();
+  }
+  const responsables: Record<string, string | undefined> = { Diseño: ventas?.id, Impresión: taller?.id, Acabado: taller?.id };
+  for (const e of etapas) {
+    const responsableId = responsables[e.nombre];
+    if (responsableId && !e.responsableId) await db.update(etapaProduccion).set({ responsableId }).where(eq(etapaProduccion.id, e.id));
+  }
+  await db
+    .update(producto)
+    .set({ requiereProduccion: true })
+    .where(inArray(producto.codigo, ["VOL-MC", "VOL-CT", "TAR-44", "TAR-LM", "LON-13", "VIN-AD", "DIS-LOGO", "DIS-AJ"]));
 }

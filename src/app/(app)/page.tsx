@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, isNotNull, isNull, lt, lte, sql } from "drizzle-orm";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Encabezado } from "@/components/encabezado";
@@ -9,14 +9,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { db, t } from "@/db";
 import { requerirSesion } from "@/lib/auth";
 import { hoyEnMexico, rangoDeDias } from "@/lib/fechas";
-import { formatoMoneda } from "@/lib/numeros";
+import { formatoFechaHora, formatoMoneda } from "@/lib/numeros";
+import { ETIQUETA_URGENCIA, urgencia } from "@/lib/produccion/reglas";
 
 // Avance del plan (docs/PLAN.md). Se actualiza al cerrar cada fase.
 const FASES = [
   { n: 0, nombre: "Cimientos", detalle: "Acceso, roles, sucursales y bitácora", estado: "lista" },
   { n: 1, nombre: "Punto de venta", detalle: "Productos, clientes, ventas, anticipos y caja", estado: "lista" },
-  { n: 2, nombre: "Producción y cotizaciones", detalle: "Órdenes, etapas y tablero en tiempo real", estado: "siguiente" },
-  { n: 3, nombre: "Insumos y almacén", detalle: "Recetas, existencias, traspasos y proveedores", estado: "pendiente" },
+  { n: 2, nombre: "Producción y cotizaciones", detalle: "Órdenes, etapas y tablero en tiempo real", estado: "lista" },
+  { n: 3, nombre: "Insumos y almacén", detalle: "Recetas, existencias, traspasos y proveedores", estado: "siguiente" },
   { n: 4, nombre: "Máquinas y contadores", detalle: "Lecturas, mermas y consumibles", estado: "pendiente" },
   { n: 5, nombre: "Comisiones y convenios", detalle: "Comisiones, precios especiales y por volumen", estado: "pendiente" },
   { n: 6, nombre: "Facturación CFDI 4.0", detalle: "Facturas, complementos y cancelaciones", estado: "pendiente" },
@@ -80,6 +81,29 @@ export default async function Inicio() {
       ])
     : [[{ n: 0, total: 0 }], [{ total: 0 }], [{ total: 0 }], []];
 
+  // Lo que le toca hacer a esta persona: órdenes a su cargo y seguimientos que ya vencieron o vencen hoy.
+  const [misOrdenes, misSeguimientos] = await Promise.all([
+    sesion.puede("produccion.ver")
+      ? db
+          .select({ id: t.ordenProduccion.id, folio: t.venta.folio, cliente: t.cliente.nombre, etapa: t.etapaProduccion.nombre, fechaCompromiso: t.ordenProduccion.fechaCompromiso })
+          .from(t.ordenProduccion)
+          .innerJoin(t.venta, eq(t.venta.id, t.ordenProduccion.ventaId))
+          .innerJoin(t.etapaProduccion, eq(t.etapaProduccion.id, t.ordenProduccion.etapaId))
+          .leftJoin(t.cliente, eq(t.cliente.id, t.venta.clienteId))
+          .where(and(eq(t.ordenProduccion.responsableId, sesion.usuario.id), eq(t.ordenProduccion.estado, "activa")))
+          .orderBy(sql`${t.ordenProduccion.fechaCompromiso} asc nulls last`)
+          .limit(8)
+      : Promise.resolve([]),
+    db
+      .select({ id: t.seguimiento.id, nota: t.seguimiento.nota, fecha: t.seguimiento.fecha, cotizacionId: t.cotizacion.id, folio: t.cotizacion.folio, cliente: t.cliente.nombre })
+      .from(t.seguimiento)
+      .innerJoin(t.cotizacion, eq(t.cotizacion.id, t.seguimiento.cotizacionId))
+      .innerJoin(t.cliente, eq(t.cliente.id, t.cotizacion.clienteId))
+      .where(and(eq(t.seguimiento.usuarioId, sesion.usuario.id), isNull(t.seguimiento.hechoEn), lte(t.seguimiento.fecha, hoy.fin), eq(t.cotizacion.estado, "abierta")))
+      .orderBy(asc(t.seguimiento.fecha))
+      .limit(8),
+  ]);
+
   return (
     <>
       <Encabezado titulo={`Hola, ${primerNombre}`} descripcion={sesion.sucursal ? `Trabajando en ${sesion.sucursal.nombre}.` : "No tienes sucursal asignada."}>
@@ -89,6 +113,43 @@ export default async function Inicio() {
           </Button>
         )}
       </Encabezado>
+
+      {(misOrdenes.length > 0 || misSeguimientos.length > 0) && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Mis pendientes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y">
+              {misOrdenes.map((o) => {
+                const u = urgencia(o.fechaCompromiso);
+                return (
+                  <li key={o.id}>
+                    <Link href={`/produccion/${o.id}`} className="hover:bg-muted/50 -mx-2 flex items-center gap-3 rounded-md px-2 py-2 text-sm">
+                      <span className="font-mono font-medium">{o.folio}</span>
+                      <span className="min-w-0 flex-1 truncate">
+                        {o.etapa} · {o.cliente ?? "Público en general"}
+                      </span>
+                      {u !== "a-tiempo" && u !== "sin-fecha" && <Badge variant={u === "atrasada" ? "destructive" : "outline"}>{ETIQUETA_URGENCIA[u]}</Badge>}
+                    </Link>
+                  </li>
+                );
+              })}
+              {misSeguimientos.map((s) => (
+                <li key={s.id}>
+                  <Link href={`/cotizaciones/${s.cotizacionId}`} className="hover:bg-muted/50 -mx-2 flex items-center gap-3 rounded-md px-2 py-2 text-sm">
+                    <span className="font-mono font-medium">{s.folio}</span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {s.nota} · {s.cliente}
+                    </span>
+                    <span className="text-muted-foreground shrink-0 text-xs">{formatoFechaHora(s.fecha)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {verVentas && (
         <>

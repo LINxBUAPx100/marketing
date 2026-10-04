@@ -4,6 +4,7 @@ import { Menu, Printer } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Campana } from "./campana";
 import { MenuLateral } from "./menu-lateral";
 import { MenuUsuario } from "./menu-usuario";
 import { SelectorSucursal } from "./selector-sucursal";
@@ -52,7 +53,8 @@ export function Marco({ usuario, negocio, sucursales, sucursalId, permisos, chil
             <Menu />
           </Button>
           <SelectorSucursal sucursales={sucursales} sucursalId={sucursalId} />
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-1">
+            <Campana />
             <MenuUsuario {...usuario} />
           </div>
         </header>
