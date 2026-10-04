@@ -120,7 +120,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - Costo por producto y **utilidad** por venta/periodo.
 - **Proveedores y cuentas por pagar**: compras, vencimientos, pagos, alertas.
 
-### Fase 4 — Máquinas, contadores y consumibles (1–2 semanas)
+### Fase 4 — Máquinas, contadores y consumibles (1–2 semanas) ✅ terminada
 - Registro de equipos por sucursal.
 - **Lecturas de contador** (inicio/fin de día). Impresiones por equipo = diferencia de lecturas.
 - **Detector de impresiones fantasma**: impresiones del contador − (impresiones vendidas + mermas registradas).

@@ -27,6 +27,8 @@ export type ValoresProducto = {
   existenciaMinima: string;
   activo: boolean;
   requiereProduccion: boolean;
+  tipoImpresion: string;
+  impresionesPorUnidad: string;
   imagenUrl: string | null;
 };
 
@@ -102,6 +104,31 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
               {verCostos && (
                 <Campo etiqueta="Costo" nombre="costo" inputMode="decimal" defaultValue={valores.costo} errores={e.costo} ayuda="Solo lo ven quienes tienen permiso" />
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Impresiones</CardTitle>
+              <CardDescription>Cuántas impresiones gasta una unidad. Sirve para detectar impresiones fantasma contra los contadores.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2">
+              <Selector etiqueta="Tipo de impresión" nombre="tipoImpresion" defaultValue={valores.tipoImpresion} errores={e.tipoImpresion}>
+                <option value="">No se imprime</option>
+                <option value="byn">Blanco y negro</option>
+                <option value="color">Color</option>
+                <option value="gran_formato">Gran formato (m²)</option>
+              </Selector>
+              <Campo
+                etiqueta="Impresiones por unidad"
+                nombre="impresionesPorUnidad"
+                type="number"
+                step="any"
+                min="0"
+                defaultValue={valores.impresionesPorUnidad}
+                ayuda="Ej. 1 millar de volantes media carta = 250 hojas impresas"
+                errores={e.impresionesPorUnidad}
+              />
             </CardContent>
           </Card>
 

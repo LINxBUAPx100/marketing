@@ -42,6 +42,8 @@ export default async function PaginaNuevoProducto() {
           existenciaMinima: "0",
           activo: true,
           requiereProduccion: false,
+          tipoImpresion: "",
+          impresionesPorUnidad: "0",
           imagenUrl: null,
         }}
       />

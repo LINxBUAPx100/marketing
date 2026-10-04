@@ -63,6 +63,8 @@ const ProductoSchema = z.object({
   existenciaInicial: numero("Escribe un número.").optional(),
   activo: casilla,
   requiereProduccion: casilla,
+  tipoImpresion: z.preprocess(vacioANull, z.enum(["byn", "color", "gran_formato"]).nullable().optional().transform((v) => v ?? null)),
+  impresionesPorUnidad: numero("Escribe un número.").pipe(z.number().min(0, { error: "No puede ser negativo." })),
   quitarImagen: casilla,
 });
 

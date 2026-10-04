@@ -156,6 +156,9 @@ export const producto = pgTable(
     imagen: text(),
     // Si al venderlo se genera una orden para el taller.
     requiereProduccion: boolean().notNull().default(false),
+    // Cuántas impresiones de qué tipo gasta UNA unidad (para comparar contra los contadores).
+    tipoImpresion: text({ enum: ["byn", "color", "gran_formato"] }),
+    impresionesPorUnidad: cantidad().notNull().default(0),
     activo: boolean().notNull().default(true),
     creadoEn: creadoEn(),
   },
@@ -707,4 +710,105 @@ export const traspasoPartida = pgTable("traspaso_partida", {
   insumoId: uuid().references(() => insumo.id),
   productoId: uuid().references(() => producto.id),
   cantidad: cantidad().notNull(),
+});
+
+// ─── Fase 4: máquinas, contadores, mermas y consumibles ─────────────────────
+
+export const TIPOS_IMPRESION = ["byn", "color", "gran_formato"] as const;
+
+export const maquina = pgTable("maquina", {
+  id: uuid().primaryKey().defaultRandom(),
+  negocioId: uuid()
+    .notNull()
+    .references(() => negocio.id),
+  sucursalId: uuid()
+    .notNull()
+    .references(() => sucursal.id),
+  nombre: text().notNull(),
+  marca: text(),
+  modelo: text(),
+  serie: text(),
+  notas: text(),
+  activa: boolean().notNull().default(true),
+  creadoEn: creadoEn(),
+});
+
+// Una máquina puede tener varios contadores: negro, color, metros…
+export const contador = pgTable("contador", {
+  id: uuid().primaryKey().defaultRandom(),
+  maquinaId: uuid()
+    .notNull()
+    .references(() => maquina.id),
+  nombre: text().notNull(),
+  tipo: text({ enum: TIPOS_IMPRESION }).notNull(),
+  activo: boolean().notNull().default(true),
+});
+
+export const lecturaContador = pgTable(
+  "lectura_contador",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    contadorId: uuid()
+      .notNull()
+      .references(() => contador.id),
+    valor: cantidad().notNull(),
+    momento: text({ enum: ["apertura", "cierre", "otra"] }).notNull().default("otra"),
+    nota: text(),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.contadorId, t.creadoEn)],
+);
+
+export const MOTIVOS_MERMA = ["atasco", "prueba", "error_impresion", "error_diseno", "defecto_material", "otro"] as const;
+
+export const merma = pgTable(
+  "merma",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    maquinaId: uuid()
+      .notNull()
+      .references(() => maquina.id),
+    tipo: text({ enum: TIPOS_IMPRESION }).notNull(),
+    cantidad: cantidad().notNull(),
+    motivo: text({ enum: MOTIVOS_MERMA }).notNull(),
+    // Quién la provocó (puede ser distinto de quien la registra).
+    responsableId: uuid().references(() => usuario.id),
+    ventaId: uuid().references(() => venta.id),
+    nota: text(),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.negocioId, t.creadoEn)],
+);
+
+export const consumible = pgTable("consumible", {
+  id: uuid().primaryKey().defaultRandom(),
+  maquinaId: uuid()
+    .notNull()
+    .references(() => maquina.id),
+  // El contador con el que se mide su desgaste.
+  contadorId: uuid()
+    .notNull()
+    .references(() => contador.id),
+  nombre: text().notNull(),
+  rendimiento: integer().notNull(),
+  costo: integer(),
+  // Si sale del almacén, se descuenta una pieza de este insumo al instalarlo.
+  insumoId: uuid().references(() => insumo.id),
+  lecturaInstalacion: cantidad().notNull(),
+  instaladoEn: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  lecturaRetiro: cantidad(),
+  retiradoEn: timestamp({ withTimezone: true }),
+  usuarioId: uuid()
+    .notNull()
+    .references(() => usuario.id),
+  creadoEn: creadoEn(),
 });

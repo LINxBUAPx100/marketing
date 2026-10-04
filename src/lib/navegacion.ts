@@ -67,8 +67,8 @@ export const NAVEGACION: GrupoNav[] = [
   {
     titulo: "Taller",
     items: [
-      { href: "/maquinas", etiqueta: "Máquinas y contadores", icono: Printer, permiso: "maquinas.ver", fase: 4 },
-      { href: "/consumibles", etiqueta: "Consumibles", icono: Droplet, permiso: "consumibles.ver", fase: 4 },
+      { href: "/maquinas", etiqueta: "Máquinas y contadores", icono: Printer, permiso: "maquinas.ver" },
+      { href: "/consumibles", etiqueta: "Consumibles", icono: Droplet, permiso: "consumibles.ver" },
     ],
   },
   {

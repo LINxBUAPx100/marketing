@@ -39,5 +39,6 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Almacén: movimientos de stock y folios en `src/lib/almacen/existencias.ts` (`moverExistencia`, `moverInsumo`, `siguienteFolio`); compras, pagos a proveedor y traspasos en `src/lib/almacen/servidor.ts`; reglas puras (costo por receta, consumo, utilidad sin IVA, estado de cuentas por pagar) en `src/lib/almacen/reglas.ts`.
 - Costos de insumos en centavos con decimales (`numeric`, 72.5 = $0.725). Cada `venta_partida` guarda su `costo` al venderse; la utilidad se calcula sin IVA. Las ventas anteriores a la fase 3 no tienen costo.
 - Al vender se descuentan los insumos de la receta (`motivo: "consumo"`); al cancelar se regresan.
+- Máquinas: reglas puras en `src/lib/maquinas/reglas.ts` (impresiones de un periodo desde lecturas, fantasma, desgaste de consumibles). Fantasma por tipo de impresión (byn, color, gran formato) = contador − (ventas × `impresionesPorUnidad` del producto) − mermas.
 - Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

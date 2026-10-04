@@ -10,6 +10,11 @@ import { ETAPAS_INICIALES } from "../src/lib/produccion/reglas";
 import {
   categoria,
   cliente,
+  consumible,
+  contador,
+  lecturaContador,
+  maquina,
+  merma,
   etapaProduccion,
   existencia,
   existenciaInsumo,
@@ -34,6 +39,7 @@ const hayProductos = await db.select({ id: producto.id }).from(producto).limit(1
 if (!hayProductos.length) await cargarCatalogo();
 await prepararProduccion();
 await prepararAlmacen();
+await prepararMaquinas();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -201,4 +207,75 @@ async function prepararAlmacen() {
     .map(([p, i, cantidad]) => ({ productoId: prod(p), insumoId: porCodigo(i), cantidad }))
     .filter((r): r is { productoId: string; insumoId: string; cantidad: number } => !!r.productoId);
   await db.insert(receta).values(filas);
+}
+
+// Fase 4: equipos con 5 días de lecturas (apertura y cierre), consumibles y algunas mermas.
+async function prepararMaquinas() {
+  const [n] = await db.select().from(negocio).limit(1);
+  const hay = await db.select({ id: maquina.id }).from(maquina).where(eq(maquina.negocioId, n.id)).limit(1);
+  if (hay.length) return;
+  const [matriz, centro] = await db.select().from(sucursal).where(eq(sucursal.negocioId, n.id)).orderBy(sucursal.creadoEn);
+  const [admin] = await db.select().from(usuario).where(eq(usuario.correo, "admin@demo.test"));
+  const [taller] = await db.select().from(usuario).where(eq(usuario.correo, "taller@demo.test"));
+
+  // Cuántas impresiones gasta una unidad de cada producto.
+  const impresiones: [string, "byn" | "color" | "gran_formato", number][] = [
+    ["COP-BN", "byn", 1], ["IMP-CO", "color", 1], ["VOL-MC", "color", 250], ["VOL-CT", "color", 100],
+    ["TAR-44", "color", 24], ["TAR-LM", "color", 24], ["LON-13", "gran_formato", 1], ["VIN-AD", "gran_formato", 1],
+  ];
+  for (const [codigo, tipoImpresion, impresionesPorUnidad] of impresiones) {
+    await db.update(producto).set({ tipoImpresion, impresionesPorUnidad }).where(eq(producto.codigo, codigo));
+  }
+
+  const equipos = [
+    { sucursalId: matriz.id, nombre: "Color 1", marca: "Konica Minolta", modelo: "bizhub C3070", serie: "A9K7021003", contadores: [["Negro", "byn", 150000, 300], ["Color", "color", 85000, 620]] },
+    { sucursalId: matriz.id, nombre: "Plotter", marca: "Epson", modelo: "SureColor S40600", serie: null, contadores: [["Metros", "gran_formato", 2300, 12]] },
+    { sucursalId: centro?.id ?? matriz.id, nombre: "Copiadora", marca: "Ricoh", modelo: "MP 2014", serie: null, contadores: [["Negro", "byn", 410000, 450]] },
+  ] as const;
+
+  // Fechas en hora de México (UTC−6): apertura 9:00 y cierre 20:00 de los últimos 5 días.
+  const hoy = new Date();
+  const dia = (atras: number, hora: number) => {
+    const d = new Date(hoy.getTime() - atras * 86_400_000);
+    const ymd = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Mexico_City" }).format(d);
+    return new Date(`${ymd}T${String(hora).padStart(2, "0")}:00:00-06:00`);
+  };
+
+  const ids: Record<string, string> = {};
+  for (const e of equipos) {
+    const { contadores, ...datos } = e;
+    const [m] = await db.insert(maquina).values({ ...datos, negocioId: n.id }).returning();
+    for (const [nombre, tipo, base, porDia] of contadores) {
+      const [c] = await db.insert(contador).values({ maquinaId: m.id, nombre, tipo }).returning();
+      ids[`${e.nombre}:${nombre}`] = c.id;
+      const lecturas = [];
+      let valor = base;
+      for (let atras = 5; atras >= 1; atras--) {
+        lecturas.push({ contadorId: c.id, valor, momento: "apertura" as const, usuarioId: taller?.id ?? admin.id, creadoEn: dia(atras, 9) });
+        valor += porDia;
+        lecturas.push({ contadorId: c.id, valor, momento: "cierre" as const, usuarioId: taller?.id ?? admin.id, creadoEn: dia(atras, 20) });
+      }
+      await db.insert(lecturaContador).values(lecturas);
+    }
+    ids[e.nombre] = m.id;
+  }
+
+  // Consumibles: el tóner cian va casi al límite para que aparezca el aviso.
+  const negro = ids["Color 1:Negro"];
+  const color = ids["Color 1:Color"];
+  await db.insert(consumible).values([
+    { maquinaId: ids["Color 1"], contadorId: negro, nombre: "Tóner negro", rendimiento: 28000, costo: 165000, lecturaInstalacion: 140500, instaladoEn: dia(36, 10), usuarioId: admin.id },
+    { maquinaId: ids["Color 1"], contadorId: color, nombre: "Tóner cian", rendimiento: 26000, costo: 189000, lecturaInstalacion: 64000, instaladoEn: dia(40, 10), usuarioId: admin.id },
+    { maquinaId: ids["Color 1"], contadorId: color, nombre: "Tambor (drum)", rendimiento: 120000, costo: 420000, lecturaInstalacion: 30000, instaladoEn: dia(120, 10), usuarioId: admin.id },
+    // Ya retirados: dan el rendimiento real y el costo por millar.
+    { maquinaId: ids["Color 1"], contadorId: negro, nombre: "Tóner negro", rendimiento: 28000, costo: 165000, lecturaInstalacion: 115000, lecturaRetiro: 140500, instaladoEn: dia(110, 10), retiradoEn: dia(36, 10), usuarioId: admin.id },
+    { maquinaId: ids["Color 1"], contadorId: color, nombre: "Tóner cian", rendimiento: 26000, costo: 189000, lecturaInstalacion: 41000, lecturaRetiro: 64000, instaladoEn: dia(95, 10), retiradoEn: dia(40, 10), usuarioId: admin.id },
+    { maquinaId: ids["Copiadora"], contadorId: ids["Copiadora:Negro"], nombre: "Tóner negro", rendimiento: 9000, costo: 52000, lecturaInstalacion: 405500, instaladoEn: dia(12, 10), usuarioId: admin.id },
+  ]);
+
+  await db.insert(merma).values([
+    { negocioId: n.id, maquinaId: ids["Color 1"], tipo: "color" as const, cantidad: 15, motivo: "atasco" as const, responsableId: taller?.id, nota: "Couché húmedo", usuarioId: taller?.id ?? admin.id, creadoEn: dia(1, 12) },
+    { negocioId: n.id, maquinaId: ids["Color 1"], tipo: "color" as const, cantidad: 6, motivo: "prueba" as const, responsableId: admin.id, nota: "Prueba de color tarjetas", usuarioId: admin.id, creadoEn: dia(1, 16) },
+    { negocioId: n.id, maquinaId: ids["Plotter"], tipo: "gran_formato" as const, cantidad: 1.2, motivo: "error_diseno" as const, responsableId: taller?.id, usuarioId: admin.id, creadoEn: dia(2, 13) },
+  ]);
 }
