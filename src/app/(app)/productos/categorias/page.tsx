@@ -17,7 +17,7 @@ export default async function PaginaCategorias() {
   const sesion = await requerirPermiso("productos.ver");
   const puedeEditar = sesion.puede("productos.editar");
   const categorias = await db
-    .select({ id: t.categoria.id, nombre: t.categoria.nombre, activa: t.categoria.activa, productos: count(t.producto.id) })
+    .select({ id: t.categoria.id, nombre: t.categoria.nombre, activa: t.categoria.activa, comisionBp: t.categoria.comisionBp, productos: count(t.producto.id) })
     .from(t.categoria)
     .leftJoin(t.producto, eq(t.producto.categoriaId, t.categoria.id))
     .where(eq(t.categoria.negocioId, sesion.negocio.id))
@@ -38,6 +38,7 @@ export default async function PaginaCategorias() {
             <TableRow>
               <TableHead>Categoría</TableHead>
               <TableHead className="text-right">Productos</TableHead>
+              <TableHead className="hidden text-right sm:table-cell">Comisión</TableHead>
               <TableHead>Estado</TableHead>
               {puedeEditar && <TableHead className="w-0" />}
             </TableRow>
@@ -45,7 +46,7 @@ export default async function PaginaCategorias() {
           <TableBody>
             {categorias.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="text-muted-foreground py-10 text-center">
+                <TableCell colSpan={5} className="text-muted-foreground py-10 text-center">
                   Aún no hay categorías. Ejemplos: Volantes, Tarjetas, Lonas, Papelería.
                 </TableCell>
               </TableRow>
@@ -58,12 +59,13 @@ export default async function PaginaCategorias() {
                   </Link>
                 </TableCell>
                 <TableCell className="text-right tabular-nums">{c.productos}</TableCell>
+                <TableCell className="text-muted-foreground hidden text-right tabular-nums sm:table-cell">{c.comisionBp == null ? "La del vendedor" : `${c.comisionBp / 100} %`}</TableCell>
                 <TableCell>
                   <Badge variant={c.activa ? "secondary" : "outline"}>{c.activa ? "Activa" : "Inactiva"}</Badge>
                 </TableCell>
                 {puedeEditar && (
                   <TableCell>
-                    <DialogoCategoria categoria={{ id: c.id, nombre: c.nombre, activa: c.activa }} />
+                    <DialogoCategoria categoria={{ id: c.id, nombre: c.nombre, activa: c.activa, comision: c.comisionBp == null ? "" : String(c.comisionBp / 100) }} />
                   </TableCell>
                 )}
               </TableRow>

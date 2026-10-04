@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requerirSesion } from "@/lib/auth";
 import { METODOS } from "@/lib/caja/resumen";
 import { datosDe, erroresDe, type EstadoFormulario } from "@/lib/formulario";
+import { reglasDeCliente } from "@/lib/ventas/reglas-cliente";
 import { cancelarVenta, crearVenta, registrarAbono } from "@/lib/ventas/servidor";
 
 const centavos = z.number().int().min(0).max(1_000_000_000);
@@ -102,4 +103,11 @@ export async function cancelar(_: EstadoFormulario, formData: FormData): Promise
   revalidatePath("/ventas");
   revalidatePath("/caja");
   return { ok: true, mensaje: "Venta cancelada." };
+}
+
+/** Convenio, saldo y límite de crédito del cliente elegido en el punto de venta o en una cotización. */
+export async function reglasCliente(clienteId: string | null) {
+  const sesion = await requerirSesion();
+  if (clienteId && !z.uuid().safeParse(clienteId).success) return null;
+  return reglasDeCliente(sesion.negocio.id, clienteId);
 }

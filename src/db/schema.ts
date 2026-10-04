@@ -131,6 +131,8 @@ export const categoria = pgTable("categoria", {
     .notNull()
     .references(() => negocio.id),
   nombre: text().notNull(),
+  // Comisión propia de la categoría (p. ej. diseño 10 %). Null = la del vendedor.
+  comisionBp: integer(),
   activa: boolean().notNull().default(true),
   creadoEn: creadoEn(),
 });
@@ -812,3 +814,97 @@ export const consumible = pgTable("consumible", {
     .references(() => usuario.id),
   creadoEn: creadoEn(),
 });
+
+// ─── Fase 5: precios por volumen, convenios y comisiones ────────────────────
+
+// Escalones de precio: desde cierta cantidad, la unidad cuesta menos.
+export const precioVolumen = pgTable(
+  "precio_volumen",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    productoId: uuid()
+      .notNull()
+      .references(() => producto.id),
+    desde: cantidad().notNull(),
+    precio: integer().notNull(),
+    precioRevendedor: integer(),
+  },
+  (t) => [uniqueIndex().on(t.productoId, t.desde)],
+);
+
+export const convenio = pgTable(
+  "convenio",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    clienteId: uuid()
+      .notNull()
+      .references(() => cliente.id),
+    descuentoBp: integer().notNull().default(0),
+    diasCredito: integer().notNull().default(0),
+    // Null = sin límite.
+    limiteCredito: integer(),
+    vigenteHasta: timestamp({ withTimezone: true }),
+    notas: text(),
+    activo: boolean().notNull().default(true),
+    creadoEn: creadoEn(),
+  },
+  (t) => [uniqueIndex().on(t.clienteId)],
+);
+
+export const convenioPrecio = pgTable(
+  "convenio_precio",
+  {
+    convenioId: uuid()
+      .notNull()
+      .references(() => convenio.id),
+    productoId: uuid()
+      .notNull()
+      .references(() => producto.id),
+    precio: integer().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.convenioId, t.productoId] })],
+);
+
+export const pagoComision = pgTable("pago_comision", {
+  id: uuid().primaryKey().defaultRandom(),
+  negocioId: uuid()
+    .notNull()
+    .references(() => negocio.id),
+  usuarioId: uuid()
+    .notNull()
+    .references(() => usuario.id),
+  total: integer().notNull(),
+  movimientoCajaId: uuid().references(() => movimientoCaja.id),
+  notas: text(),
+  registradoPor: uuid()
+    .notNull()
+    .references(() => usuario.id),
+  creadoEn: creadoEn(),
+});
+
+// Una fila por partida vendida: cuánto le toca al vendedor (base sin IVA × porcentaje).
+export const comision = pgTable(
+  "comision",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    ventaId: uuid()
+      .notNull()
+      .references(() => venta.id),
+    usuarioId: uuid()
+      .notNull()
+      .references(() => usuario.id),
+    base: integer().notNull(),
+    bp: integer().notNull(),
+    monto: integer().notNull(),
+    estado: text({ enum: ["pendiente", "pagada", "cancelada"] }).notNull().default("pendiente"),
+    pagoId: uuid().references(() => pagoComision.id),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.usuarioId, t.estado), index().on(t.ventaId)],
+);

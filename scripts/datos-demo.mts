@@ -12,6 +12,8 @@ import {
   cliente,
   consumible,
   contador,
+  convenio,
+  convenioPrecio,
   lecturaContador,
   maquina,
   merma,
@@ -22,6 +24,7 @@ import {
   movimientoInsumo,
   movimientoInventario,
   negocio,
+  precioVolumen,
   producto,
   proveedor,
   receta,
@@ -40,6 +43,7 @@ if (!hayProductos.length) await cargarCatalogo();
 await prepararProduccion();
 await prepararAlmacen();
 await prepararMaquinas();
+await prepararPrecios();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -278,4 +282,36 @@ async function prepararMaquinas() {
     { negocioId: n.id, maquinaId: ids["Color 1"], tipo: "color" as const, cantidad: 6, motivo: "prueba" as const, responsableId: admin.id, nota: "Prueba de color tarjetas", usuarioId: admin.id, creadoEn: dia(1, 16) },
     { negocioId: n.id, maquinaId: ids["Plotter"], tipo: "gran_formato" as const, cantidad: 1.2, motivo: "error_diseno" as const, responsableId: taller?.id, usuarioId: admin.id, creadoEn: dia(2, 13) },
   ]);
+}
+
+// Fase 5: escalones de volumen y un convenio con una escuela (precios de ejemplo).
+async function prepararPrecios() {
+  const [n] = await db.select().from(negocio).limit(1);
+  const hay = await db.select({ id: precioVolumen.id }).from(precioVolumen).limit(1);
+  if (hay.length) return;
+  const productos = await db.select().from(producto).where(eq(producto.negocioId, n.id));
+  const id = (codigo: string) => productos.find((p) => p.codigo === codigo)?.id;
+  const $ = (pesos: number) => Math.round(pesos * 100);
+  const escalones: [string, number, number, number | null][] = [
+    ["COP-BN", 100, 1, null], ["COP-BN", 500, 0.8, null],
+    ["IMP-CO", 50, 6.5, null], ["IMP-CO", 200, 5, null],
+    ["VOL-MC", 5, 780, 640], ["VOL-MC", 10, 720, 600],
+    ["TAR-44", 3, 590, 480],
+  ];
+  const filas = escalones
+    .map(([codigo, desde, precio, revendedor]) => ({ productoId: id(codigo), desde, precio: $(precio), precioRevendedor: revendedor == null ? null : $(revendedor) }))
+    .filter((f): f is { productoId: string; desde: number; precio: number; precioRevendedor: number | null } => !!f.productoId);
+  await db.insert(precioVolumen).values(filas);
+
+  const [colegio] = await db.select().from(cliente).where(eq(cliente.nombre, "Colegio Benito Juárez"));
+  if (colegio) {
+    const [c] = await db
+      .insert(convenio)
+      .values({ negocioId: n.id, clienteId: colegio.id, descuentoBp: 500, diasCredito: 30, limiteCredito: $(5000), notas: "Convenio ciclo escolar 2026-2027. Factura cada mes." })
+      .returning();
+    const especiales = [["COP-BN", 0.9], ["IMP-CO", 5.5]] as const;
+    await db.insert(convenioPrecio).values(
+      especiales.map(([codigo, precio]) => ({ convenioId: c.id, productoId: id(codigo)!, precio: $(precio) })).filter((p) => p.productoId),
+    );
+  }
 }

@@ -4,6 +4,7 @@ import { requerirPermiso } from "@/lib/auth";
 import { CONDICIONES_INICIALES } from "@/lib/cotizaciones/servidor";
 import { hoyEnMexico } from "@/lib/fechas";
 import { catalogoParaVender, clientePorId } from "@/lib/ventas/consultas";
+import { reglasDeCliente } from "@/lib/ventas/reglas-cliente";
 import { EditorCotizacion } from "../editor";
 
 export const metadata: Metadata = { title: "Nueva cotización" };
@@ -16,6 +17,7 @@ export default async function PaginaNuevaCotizacion({ searchParams }: PageProps<
   if (!sesion.sucursal) return <Encabezado titulo="Nueva cotización" descripcion="No tienes una sucursal asignada." />;
   const { cliente: clienteId } = (await searchParams) as Record<string, string | undefined>;
   const [{ productos, categorias }, cliente] = await Promise.all([catalogoParaVender(sesion), clientePorId(sesion, clienteId)]);
+  const infoCliente = cliente ? await reglasDeCliente(sesion.negocio.id, cliente.id) : null;
 
   return (
     <EditorCotizacion
@@ -28,6 +30,7 @@ export default async function PaginaNuevaCotizacion({ searchParams }: PageProps<
         id: null,
         folio: null,
         cliente,
+        infoCliente,
         vigenciaHasta: sumarDias(hoyEnMexico(), 15),
         notas: "",
         condiciones: CONDICIONES_INICIALES,

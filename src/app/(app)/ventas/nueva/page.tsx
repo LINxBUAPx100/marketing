@@ -5,6 +5,7 @@ import { Encabezado } from "@/components/encabezado";
 import { db, t } from "@/db";
 import { requerirPermiso } from "@/lib/auth";
 import { catalogoParaVender, clientePorId } from "@/lib/ventas/consultas";
+import { reglasDeCliente } from "@/lib/ventas/reglas-cliente";
 import { PuntoDeVenta } from "./punto-de-venta";
 
 export const metadata: Metadata = { title: "Nueva venta" };
@@ -29,6 +30,7 @@ export default async function PaginaNuevaVenta({ searchParams }: PageProps<"/ven
   }
 
   const [{ productos, categorias }, cliente] = await Promise.all([catalogoParaVender(sesion), clientePorId(sesion, cotizacion?.clienteId ?? clienteParam)]);
+  const infoInicial = cliente ? await reglasDeCliente(sesion.negocio.id, cliente.id) : null;
 
   return (
     <PuntoDeVenta
@@ -36,6 +38,7 @@ export default async function PaginaNuevaVenta({ searchParams }: PageProps<"/ven
       productos={productos}
       categorias={categorias}
       clienteInicial={cliente}
+      infoInicial={infoInicial}
       iva={{ ivaBp: sesion.negocio.ivaBp, preciosIncluyenIva: sesion.negocio.preciosIncluyenIva }}
       puedeDescontar={sesion.puede("ventas.descuento")}
       puedeCrearCliente={sesion.puede("clientes.crear")}

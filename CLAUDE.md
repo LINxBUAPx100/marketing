@@ -40,5 +40,7 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - Costos de insumos en centavos con decimales (`numeric`, 72.5 = $0.725). Cada `venta_partida` guarda su `costo` al venderse; la utilidad se calcula sin IVA. Las ventas anteriores a la fase 3 no tienen costo.
 - Al vender se descuentan los insumos de la receta (`motivo: "consumo"`); al cancelar se regresan.
 - Máquinas: reglas puras en `src/lib/maquinas/reglas.ts` (impresiones de un periodo desde lecturas, fantasma, desgaste de consumibles). Fantasma por tipo de impresión (byn, color, gran formato) = contador − (ventas × `impresionesPorUnidad` del producto) − mermas.
+- Precios: una sola regla en `src/lib/ventas/precios.ts` (`precioPara`): precio especial del convenio > escalón de volumen > lista, y luego descuento del convenio. La usan el navegador (`usePartidas`) y el servidor (`crearVenta`, `guardarCotizacion`) con datos de `src/lib/ventas/reglas-cliente.ts`.
+- Comisiones: una fila por partida al vender (base sin IVA × % de la categoría o del vendedor); se pagan solo si la venta está cobrada (`src/lib/comisiones/servidor.ts`).
 - Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.

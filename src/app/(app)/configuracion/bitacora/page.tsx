@@ -37,6 +37,9 @@ const ENTIDADES: Record<string, string> = {
   lecturas: "lecturas de",
   merma: "merma en",
   consumible: "consumible",
+  volumen: "precios por volumen de",
+  convenio: "convenio con",
+  comisiones: "comisiones de",
 };
 
 export default async function PaginaBitacora() {

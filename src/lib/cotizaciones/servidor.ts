@@ -5,6 +5,8 @@ import type { Sesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import { calcularTotales, importePartida, validarPartida } from "@/lib/ventas/calculo";
 import { siguienteFolio } from "@/lib/almacen/existencias";
+import { precioPara } from "@/lib/ventas/precios";
+import { reglasDeCliente, volumenDe } from "@/lib/ventas/reglas-cliente";
 import type { PartidaEntrada } from "@/lib/ventas/servidor";
 
 type Resultado<T = object> = ({ ok: true } & T) | { ok: false; mensaje: string };
@@ -42,13 +44,15 @@ export async function guardarCotizacion(sesion: Sesion, entrada: CotizacionEntra
   const productos = ids.length ? await db.select().from(t.producto).where(and(inArray(t.producto.id, ids), eq(t.producto.negocioId, negocioId))) : [];
   const porId = new Map(productos.map((p) => [p.id, p]));
   const puedeDescontar = sesion.puede("ventas.descuento");
+  const [reglasCliente, volumen] = await Promise.all([reglasDeCliente(negocioId, cliente.id), volumenDe(ids)]);
+  if (!reglasCliente) return { ok: false, mensaje: "El cliente ya no existe." };
 
   const partidas: (Omit<typeof t.cotizacionPartida.$inferInsert, "cotizacionId"> & { cantidad: number; precioUnitario: number; descuento: number })[] = [];
   for (const [i, p] of entrada.partidas.entries()) {
     const producto = p.productoId ? porId.get(p.productoId) : null;
     if (p.productoId && (!producto || !producto.activo)) return { ok: false, mensaje: "Un producto ya no está disponible. Quítalo e inténtalo de nuevo." };
     if (producto) {
-      const lista = cliente.tipoPrecio === "revendedor" && producto.precioRevendedor != null ? producto.precioRevendedor : producto.precio;
+      const lista = precioPara({ ...producto, volumen: volumen.get(producto.id) ?? [] }, p.cantidad, reglasCliente.reglas).precio;
       if ((p.precioUnitario !== lista || p.descuento > 0) && !puedeDescontar) {
         return { ok: false, mensaje: `No tienes permiso para cambiar el precio de "${producto.nombre}".` };
       }

@@ -10,7 +10,7 @@ import { MenuUsuario } from "./menu-usuario";
 import { SelectorSucursal } from "./selector-sucursal";
 
 type Props = {
-  usuario: { nombre: string; correo: string; rol: string };
+  usuario: { id: string; nombre: string; correo: string; rol: string; conComision: boolean };
   negocio: string;
   sucursales: { id: string; nombre: string }[];
   sucursalId: string | null;

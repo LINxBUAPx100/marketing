@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatoMoneda } from "@/lib/numeros";
 import type { ConfigIva } from "@/lib/ventas/calculo";
+import { InfoCredito } from "@/components/ventas/info-credito";
+import { useReglasCliente, type InfoCliente } from "@/components/ventas/use-reglas-cliente";
 import { SelectorCliente, type ClienteVenta } from "../ventas/nueva/selector-cliente";
 import { guardar } from "./acciones";
 
@@ -24,6 +26,7 @@ type Props = {
     id: string | null;
     folio: string | null;
     cliente: ClienteVenta | null;
+    infoCliente: InfoCliente | null;
     vigenciaHasta: string;
     notas: string;
     condiciones: string;
@@ -34,11 +37,11 @@ type Props = {
 export function EditorCotizacion({ productos, categorias, iva, puedeDescontar, puedeCrearCliente, inicial }: Props) {
   const router = useRouter();
   const [guardando, iniciar] = useTransition();
-  const [cliente, setCliente] = useState<ClienteVenta | null>(inicial.cliente);
+  const { cliente, setCliente, info } = useReglasCliente(inicial.cliente, inicial.infoCliente);
   const [vigencia, setVigencia] = useState(inicial.vigenciaHasta);
   const [notas, setNotas] = useState(inicial.notas);
   const [condiciones, setCondiciones] = useState(inicial.condiciones);
-  const partidas = usePartidas({ productos, tipoPrecio: cliente?.tipoPrecio, iva, iniciales: inicial.partidas });
+  const partidas = usePartidas({ productos, reglas: info.reglas, iva, iniciales: inicial.partidas });
 
   function enviar() {
     if (!cliente) return toast.error("Elige a qué cliente va la cotización.");
@@ -73,6 +76,7 @@ export function EditorCotizacion({ productos, categorias, iva, puedeDescontar, p
         </CardHeader>
         <CardContent className="grid gap-4">
           <SelectorCliente cliente={cliente} onChange={setCliente} puedeCrear={puedeCrearCliente} />
+          {cliente && <InfoCredito info={info} saldoNuevo={0} />}
           <ListaPartidas partidas={partidas} puedeDescontar={puedeDescontar} />
           <ResumenTotales totales={partidas.totales} ivaBp={iva.ivaBp} />
           <div className="grid gap-3 border-t pt-3">

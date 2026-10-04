@@ -52,7 +52,7 @@ export const NAVEGACION: GrupoNav[] = [
     items: [
       { href: "/clientes", etiqueta: "Clientes", icono: UserRound, permiso: "clientes.ver" },
       { href: "/cuentas-por-cobrar", etiqueta: "Cuentas por cobrar", icono: Banknote, permiso: "cxc.ver" },
-      { href: "/convenios", etiqueta: "Convenios", icono: Handshake, permiso: "convenios.ver", fase: 5 },
+      { href: "/convenios", etiqueta: "Convenios", icono: Handshake, permiso: "convenios.ver" },
     ],
   },
   {
@@ -74,7 +74,7 @@ export const NAVEGACION: GrupoNav[] = [
   {
     titulo: "Administración",
     items: [
-      { href: "/comisiones", etiqueta: "Comisiones", icono: Percent, permiso: "comisiones.ver", fase: 5 },
+      { href: "/comisiones", etiqueta: "Comisiones", icono: Percent, permiso: "comisiones.ver" },
       { href: "/facturacion", etiqueta: "Facturación", icono: FileSpreadsheet, permiso: "facturacion.ver", fase: 6 },
       { href: "/reportes", etiqueta: "Reportes", icono: BarChart3, permiso: "reportes.ver", fase: 7 },
     ],

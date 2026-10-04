@@ -19,8 +19,8 @@ const FASES = [
   { n: 2, nombre: "Producción y cotizaciones", detalle: "Órdenes, etapas y tablero en tiempo real", estado: "lista" },
   { n: 3, nombre: "Insumos y almacén", detalle: "Recetas, existencias, traspasos y proveedores", estado: "lista" },
   { n: 4, nombre: "Máquinas y contadores", detalle: "Lecturas, mermas y consumibles", estado: "lista" },
-  { n: 5, nombre: "Comisiones y convenios", detalle: "Comisiones, precios especiales y por volumen", estado: "siguiente" },
-  { n: 6, nombre: "Facturación CFDI 4.0", detalle: "Facturas, complementos y cancelaciones", estado: "pendiente" },
+  { n: 5, nombre: "Comisiones y convenios", detalle: "Comisiones, precios especiales y por volumen", estado: "lista" },
+  { n: 6, nombre: "Facturación CFDI 4.0", detalle: "Facturas, complementos y cancelaciones", estado: "siguiente" },
   { n: 7, nombre: "WhatsApp y reportes", detalle: "Envíos automáticos, panel y exportación", estado: "pendiente" },
 ] as const;
 

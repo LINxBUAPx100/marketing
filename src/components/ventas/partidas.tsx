@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { aCentavos, centavosATexto, formatoCantidad, formatoMoneda } from "@/lib/numeros";
 import { cn } from "@/lib/utils";
 import { calcularTotales, importePartida, validarPartida, type ConfigIva, type Totales } from "@/lib/ventas/calculo";
+import { precioPara, type EscalonVolumen, type ReglasPrecio } from "@/lib/ventas/precios";
 
 export type ProductoCatalogo = {
   id: string;
@@ -24,6 +25,7 @@ export type ProductoCatalogo = {
   categoriaId: string | null;
   existencia: number | null;
   requiereProduccion: boolean;
+  volumen: EscalonVolumen[];
 };
 
 export type Linea = {
@@ -66,33 +68,49 @@ export const lineaDesde = (p: PartidaInicial): Linea => ({
   verNotas: false,
 });
 
+export const REGLAS_PUBLICO: ReglasPrecio = { tipoPrecio: "publico", convenio: null };
+
 export function usePartidas({
   productos,
-  tipoPrecio,
+  reglas,
   iva,
   iniciales = [],
 }: {
   productos: ProductoCatalogo[];
-  tipoPrecio: "publico" | "revendedor" | undefined;
+  /** Tipo de precio y convenio del cliente elegido. */
+  reglas: ReglasPrecio;
   iva: ConfigIva;
   iniciales?: PartidaInicial[];
 }) {
   const [lineas, setLineas] = useState<Linea[]>(() => iniciales.map(lineaDesde));
   const porId = useMemo(() => new Map(productos.map((p) => [p.id, p])), [productos]);
-  const precioLista = (p: ProductoCatalogo) => (tipoPrecio === "revendedor" && p.precioRevendedor != null ? p.precioRevendedor : p.precio);
+  /** Precio por unidad para el cliente según la cantidad (convenio, volumen o lista). */
+  const precioDe = (p: ProductoCatalogo, cantidad = 1) => precioPara(p, Number.isFinite(cantidad) && cantidad > 0 ? cantidad : 1, reglas);
+  const precioLista = (p: ProductoCatalogo) => precioDe(p).precio;
 
   // Cada línea convertida a números, con su error si lo tiene.
   const calculadas = lineas.map((l) => {
     const producto = l.productoId ? porId.get(l.productoId) : undefined;
-    const precioUnitario = l.precio != null ? aCentavos(l.precio) : producto ? precioLista(producto) : 0;
-    const partida = { cantidad: aNumero(l.cantidad), precioUnitario, descuento: l.descuento.trim() ? aCentavos(l.descuento) : 0 };
+    const cantidad = aNumero(l.cantidad);
+    const regla = producto && l.precio == null ? precioDe(producto, cantidad) : null;
+    const precioUnitario = l.precio != null ? aCentavos(l.precio) : (regla?.precio ?? 0);
+    const partida = { cantidad, precioUnitario, descuento: l.descuento.trim() ? aCentavos(l.descuento) : 0 };
     const error =
       Number.isNaN(partida.cantidad) || Number.isNaN(partida.precioUnitario) || Number.isNaN(partida.descuento)
         ? "Revisa los números."
         : !l.productoId && !l.descripcion.trim()
           ? "Escribe qué se vende."
           : validarPartida(partida);
-    return { linea: l, producto, partida, error };
+    // Por qué tiene ese precio, para mostrarlo junto a la partida.
+    const motivoPrecio =
+      regla?.origen === "convenio"
+        ? "Precio de convenio"
+        : regla?.origen === "volumen"
+          ? `Precio por volumen (desde ${regla.desde})${regla.conDescuentoConvenio ? " con descuento de convenio" : ""}`
+          : regla?.conDescuentoConvenio
+            ? "Con descuento de convenio"
+            : null;
+    return { linea: l, producto, partida, error, motivoPrecio };
   });
   const totales = calcularTotales(
     calculadas.filter((c) => !c.error).map((c) => c.partida),
@@ -257,7 +275,7 @@ export function ListaPartidas({ partidas, puedeDescontar }: { partidas: Partidas
       {calculadas.length === 0 && (
         <li className="text-muted-foreground rounded-lg border border-dashed py-6 text-center text-sm">Toca un producto para agregarlo.</li>
       )}
-      {calculadas.map(({ linea: l, producto, partida, error }) => (
+      {calculadas.map(({ linea: l, producto, partida, error, motivoPrecio }) => (
         <li key={l.clave} className={cn("grid gap-2 rounded-lg border p-2.5", error && "border-destructive/60")}>
           <div className="flex items-start gap-2">
             {l.productoId ? (
@@ -321,7 +339,7 @@ export function ListaPartidas({ partidas, puedeDescontar }: { partidas: Partidas
           )}
           {!l.verNotas && l.notas && <p className="text-muted-foreground text-xs whitespace-pre-line">{l.notas}</p>}
           <div className="flex items-center justify-between text-sm">
-            {error ? <span className="text-destructive text-xs">{error}</span> : <span />}
+            {error ? <span className="text-destructive text-xs">{error}</span> : motivoPrecio ? <span className="text-xs text-emerald-700">{motivoPrecio}</span> : <span />}
             <span className="font-semibold tabular-nums">{error ? "—" : formatoMoneda(importePartida(partida))}</span>
           </div>
         </li>

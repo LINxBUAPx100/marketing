@@ -15,9 +15,9 @@ import { centavosATexto, formatoCantidad, formatoFechaHora } from "@/lib/numeros
 import { FormularioProducto } from "../formulario";
 import { DialogoAjuste } from "./dialogo-ajuste";
 import { EditorReceta } from "./receta";
+import { EditorVolumen } from "./volumen";
 
 export const metadata: Metadata = { title: "Producto" };
-
 
 export default async function PaginaProducto({ params }: PageProps<"/productos/[id]">) {
   const { id } = await params;
@@ -31,7 +31,7 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
     .where(and(eq(t.producto.id, id), eq(t.producto.negocioId, negocioId)));
   if (!producto) notFound();
 
-  const [categorias, sucursales, existencias, movimientos, insumos, receta] = await Promise.all([
+  const [categorias, sucursales, existencias, movimientos, insumos, receta, volumen] = await Promise.all([
     db
       .select({ id: t.categoria.id, nombre: t.categoria.nombre })
       .from(t.categoria)
@@ -68,6 +68,11 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
       .where(and(eq(t.insumo.negocioId, negocioId), eq(t.insumo.activo, true)))
       .orderBy(asc(t.insumo.nombre)),
     db.select({ insumoId: t.receta.insumoId, cantidad: t.receta.cantidad }).from(t.receta).where(eq(t.receta.productoId, id)),
+    db
+      .select({ desde: t.precioVolumen.desde, precio: t.precioVolumen.precio, precioRevendedor: t.precioVolumen.precioRevendedor })
+      .from(t.precioVolumen)
+      .where(eq(t.precioVolumen.productoId, id))
+      .orderBy(asc(t.precioVolumen.desde)),
   ]);
 
   const existenciaEn = (sucursalId: string) => existencias.find((e) => e.sucursalId === sucursalId)?.cantidad ?? 0;
@@ -106,19 +111,22 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
         }}
       />
 
-      {verCostos && (
-        <div className="mt-6 max-w-2xl">
-          <EditorReceta
-            productoId={producto.id}
-            unidadProducto={producto.unidad}
-            precio={producto.precio}
-            iva={{ ivaBp: sesion.negocio.ivaBp, preciosIncluyenIva: sesion.negocio.preciosIncluyenIva }}
-            insumos={insumos}
-            inicial={receta}
-            puedeEditar={sesion.puede("productos.editar")}
-          />
-        </div>
-      )}
+      <div className="mt-6 grid max-w-5xl gap-6 lg:grid-cols-2">
+        <EditorVolumen productoId={producto.id} unidad={producto.unidad} inicial={volumen} puedeEditar={sesion.puede("productos.editar")} />
+        {verCostos && (
+          <div>
+            <EditorReceta
+              productoId={producto.id}
+              unidadProducto={producto.unidad}
+              precio={producto.precio}
+              iva={{ ivaBp: sesion.negocio.ivaBp, preciosIncluyenIva: sesion.negocio.preciosIncluyenIva }}
+              insumos={insumos}
+              inicial={receta}
+              puedeEditar={sesion.puede("productos.editar")}
+            />
+          </div>
+        )}
+      </div>
 
       {producto.tipo === "producto" && (
         <div className="mt-6 grid gap-6 lg:grid-cols-[18rem_1fr]">
@@ -135,9 +143,7 @@ export default async function PaginaProducto({ params }: PageProps<"/productos/[
                     <span className={`tabular-nums ${cantidad <= producto.existenciaMinima ? "text-destructive font-semibold" : "font-medium"}`}>
                       {formatoCantidad(cantidad)}
                     </span>
-                    {puedeAjustar && (
-                      <DialogoAjuste productoId={producto.id} sucursal={s} actual={cantidad} unidad={producto.unidad} />
-                    )}
+                    {puedeAjustar && <DialogoAjuste productoId={producto.id} sucursal={s} actual={cantidad} unidad={producto.unidad} />}
                   </div>
                 );
               })}

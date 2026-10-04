@@ -4,6 +4,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { db, t } from "@/db";
 import { urlArchivo } from "@/lib/archivos";
 import type { Sesion } from "@/lib/auth";
+import { volumenDe } from "./reglas-cliente";
 
 /** Venta completa para mostrar o imprimir. Null si no existe o el usuario no tiene acceso a su sucursal. */
 export async function obtenerVenta(sesion: Sesion, id: string) {
@@ -87,7 +88,8 @@ export async function catalogoParaVender(sesion: Sesion) {
       .where(and(eq(t.categoria.negocioId, negocioId), eq(t.categoria.activa, true)))
       .orderBy(asc(t.categoria.nombre)),
   ]);
-  return { productos: productos.map((p) => ({ ...p, imagen: urlArchivo(p.imagen) })), categorias };
+  const volumen = await volumenDe(productos.map((p) => p.id));
+  return { productos: productos.map((p) => ({ ...p, imagen: urlArchivo(p.imagen), volumen: volumen.get(p.id) ?? [] })), categorias };
 }
 
 export async function clientePorId(sesion: Sesion, id: string | undefined | null) {

@@ -12,7 +12,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
 
   return (
     <Marco
-      usuario={{ nombre: sesion.usuario.nombre, correo: sesion.usuario.correo, rol: sesion.rol.nombre }}
+      usuario={{ id: sesion.usuario.id, nombre: sesion.usuario.nombre, correo: sesion.usuario.correo, rol: sesion.rol.nombre, conComision: sesion.usuario.comisionBp > 0 }}
       negocio={sesion.negocio.nombre}
       sucursales={sesion.sucursales.map((s) => ({ id: s.id, nombre: s.nombre }))}
       sucursalId={sesion.sucursal?.id ?? null}

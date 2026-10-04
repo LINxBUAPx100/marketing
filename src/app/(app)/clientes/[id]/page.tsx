@@ -1,5 +1,5 @@
 import { and, desc, eq } from "drizzle-orm";
-import { ArrowLeft, MessageCircle, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Handshake, MessageCircle, ShoppingCart } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -77,6 +77,11 @@ export default async function PaginaCliente({ params }: PageProps<"/clientes/[id
               activo: cliente.activo,
             }}
           />
+        )}
+        {sesion.puede("convenios.ver") && (
+          <Button variant="outline" nativeButton={false} render={<Link href={`/convenios/${cliente.id}`} />}>
+            <Handshake /> Convenio
+          </Button>
         )}
         {sesion.puede("ventas.crear") && (
           <Button nativeButton={false} render={<Link href={`/ventas/nueva?cliente=${cliente.id}`} />}>

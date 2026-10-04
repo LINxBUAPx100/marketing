@@ -127,7 +127,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - **Mermas** por equipo y por usuario con motivo.
 - **Consumibles**: instalación, rendimiento esperado vs. real, fecha de reposición, ranking de consumo.
 
-### Fase 5 — Comisiones, convenios y precios avanzados (1 semana)
+### Fase 5 — Comisiones, convenios y precios avanzados (1 semana) ✅ terminada
 - % de comisión por usuario (opcional por categoría), cálculo por periodo, marcar pagadas.
 - **Convenios** con clientes: lista de precios especial, descuento, días de crédito, límite de crédito.
 - Precios por volumen (ej. 1–99, 100–499, 500+ volantes).

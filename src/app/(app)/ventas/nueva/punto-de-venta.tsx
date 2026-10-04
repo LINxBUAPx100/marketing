@@ -15,6 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatoMoneda } from "@/lib/numeros";
 import type { ConfigIva } from "@/lib/ventas/calculo";
 import { registrarVenta } from "../acciones";
+import { useReglasCliente, type InfoCliente } from "@/components/ventas/use-reglas-cliente";
+import { InfoCredito } from "@/components/ventas/info-credito";
 import { SelectorCliente, type ClienteVenta } from "./selector-cliente";
 
 type Props = {
@@ -22,6 +24,7 @@ type Props = {
   productos: ProductoCatalogo[];
   categorias: { id: string; nombre: string }[];
   clienteInicial: ClienteVenta | null;
+  infoInicial: InfoCliente | null;
   iva: ConfigIva;
   puedeDescontar: boolean;
   puedeCrearCliente: boolean;
@@ -29,17 +32,17 @@ type Props = {
   cotizacion: { id: string; folio: string; partidas: PartidaInicial[]; notas: string | null } | null;
 };
 
-export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, iva, puedeDescontar, puedeCrearCliente, cotizacion }: Props) {
+export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, infoInicial, iva, puedeDescontar, puedeCrearCliente, cotizacion }: Props) {
   const router = useRouter();
   const [enviando, iniciar] = useTransition();
-  const [cliente, setCliente] = useState<ClienteVenta | null>(clienteInicial);
+  const { cliente, setCliente, info } = useReglasCliente(clienteInicial, infoInicial);
   const [pagos, setPagos] = useState<PagoEditable[]>([]);
   const [entrega, setEntrega] = useState("");
   const [notas, setNotas] = useState(cotizacion?.notas ?? "");
   // null = seguir la sugerencia según los productos; true/false = lo eligió la persona.
   const [produccionElegida, setProduccionElegida] = useState<boolean | null>(null);
 
-  const partidas = usePartidas({ productos, tipoPrecio: cliente?.tipoPrecio, iva, iniciales: cotizacion?.partidas });
+  const partidas = usePartidas({ productos, reglas: info.reglas, iva, iniciales: cotizacion?.partidas });
   const { totales } = partidas;
   const pagosResumen = resumenPagos(pagos, totales.total);
   const hayErrores = partidas.hayErrores || pagosResumen.invalido || pagosResumen.excedido;
@@ -93,6 +96,7 @@ export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, 
           ) : (
             <SelectorCliente cliente={cliente} onChange={setCliente} puedeCrear={puedeCrearCliente} />
           )}
+          {cliente && <InfoCredito info={info} saldoNuevo={Math.max(0, pagosResumen.saldo)} />}
 
           <ListaPartidas partidas={partidas} puedeDescontar={puedeDescontar} />
           <ResumenTotales totales={totales} ivaBp={iva.ivaBp} />
@@ -137,7 +141,7 @@ export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, 
           <Button type="button" size="lg" className="h-11 text-base" disabled={enviando || !partidas.lineas.length} onClick={registrar}>
             {enviando ? "Registrando…" : `Registrar venta · ${formatoMoneda(totales.total)}`}
           </Button>
-          {cliente?.tipoPrecio === "revendedor" && !cotizacion && <Badge className="justify-self-center">Precios de revendedor aplicados</Badge>}
+          {info.reglas.tipoPrecio === "revendedor" && !info.reglas.convenio && !cotizacion && <Badge className="justify-self-center">Precios de revendedor aplicados</Badge>}
         </CardContent>
       </Card>
     </div>

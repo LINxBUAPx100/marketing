@@ -27,11 +27,14 @@ export async function guardarCategoria(_: EstadoFormulario, formData: FormData):
     .object({
       id: z.preprocess(vacioANull, z.uuid().nullable().optional()),
       nombre: z.string().trim().min(2, { error: "Escribe el nombre de la categoría." }),
+      // Vacío = usa la comisión de cada vendedor.
+      comision: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? null : v), z.coerce.number({ error: "Escribe un porcentaje." }).min(0).max(100).nullable()),
       activa: casilla,
     })
     .safeParse(datosDe(formData));
   if (!datos.success) return erroresDe(datos.error);
-  const { id, ...valores } = datos.data;
+  const { id, comision, ...resto } = datos.data;
+  const valores = { ...resto, comisionBp: comision == null ? null : Math.round(comision * 100) };
 
   if (id) {
     await db
@@ -171,4 +174,39 @@ export async function ajustarExistencia(_: EstadoFormulario, formData: FormData)
   await registrar(sesion, "ajustar", "existencia", productoId, { nombre: producto.nombre, sucursal: sucursal.nombre, diferencia });
   revalidatePath(`/productos/${productoId}`);
   return { ok: true, mensaje: `Existencia ajustada (${diferencia > 0 ? "+" : ""}${diferencia}).` };
+}
+
+// ─── Precios por volumen ────────────────────────────────────────────────────
+
+const VolumenSchema = z.object({
+  productoId: z.uuid(),
+  escalones: z
+    .array(
+      z.object({
+        desde: z.number().positive({ error: "La cantidad debe ser mayor que cero." }).max(10_000_000),
+        precio: z.number().int().min(0),
+        precioRevendedor: z.number().int().min(0).nullable(),
+      }),
+    )
+    .max(10),
+});
+
+/** Reemplaza todos los escalones de precio por volumen de un producto. */
+export async function guardarVolumen(entrada: z.input<typeof VolumenSchema>) {
+  const sesion = await requerirSesion();
+  if (!sesion.puede("productos.editar")) return { ok: false as const, mensaje: "No tienes permiso para editar productos." };
+  const datos = VolumenSchema.safeParse(entrada);
+  if (!datos.success) return { ok: false as const, mensaje: datos.error.issues[0]?.message ?? "Revisa los escalones." };
+  const { productoId, escalones } = datos.data;
+  if (new Set(escalones.map((e) => e.desde)).size !== escalones.length) return { ok: false as const, mensaje: "Hay dos escalones con la misma cantidad." };
+
+  const [producto] = await db.select().from(t.producto).where(and(eq(t.producto.id, productoId), eq(t.producto.negocioId, sesion.negocio.id)));
+  if (!producto) return { ok: false as const, mensaje: "El producto ya no existe." };
+  await db.transaction(async (tx) => {
+    await tx.delete(t.precioVolumen).where(eq(t.precioVolumen.productoId, productoId));
+    if (escalones.length) await tx.insert(t.precioVolumen).values(escalones.map((e) => ({ ...e, productoId })));
+  });
+  await registrar(sesion, "editar", "volumen", productoId, { nombre: producto.nombre, escalones: escalones.length });
+  revalidatePath(`/productos/${productoId}`);
+  return { ok: true as const };
 }

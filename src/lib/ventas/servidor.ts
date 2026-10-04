@@ -4,12 +4,14 @@ import { db, t } from "@/db";
 import type { Sesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import { moverExistencia, moverInsumo, siguienteFolio } from "@/lib/almacen/existencias";
-import { consumoDeInsumos, costoPartida } from "@/lib/almacen/reglas";
+import { consumoDeInsumos, costoPartida, ingresoSinIva } from "@/lib/almacen/reglas";
 import { devolverInsumosDeVenta, recetasDe } from "@/lib/almacen/servidor";
 import type { Metodo } from "@/lib/caja/resumen";
 import { cancelarOrdenDeVenta, crearOrden, etapasDe } from "@/lib/produccion/servidor";
 import { estadoCotizacion } from "@/lib/produccion/reglas";
 import { calcularTotales, importePartida, validarPagos, validarPartida } from "./calculo";
+import { comisionDe, precioPara, rebasaLimite } from "./precios";
+import { reglasDeCliente, volumenDe } from "./reglas-cliente";
 
 type Resultado<T = object> = ({ ok: true } & T) | { ok: false; mensaje: string };
 
@@ -53,6 +55,8 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
     : [];
   const porId = new Map(productos.map((p) => [p.id, p]));
   const puedeDescontar = sesion.puede("ventas.descuento");
+  const [reglasCliente, volumen] = await Promise.all([reglasDeCliente(negocioId, cliente?.id ?? null), volumenDe(ids)]);
+  if (!reglasCliente) return { ok: false, mensaje: "El cliente ya no existe." };
 
   // Precios ya autorizados en una cotización vigente del mismo cliente.
   const cotizado = new Map<string, { precioUnitario: number; descuento: number }>();
@@ -77,7 +81,8 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
     if (p.productoId && (!producto || !producto.activo)) return { ok: false, mensaje: "Un producto ya no está disponible. Quítalo e inténtalo de nuevo." };
 
     if (producto) {
-      const lista = cliente?.tipoPrecio === "revendedor" && producto.precioRevendedor != null ? producto.precioRevendedor : producto.precio;
+      // Convenio, volumen o lista: la misma regla que ve el punto de venta.
+      const lista = precioPara({ ...producto, volumen: volumen.get(producto.id) ?? [] }, p.cantidad, reglasCliente.reglas).precio;
       const autorizado = cotizado.get(producto.id);
       const comoCotizado = !!autorizado && p.precioUnitario === autorizado.precioUnitario && p.descuento <= autorizado.descuento;
       if ((p.precioUnitario !== lista || p.descuento > 0) && !puedeDescontar && !comoCotizado) {
@@ -106,6 +111,25 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
   if (pagado < totales.total && !cliente) {
     return { ok: false, mensaje: "Para dejar saldo pendiente, elige a qué cliente se le cobra." };
   }
+  // Límite de crédito del convenio. Solo la administración puede rebasarlo.
+  if (rebasaLimite(reglasCliente.saldo, totales.total - pagado, reglasCliente.limiteCredito) && !sesion.rol.esAdmin) {
+    return {
+      ok: false,
+      mensaje: `${cliente?.nombre} rebasaría su límite de crédito de ${(reglasCliente.limiteCredito! / 100).toLocaleString("es-MX", { style: "currency", currency: "MXN" })}: ya debe ${(reglasCliente.saldo / 100).toLocaleString("es-MX", { style: "currency", currency: "MXN" })}. Cobra más ahora o pide autorización.`,
+    };
+  }
+
+  // Comisión: la de la categoría del producto si tiene una propia; si no, la del vendedor.
+  const idsCategoria = [...new Set(productos.map((p) => p.categoriaId).filter((x): x is string => !!x))];
+  const categorias = idsCategoria.length ? await db.select({ id: t.categoria.id, comisionBp: t.categoria.comisionBp }).from(t.categoria).where(inArray(t.categoria.id, idsCategoria)) : [];
+  const comisionCategoria = new Map(categorias.map((c) => [c.id, c.comisionBp]));
+  const comisiones = partidas
+    .map((p) => {
+      const bp = (p.producto?.categoriaId ? comisionCategoria.get(p.producto.categoriaId) : null) ?? sesion.usuario.comisionBp;
+      const base = ingresoSinIva(p.importe, sesion.negocio);
+      return { bp, base, monto: comisionDe(base, bp) };
+    })
+    .filter((c) => c.monto > 0);
 
   // Costo de cada partida (receta o costo del producto) y consumo de insumos de la venta.
   const recetas = await recetasDe(db, productos.map((p) => p.id));
@@ -153,6 +177,10 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
         orden: p.orden,
       })),
     );
+
+    if (comisiones.length) {
+      await tx.insert(t.comision).values(comisiones.map((c) => ({ ...c, negocioId, ventaId: v.id, usuarioId: sesion.usuario.id })));
+    }
 
     for (const [insumoId, cantidad] of consumo) {
       await moverInsumo(tx, { negocioId, sucursalId: sucursal.id, insumoId, cantidad: -cantidad, motivo: "consumo", ventaId: v.id, usuarioId: sesion.usuario.id });
@@ -244,6 +272,10 @@ export async function cancelarVenta(sesion: Sesion, ventaId: string, motivo: str
       .where(eq(t.venta.id, ventaId));
     await cancelarOrdenDeVenta(tx, ventaId);
     await devolverInsumosDeVenta(tx, { negocioId: sesion.negocio.id, ventaId, usuarioId: sesion.usuario.id });
+    await tx
+      .update(t.comision)
+      .set({ estado: "cancelada" })
+      .where(and(eq(t.comision.ventaId, ventaId), eq(t.comision.estado, "pendiente")));
 
     // Pagos del periodo abierto: se anulan y dejan de contar en la caja.
     await tx

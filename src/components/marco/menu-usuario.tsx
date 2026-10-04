@@ -1,6 +1,7 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Percent } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { salir } from "@/app/(app)/acciones-sesion";
 import {
   DropdownMenu,
@@ -19,7 +20,8 @@ const iniciales = (nombre: string) =>
     .map((p) => p[0]?.toUpperCase())
     .join("");
 
-export function MenuUsuario({ nombre, correo, rol }: { nombre: string; correo: string; rol: string }) {
+export function MenuUsuario({ id, nombre, correo, rol, conComision }: { id: string; nombre: string; correo: string; rol: string; conComision: boolean }) {
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -40,6 +42,12 @@ export function MenuUsuario({ nombre, correo, rol }: { nombre: string; correo: s
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        {conComision && (
+          <DropdownMenuItem onClick={() => router.push(`/comisiones/${id}`)}>
+            <Percent />
+            Mis comisiones
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => salir()}>
           <LogOut />
           Cerrar sesión

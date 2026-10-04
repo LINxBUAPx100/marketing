@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { db, t } from "@/db";
 import { requerirPermiso } from "@/lib/auth";
 import { catalogoParaVender, clientePorId } from "@/lib/ventas/consultas";
+import { reglasDeCliente } from "@/lib/ventas/reglas-cliente";
 import { EditorCotizacion } from "../../editor";
 
 export const metadata: Metadata = { title: "Editar cotización" };
@@ -18,10 +19,11 @@ export default async function PaginaEditarCotizacion({ params }: PageProps<"/cot
   if (!c) notFound();
   if (c.estado !== "abierta") redirect(`/cotizaciones/${id}`);
 
-  const [{ productos, categorias }, cliente, partidas] = await Promise.all([
+  const [{ productos, categorias }, cliente, partidas, infoCliente] = await Promise.all([
     catalogoParaVender(sesion),
     clientePorId(sesion, c.clienteId),
     db.select().from(t.cotizacionPartida).where(eq(t.cotizacionPartida.cotizacionId, id)).orderBy(asc(t.cotizacionPartida.orden)),
+    reglasDeCliente(sesion.negocio.id, c.clienteId),
   ]);
 
   return (
@@ -35,6 +37,7 @@ export default async function PaginaEditarCotizacion({ params }: PageProps<"/cot
         id: c.id,
         folio: c.folio,
         cliente,
+        infoCliente,
         vigenciaHasta: fechaMexico(c.vigenciaHasta),
         notas: c.notas ?? "",
         condiciones: c.condiciones ?? "",
