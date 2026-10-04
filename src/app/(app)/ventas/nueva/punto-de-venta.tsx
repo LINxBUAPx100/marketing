@@ -12,15 +12,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { formatoMoneda } from "@/lib/numeros";
+import { formatoFechaHora, formatoMoneda } from "@/lib/numeros";
 import type { ConfigIva } from "@/lib/ventas/calculo";
-import { registrarVenta } from "../acciones";
+import { registrarVenta, type VentaNueva } from "../acciones";
+import { esErrorDeRed, guardarPendiente } from "@/lib/offline/cola";
 import { useReglasCliente, type InfoCliente } from "@/components/ventas/use-reglas-cliente";
 import { InfoCredito } from "@/components/ventas/info-credito";
 import { SelectorCliente, type ClienteVenta } from "./selector-cliente";
 
 type Props = {
   sucursal: string;
+  sucursalId: string;
   productos: ProductoCatalogo[];
   categorias: { id: string; nombre: string }[];
   clienteInicial: ClienteVenta | null;
@@ -32,7 +34,25 @@ type Props = {
   cotizacion: { id: string; folio: string; partidas: PartidaInicial[]; notas: string | null } | null;
 };
 
-export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, infoInicial, iva, puedeDescontar, puedeCrearCliente, cotizacion }: Props) {
+export function PuntoDeVenta(props: Props) {
+  // Al guardar una venta sin conexión se vuelve a montar el punto de venta para empezar otra en limpio.
+  const [n, setN] = useState(0);
+  return <PuntoDeVentaInterno key={n} {...props} alGuardarSinConexion={() => setN((x) => x + 1)} />;
+}
+
+function PuntoDeVentaInterno({
+  sucursal,
+  sucursalId,
+  productos,
+  categorias,
+  clienteInicial,
+  infoInicial,
+  iva,
+  puedeDescontar,
+  puedeCrearCliente,
+  cotizacion,
+  alGuardarSinConexion,
+}: Props & { alGuardarSinConexion: () => void }) {
   const router = useRouter();
   const [enviando, iniciar] = useTransition();
   const { cliente, setCliente, info } = useReglasCliente(clienteInicial, infoInicial);
@@ -54,16 +74,41 @@ export function PuntoDeVenta({ sucursal, productos, categorias, clienteInicial, 
     if (hayErrores) return toast.error("Corrige lo que está marcado en rojo.");
     if (faltaCliente) return toast.error("Para dejar saldo pendiente, elige el cliente.");
 
+    const entrada: VentaNueva = {
+      clienteId: cliente?.id ?? null,
+      fechaEntrega: entrega || null,
+      notas: notas || null,
+      partidas: partidas.paraEnviar(),
+      pagos: pagosParaEnviar(pagos),
+      enviarProduccion,
+      cotizacionId: cotizacion?.id ?? null,
+      claveLocal: crypto.randomUUID(),
+      sucursalId,
+    };
+
     iniciar(async () => {
-      const resultado = await registrarVenta({
-        clienteId: cliente?.id ?? null,
-        fechaEntrega: entrega || null,
-        notas: notas || null,
-        partidas: partidas.paraEnviar(),
-        pagos: pagosParaEnviar(pagos),
-        enviarProduccion,
-        cotizacionId: cotizacion?.id ?? null,
-      });
+      let resultado: Awaited<ReturnType<typeof registrarVenta>>;
+      try {
+        if (!navigator.onLine) throw new TypeError("Sin conexión");
+        resultado = await registrarVenta(entrada);
+      } catch (e) {
+        if (!esErrorDeRed(e)) {
+          toast.error("No se pudo registrar la venta. Intenta de nuevo.");
+          return;
+        }
+        // Sin internet: se guarda en este equipo y se manda sola al volver la conexión.
+        await guardarPendiente({
+          clave: entrada.claveLocal!,
+          capturadaEn: new Date().toISOString(),
+          sucursal,
+          cliente: cliente?.nombre ?? null,
+          total: totales.total,
+          datos: { ...entrada, notas: [entrada.notas, `Capturada sin conexión el ${formatoFechaHora(new Date())}`].filter(Boolean).join(" ") },
+        });
+        toast.warning("Sin conexión: la venta quedó guardada en este equipo y se enviará sola al volver el internet.");
+        alGuardarSinConexion();
+        return;
+      }
       if (!resultado.ok) {
         toast.error(resultado.mensaje);
         return;

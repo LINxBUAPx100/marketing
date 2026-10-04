@@ -1,5 +1,6 @@
 import { asc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -46,6 +47,7 @@ export default async function PaginaUsuarios() {
   return (
     <>
       <Encabezado titulo="Usuarios" descripcion="Usuarios ilimitados. Cada uno entra con su correo y ve lo que su rol permite.">
+        <BotonExcel catalogo="usuarios" />
         {puedeEditar && <DialogoUsuario roles={roles} sucursales={sucursales} />}
       </Encabezado>
       <Card className="py-0">

@@ -1,5 +1,5 @@
 import { and, desc, eq } from "drizzle-orm";
-import { ArrowLeft, Handshake, MessageCircle, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Handshake, ShoppingCart } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +12,8 @@ import { db, t } from "@/db";
 import { requerirPermiso } from "@/lib/auth";
 import { formatoMoneda } from "@/lib/numeros";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { whatsappConfigurado } from "@/lib/mensajes/proveedor";
+import { BotonWhatsApp } from "@/components/boton-whatsapp";
 import { DialogoCliente } from "../dialogo";
 
 export const metadata: Metadata = { title: "Cliente" };
@@ -54,11 +56,14 @@ export default async function PaginaCliente({ params }: PageProps<"/clientes/[id
         <ArrowLeft /> Clientes
       </Button>
       <Encabezado titulo={cliente.nombre} descripcion={[cliente.empresa, cliente.telefono, cliente.correo].filter(Boolean).join(" · ") || undefined}>
-        {whatsapp && (
-          <Button variant="outline" nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noopener noreferrer" />}>
-            <MessageCircle /> WhatsApp
-          </Button>
-        )}
+        {/* Con la API solo se puede iniciar conversación con plantilla: el recordatorio de saldo. */}
+        <BotonWhatsApp
+          api={whatsappConfigurado() && saldo > 0}
+          clave="recordatorio_saldo"
+          entidadId={cliente.id}
+          enlace={whatsapp}
+          etiqueta={whatsappConfigurado() && saldo > 0 ? "Recordar saldo" : "WhatsApp"}
+        />
         {sesion.puede("clientes.editar") && (
           <DialogoCliente
             cliente={{

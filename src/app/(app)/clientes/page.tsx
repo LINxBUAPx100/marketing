@@ -2,6 +2,7 @@ import { and, asc, eq, ilike, or, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { FiltroSelect } from "@/components/filtro-select";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ export default async function PaginaClientes({ searchParams }: PageProps<"/clien
   return (
     <>
       <Encabezado titulo="Clientes" descripcion="Catálogo de clientes con su saldo pendiente.">
+        <BotonExcel catalogo="clientes" />
         {sesion.puede("clientes.crear") && <DialogoCliente />}
       </Encabezado>
       <Buscador placeholder="Buscar por nombre, empresa, teléfono o RFC" valor={q}>

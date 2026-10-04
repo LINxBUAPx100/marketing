@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { requerirSesion } from "@/lib/auth";
 import { METODOS } from "@/lib/caja/resumen";
 import { datosDe, erroresDe, type EstadoFormulario } from "@/lib/formulario";
+import { avisoAutomatico } from "@/lib/mensajes/servidor";
 import { reglasDeCliente } from "@/lib/ventas/reglas-cliente";
 import { cancelarVenta, crearVenta, registrarAbono } from "@/lib/ventas/servidor";
 
@@ -48,6 +50,9 @@ const VentaSchema = z.object({
   pagos: z.array(PagoSchema).max(10),
   enviarProduccion: z.boolean(),
   cotizacionId: z.uuid().nullable(),
+  // Ventas capturadas sin conexión: clave para no duplicarlas y sucursal donde se hicieron.
+  claveLocal: z.uuid().nullable().optional(),
+  sucursalId: z.uuid().nullable().optional(),
 });
 
 export type VentaNueva = z.input<typeof VentaSchema>;
@@ -59,12 +64,17 @@ export async function registrarVenta(entrada: VentaNueva) {
   const datos = VentaSchema.safeParse(entrada);
   if (!datos.success) return { ok: false as const, mensaje: "Revisa las cantidades y los importes de la venta." };
 
-  const resultado = await crearVenta(sesion, datos.data);
+  // Una venta hecha sin conexión se registra en la sucursal donde se capturó, si la persona tiene acceso a ella.
+  const { sucursalId, ...venta } = datos.data;
+  const sucursal = sucursalId ? sesion.sucursales.find((s) => s.id === sucursalId) : sesion.sucursal;
+  if (!sucursal) return { ok: false as const, mensaje: "Ya no tienes acceso a la sucursal donde se capturó la venta." };
+  const resultado = await crearVenta({ ...sesion, sucursal }, venta);
   if (resultado.ok) {
     revalidatePath("/ventas");
     revalidatePath("/caja");
     revalidatePath("/produccion");
     revalidatePath("/cotizaciones");
+    if (datos.data.clienteId) after(() => avisoAutomatico(sesion.negocio.id, "venta_registrada", resultado.id, sesion.usuario.id));
   }
   return resultado;
 }

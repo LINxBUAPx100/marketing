@@ -1,6 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import { ArrowLeft, MessageCircle, Receipt, Shuffle } from "lucide-react";
+import { ArrowLeft, Receipt, Shuffle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,6 +15,8 @@ import { usuariosActivos } from "@/lib/produccion/consultas";
 import { ETIQUETA_URGENCIA, formatoDuracion, urgencia } from "@/lib/produccion/reglas";
 import { etapasDe } from "@/lib/produccion/servidor";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { whatsappConfigurado } from "@/lib/mensajes/proveedor";
+import { BotonWhatsApp } from "@/components/boton-whatsapp";
 import { DialogoMover } from "../dialogo-mover";
 
 export const metadata: Metadata = { title: "Orden de producción" };
@@ -88,10 +90,15 @@ export default async function PaginaOrden({ params }: PageProps<"/produccion/[id
           <Button variant="outline" nativeButton={false} render={<Link href={`/ventas/${venta.id}`} />}>
             <Receipt /> Venta
           </Button>
-          {whatsapp && etapa.tipo !== "proceso" && (
-            <Button variant={etapa.tipo === "listo" ? "default" : "outline"} nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noopener noreferrer" />}>
-              <MessageCircle /> Avisar que está listo
-            </Button>
+          {cliente && etapa.tipo !== "proceso" && (
+            <BotonWhatsApp
+              api={whatsappConfigurado()}
+              clave="pedido_listo"
+              entidadId={venta.id}
+              enlace={whatsapp}
+              etiqueta="Avisar que está listo"
+              variant={etapa.tipo === "listo" ? "default" : "outline"}
+            />
           )}
           {sesion.puede("produccion.editar") && orden.estado === "activa" && (
             <DialogoMover

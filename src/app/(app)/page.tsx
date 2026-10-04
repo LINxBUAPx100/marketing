@@ -21,7 +21,7 @@ const FASES = [
   { n: 4, nombre: "Máquinas y contadores", detalle: "Lecturas, mermas y consumibles", estado: "lista" },
   { n: 5, nombre: "Comisiones y convenios", detalle: "Comisiones, precios especiales y por volumen", estado: "lista" },
   { n: 6, nombre: "Facturación CFDI 4.0", detalle: "Facturas, complementos y cancelaciones", estado: "lista" },
-  { n: 7, nombre: "WhatsApp y reportes", detalle: "Envíos automáticos, panel y exportación", estado: "siguiente" },
+  { n: 7, nombre: "WhatsApp y reportes", detalle: "Avisos automáticos, reportes, Excel, app instalable y respaldos", estado: "lista" },
 ] as const;
 
 const ESTILO_ESTADO = {

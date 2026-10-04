@@ -3,6 +3,7 @@ import { FilePlus2 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { FiltroSelect } from "@/components/filtro-select";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,7 @@ export default async function PaginaFacturacion({ searchParams }: PageProps<"/fa
   return (
     <>
       <Encabezado titulo="Facturación" descripcion={`CFDI 4.0 · ${formatoMoneda(facturado)} facturado en el periodo (${vigentes.length} facturas vigentes).`}>
+        <BotonExcel catalogo="facturas" parametros={{ desde, hasta }} />
         {sesion.puede("facturacion.timbrar") && sesion.sucursal && <DialogoGlobal hoy={hoy} sucursal={sesion.sucursal.nombre} />}
         {sesion.puede("facturacion.timbrar") && (
           <Button nativeButton={false} render={<Link href="/facturacion/nueva" />}>

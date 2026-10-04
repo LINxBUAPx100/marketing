@@ -13,5 +13,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico|txt|webmanifest)$).*)"],
+  // Fuera de la revisión: archivos estáticos y lo que la app instalable pide sin sesión (íconos, manifiesto, service worker).
+  matcher: ["/((?!_next/|favicon.ico|icon/|apple-icon|manifest.webmanifest|sw.js|sin-conexion.html|.*\\.(?:png|jpg|jpeg|svg|webp|ico|txt|webmanifest)$).*)"],
 };

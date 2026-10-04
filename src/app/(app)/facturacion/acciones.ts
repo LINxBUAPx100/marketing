@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { requerirSesion } from "@/lib/auth";
 import { rangoDeDias } from "@/lib/fechas";
 import { cancelarFactura, emitirComplemento, facturaGlobal, facturarVentas } from "@/lib/facturacion/servidor";
 import { datosDe, erroresDe, vacioANull, type EstadoFormulario } from "@/lib/formulario";
+import { avisoAutomatico } from "@/lib/mensajes/servidor";
 
 const sinPermiso = { ok: false as const, mensaje: "No tienes permiso para timbrar facturas." };
 
@@ -24,6 +26,7 @@ export async function facturar(entrada: { ventaIds: string[]; usoCfdi: string | 
   if (r.ok) {
     revalidatePath("/facturacion", "layout");
     for (const id of datos.data.ventaIds) revalidatePath(`/ventas/${id}`);
+    after(() => avisoAutomatico(sesion.negocio.id, "factura_emitida", r.id, sesion.usuario.id));
   }
   return r;
 }

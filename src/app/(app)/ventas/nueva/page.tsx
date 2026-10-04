@@ -35,6 +35,7 @@ export default async function PaginaNuevaVenta({ searchParams }: PageProps<"/ven
   return (
     <PuntoDeVenta
       sucursal={sesion.sucursal.nombre}
+      sucursalId={sesion.sucursal.id}
       productos={productos}
       categorias={categorias}
       clienteInicial={cliente}

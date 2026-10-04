@@ -31,6 +31,8 @@ export const negocio = pgTable("negocio", {
   correo: text(),
   ivaBp: integer().notNull().default(1600),
   preciosIncluyenIva: boolean().notNull().default(true),
+  // Avisos de WhatsApp que se mandan solos (claves de PLANTILLAS_WHATSAPP).
+  avisosWhatsapp: text().array().notNull().default([]),
   creadoEn: creadoEn(),
 });
 
@@ -294,6 +296,8 @@ export const venta = pgTable(
     motivoCancelacion: text(),
     canceladaPor: uuid().references(() => usuario.id),
     canceladaEn: timestamp({ withTimezone: true }),
+    // Clave que genera el navegador: si una venta hecha sin conexión se reenvía, no se duplica.
+    claveLocal: uuid().unique(),
     creadoEn: creadoEn(),
   },
   (t) => [index().on(t.negocioId, t.creadoEn), index().on(t.clienteId), uniqueIndex().on(t.sucursalId, t.folio)],
@@ -990,4 +994,32 @@ export const complementoPago = pgTable(
     saldoInsoluto: integer().notNull(),
   },
   (t) => [uniqueIndex().on(t.pagoId, t.facturaId)],
+);
+
+// ─── Fase 7: WhatsApp ───────────────────────────────────────────────────────
+
+// Bitácora de mensajes de WhatsApp (automáticos o manuales) para ver qué se mandó y reintentar.
+export const mensajeWhatsapp = pgTable(
+  "mensaje_whatsapp",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    negocioId: uuid()
+      .notNull()
+      .references(() => negocio.id),
+    clienteId: uuid().references(() => cliente.id),
+    telefono: text().notNull(),
+    plantilla: text().notNull(),
+    variables: jsonb().$type<string[]>().notNull(),
+    texto: text().notNull(),
+    // simulado = no hay cuenta de Meta configurada; el mensaje no salió.
+    estado: text({ enum: ["enviado", "fallido", "simulado"] }).notNull(),
+    error: text(),
+    wamid: text(),
+    entidad: text(),
+    entidadId: uuid(),
+    automatico: boolean().notNull().default(false),
+    usuarioId: uuid().references(() => usuario.id),
+    creadoEn: creadoEn(),
+  },
+  (t) => [index().on(t.negocioId, t.creadoEn), index().on(t.entidad, t.entidadId)],
 );

@@ -1,4 +1,4 @@
-import { ArrowLeft, Factory, FileCheck2, MessageCircle, Printer, ReceiptText } from "lucide-react";
+import { ArrowLeft, Factory, FileCheck2, Printer, ReceiptText } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,6 +15,8 @@ import { ETIQUETA_METODO } from "@/lib/caja/resumen";
 import { formatoCantidad, formatoFechaHora, formatoMoneda } from "@/lib/numeros";
 import { obtenerVenta } from "@/lib/ventas/consultas";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { whatsappConfigurado } from "@/lib/mensajes/proveedor";
+import { BotonWhatsApp } from "@/components/boton-whatsapp";
 import { DialogoAbono } from "./dialogo-abono";
 import { DialogoCancelar } from "./dialogo-cancelar";
 
@@ -77,11 +79,7 @@ export default async function PaginaVenta({ params }: PageProps<"/ventas/[id]">)
           <Button variant="outline" nativeButton={false} render={<Link href={`/imprimir/venta/${venta.id}?formato=ticket`} target="_blank" />}>
             <ReceiptText /> Ticket
           </Button>
-          {whatsapp && (
-            <Button variant="outline" nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noopener noreferrer" />}>
-              <MessageCircle /> WhatsApp
-            </Button>
-          )}
+          {cliente && <BotonWhatsApp api={whatsappConfigurado()} clave="venta_registrada" entidadId={venta.id} enlace={whatsapp} />}
           {venta.estado === "activa" && sesion.puede("ventas.cancelar") && <DialogoCancelar ventaId={venta.id} folio={venta.folio} pagado={venta.pagado} />}
           {saldo > 0 && (sesion.puede("cxc.abonar") || sesion.puede("ventas.crear")) && <DialogoAbono ventaId={venta.id} saldo={saldo} />}
         </div>

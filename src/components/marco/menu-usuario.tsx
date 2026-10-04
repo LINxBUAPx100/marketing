@@ -48,7 +48,13 @@ export function MenuUsuario({ id, nombre, correo, rol, conComision }: { id: stri
             Mis comisiones
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem onClick={() => salir()}>
+        <DropdownMenuItem
+          onClick={() => {
+            // Borra la copia del punto de venta guardada para trabajar sin conexión.
+            navigator.serviceWorker?.controller?.postMessage({ tipo: "olvidar" });
+            salir();
+          }}
+        >
           <LogOut />
           Cerrar sesión
         </DropdownMenuItem>

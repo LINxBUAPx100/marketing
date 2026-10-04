@@ -138,7 +138,7 @@ Cada fase termina con algo que la imprenta ya puede usar en el mostrador.
 - **Complementos de pago** (PPD), **cancelación** con motivo SAT, envío de XML+PDF.
 - Integración con PAC (Facturapi/Facturama) en modo pruebas primero; requiere CSD del SAT de la imprenta.
 
-### Fase 7 — WhatsApp API, reportes y pulido (1–2 semanas)
+### Fase 7 — WhatsApp API, reportes y pulido (1–2 semanas) ✅ terminada (WhatsApp en simulación hasta tener la línea y la cuenta de Meta)
 - WhatsApp Cloud API: plantillas aprobadas para nota, cotización, factura y pedido listo; envío automático.
 - Dashboard: ventas del día/mes, por sucursal, por vendedor, productos top, pedidos hoy.
 - Exportar a Excel (clientes, productos, insumos, ventas, facturas, proveedores, usuarios).

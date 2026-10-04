@@ -45,6 +45,7 @@ await prepararAlmacen();
 await prepararMaquinas();
 await prepararPrecios();
 await prepararFacturacion();
+await prepararWhatsapp();
 
 await cerrar();
 console.log("Datos de ejemplo listos. Entra con admin@demo.test / demo1234");
@@ -335,5 +336,13 @@ async function prepararFacturacion() {
   ];
   for (const [codigo, claveSat, claveUnidad] of claves) {
     await db.update(producto).set({ claveSat, claveUnidad }).where(eq(producto.codigo, codigo));
+  }
+}
+
+/** Avisos automáticos activados: sin cuenta de Meta quedan registrados como simulados. */
+async function prepararWhatsapp() {
+  const [n] = await db.select().from(negocio).limit(1);
+  if (!n.avisosWhatsapp.length) {
+    await db.update(negocio).set({ avisosWhatsapp: ["venta_registrada", "pedido_listo", "factura_emitida"] }).where(eq(negocio.id, n.id));
   }
 }

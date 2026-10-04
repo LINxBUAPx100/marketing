@@ -2,6 +2,7 @@ import { and, asc, eq, ilike, or, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { FiltroSelect } from "@/components/filtro-select";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +48,7 @@ export default async function PaginaInsumos({ searchParams }: PageProps<"/insumo
   return (
     <>
       <Encabezado titulo="Insumos" descripcion={`Papel, tinta y materiales${sesion.sucursal ? ` en ${sesion.sucursal.nombre}` : ""}. Se descuentan solos al vender productos con receta.`}>
+        <BotonExcel catalogo="insumos" parametros={{ sucursal: sesion.sucursal?.id }} />
         {sesion.puede("insumos.crear") && <DialogoInsumo sucursal={sesion.sucursal?.nombre ?? null} />}
       </Encabezado>
 

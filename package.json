@@ -10,7 +10,9 @@
     "db:generar": "drizzle-kit generate",
     "db:migrar": "tsx scripts/migrar.mts",
     "db:demo": "tsx scripts/datos-demo.mts",
-    "db:reiniciar": "node -e \"require('fs').rmSync('.data',{recursive:true,force:true})\" && npm run db:migrar && npm run db:demo",
+    "db:respaldar": "tsx scripts/respaldar.mts",
+    "db:restaurar": "tsx scripts/restaurar.mts",
+    "db:reiniciar": "node -e \"require('fs').rmSync('.data/pglite',{recursive:true,force:true})\" && npm run db:migrar && npm run db:demo",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

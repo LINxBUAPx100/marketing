@@ -2,11 +2,13 @@
 
 import { and, asc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { db, t } from "@/db";
 import { requerirSesion } from "@/lib/auth";
 import { registrar } from "@/lib/bitacora";
 import { datosDe, erroresDe, vacioANull, type EstadoFormulario } from "@/lib/formulario";
+import { avisoAutomatico } from "@/lib/mensajes/servidor";
 import { moverOrden } from "@/lib/produccion/servidor";
 
 const MoverSchema = z.object({
@@ -31,6 +33,8 @@ export async function mover(entrada: z.input<typeof MoverSchema>) {
   if (resultado.ok) {
     revalidatePath("/produccion");
     revalidatePath(`/produccion/${datos.data.ordenId}`);
+    const ventaId = resultado.listaVentaId;
+    if (ventaId) after(() => avisoAutomatico(sesion.negocio.id, "pedido_listo", ventaId, sesion.usuario.id));
   }
   return resultado;
 }

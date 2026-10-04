@@ -7,10 +7,12 @@ import {
   Droplet,
   FileSpreadsheet,
   FileText,
+  DatabaseBackup,
   Handshake,
   History,
   House,
   Layers,
+  MessageCircle,
   type LucideIcon,
   Package,
   Percent,
@@ -76,7 +78,7 @@ export const NAVEGACION: GrupoNav[] = [
     items: [
       { href: "/comisiones", etiqueta: "Comisiones", icono: Percent, permiso: "comisiones.ver" },
       { href: "/facturacion", etiqueta: "Facturación", icono: FileSpreadsheet, permiso: "facturacion.ver" },
-      { href: "/reportes", etiqueta: "Reportes", icono: BarChart3, permiso: "reportes.ver", fase: 7 },
+      { href: "/reportes", etiqueta: "Reportes", icono: BarChart3, permiso: "reportes.ver" },
     ],
   },
   {
@@ -84,9 +86,11 @@ export const NAVEGACION: GrupoNav[] = [
     items: [
       { href: "/configuracion/negocio", etiqueta: "Negocio", icono: Building2, permiso: "negocio.ver" },
       { href: "/configuracion/sucursales", etiqueta: "Sucursales", icono: Store, permiso: "sucursales.ver" },
+      { href: "/configuracion/whatsapp", etiqueta: "WhatsApp", icono: MessageCircle, permiso: "negocio.ver" },
       { href: "/configuracion/usuarios", etiqueta: "Usuarios", icono: Users, permiso: "usuarios.ver" },
       { href: "/configuracion/roles", etiqueta: "Roles y permisos", icono: ShieldCheck, permiso: "roles.ver" },
       { href: "/configuracion/bitacora", etiqueta: "Bitácora", icono: History, permiso: "bitacora.ver" },
+      { href: "/configuracion/respaldos", etiqueta: "Respaldos", icono: DatabaseBackup, permiso: "respaldos.ver" },
     ],
   },
 ];

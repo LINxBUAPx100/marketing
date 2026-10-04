@@ -2,6 +2,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export default async function PaginaProveedores() {
         <ArrowLeft /> Cuentas por pagar
       </Button>
       <Encabezado titulo="Proveedores" descripcion="Quién te surte papel, tinta y materiales, y cuánto les debes.">
+        <BotonExcel catalogo="proveedores" />
         {puedeEditar && <DialogoProveedor />}
       </Encabezado>
       <Card className="py-0">

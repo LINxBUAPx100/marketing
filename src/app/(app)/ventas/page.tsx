@@ -3,6 +3,7 @@ import { Plus, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { FiltroSelect } from "@/components/filtro-select";
 import { TablaVentas } from "@/components/tabla-ventas";
@@ -68,6 +69,7 @@ export default async function PaginaVentas({ searchParams }: PageProps<"/ventas"
   return (
     <>
       <Encabezado titulo="Ventas" descripcion={desde === hasta ? (desde === hoy ? "Ventas de hoy." : `Ventas del ${desde}.`) : `Del ${desde} al ${hasta}.`}>
+        <BotonExcel catalogo="ventas" parametros={{ desde, hasta, sucursal: sesion.sucursal?.id }} />
         {sesion.puede("productos.costos") && (
           <Button variant="outline" nativeButton={false} render={<Link href="/ventas/utilidad" />}>
             <TrendingUp /> Utilidad

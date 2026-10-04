@@ -31,6 +31,7 @@ export const MODULOS_PERMISOS: ModuloPermisos[] = [
   { clave: "usuarios", etiqueta: "Usuarios", acciones: [ver, editar] },
   { clave: "roles", etiqueta: "Roles", acciones: [ver, editar] },
   { clave: "bitacora", etiqueta: "Bitácora", acciones: [ver] },
+  { clave: "respaldos", etiqueta: "Respaldos", acciones: [{ clave: "ver", etiqueta: "Ver y descargar respaldos" }] },
 ];
 
 export const TODOS_LOS_PERMISOS = MODULOS_PERMISOS.flatMap((m) =>

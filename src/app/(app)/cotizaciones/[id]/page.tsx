@@ -1,5 +1,5 @@
 import { and, asc, eq } from "drizzle-orm";
-import { ArrowLeft, MessageCircle, Pencil, Printer, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Pencil, Printer, ShoppingCart } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -13,6 +13,8 @@ import { formatoCantidad, formatoFecha, formatoFechaHora, formatoMoneda } from "
 import { usuariosActivos } from "@/lib/produccion/consultas";
 import { estadoCotizacion } from "@/lib/produccion/reglas";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { whatsappConfigurado } from "@/lib/mensajes/proveedor";
+import { BotonWhatsApp } from "@/components/boton-whatsapp";
 import { DialogoCerrar, DialogoCompletar, DialogoSeguimiento } from "./dialogos";
 
 export const metadata: Metadata = { title: "Cotización" };
@@ -82,11 +84,7 @@ export default async function PaginaCotizacion({ params }: PageProps<"/cotizacio
           <Button variant="outline" nativeButton={false} render={<Link href={`/imprimir/cotizacion/${c.id}`} target="_blank" />}>
             <Printer /> Imprimir
           </Button>
-          {whatsapp && (
-            <Button variant="outline" nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noopener noreferrer" />}>
-              <MessageCircle /> WhatsApp
-            </Button>
-          )}
+          <BotonWhatsApp api={whatsappConfigurado()} clave="cotizacion_enviada" entidadId={c.id} enlace={whatsapp} />
           {abierta && sesion.puede("cotizaciones.editar") && (
             <Button variant="outline" nativeButton={false} render={<Link href={`/cotizaciones/${c.id}/editar`} />}>
               <Pencil /> Editar

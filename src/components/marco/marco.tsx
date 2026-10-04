@@ -8,6 +8,7 @@ import { Campana } from "./campana";
 import { MenuLateral } from "./menu-lateral";
 import { MenuUsuario } from "./menu-usuario";
 import { SelectorSucursal } from "./selector-sucursal";
+import { VentasPendientes } from "./ventas-pendientes";
 
 type Props = {
   usuario: { id: string; nombre: string; correo: string; rol: string; conComision: boolean };
@@ -54,6 +55,7 @@ export function Marco({ usuario, negocio, sucursales, sucursalId, permisos, chil
           </Button>
           <SelectorSucursal sucursales={sucursales} sucursalId={sucursalId} />
           <div className="ml-auto flex items-center gap-1">
+            <VentasPendientes />
             <Campana />
             <MenuUsuario {...usuario} />
           </div>

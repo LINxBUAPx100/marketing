@@ -3,6 +3,7 @@ import { ImageOff, Plus, Tags } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Buscador } from "@/components/buscador";
+import { BotonExcel } from "@/components/boton-excel";
 import { Encabezado } from "@/components/encabezado";
 import { FiltroSelect } from "@/components/filtro-select";
 import { Badge } from "@/components/ui/badge";
@@ -60,6 +61,7 @@ export default async function PaginaProductos({ searchParams }: PageProps<"/prod
   return (
     <>
       <Encabezado titulo="Productos" descripcion={`Precios y existencias${sesion.sucursal ? ` en ${sesion.sucursal.nombre}` : ""}.`}>
+        <BotonExcel catalogo="productos" parametros={{ sucursal: sesion.sucursal?.id }} />
         <Button variant="outline" nativeButton={false} render={<Link href="/productos/categorias" />}>
           <Tags /> Categorías
         </Button>

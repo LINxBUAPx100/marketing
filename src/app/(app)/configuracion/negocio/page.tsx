@@ -12,7 +12,7 @@ export default async function PaginaNegocio() {
     <>
       <Encabezado
         titulo="Datos del negocio"
-        descripcion="Aparecen en notas de venta, cotizaciones y facturas. Los datos fiscales se usarán en la fase de facturación."
+        descripcion="Aparecen en notas de venta, cotizaciones y facturas. Los datos fiscales son los del emisor de las facturas."
       />
       <FormularioNegocio
         puedeEditar={sesion.puede("negocio.editar")}

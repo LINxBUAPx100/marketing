@@ -10,8 +10,10 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - `npm run db:generar` — genera una migración en `drizzle/` después de cambiar `src/db/schema.ts`
 - `npm run db:migrar` — aplica migraciones
 - `npm run db:demo` — carga datos de ejemplo (accesos en `scripts/datos-demo.mts`)
-- `npm run db:reiniciar` — borra la base local y la recrea con datos de ejemplo
+- `npm run db:reiniciar` — borra la base local (`.data/pglite`, no los respaldos) y la recrea con datos de ejemplo
+- `npm run db:respaldar` / `npm run db:restaurar -- archivo.json.gz [--reemplazar]` — respaldo completo y restauración (servidor detenido)
 - `npm test` (Vitest: lógica de dinero en `src/lib/**/*.test.ts`), `npm run typecheck`, `npx eslint src scripts`, `npm run build`
+- El modo sin conexión solo funciona con `npm run build && npm run start` (en desarrollo el service worker se desregistra)
 
 ## Base de datos
 
@@ -47,3 +49,7 @@ Plan completo y fases: `docs/PLAN.md` (versión visual: `docs/plan.html`). Todo 
 - En desarrollo, editar archivos con `npm run dev` corriendo puede recargar el panel del navegador hacia "/" (recarga en caliente); no es un error de la app.
 - Si `npm run dev` lo arrancó otra persona, no corras `db:*` encima: PGlite se daña con dos procesos.
 - Imágenes: `src/lib/archivos.ts` guarda en `.data/archivos` (solo desarrollo). Para producción hay que cambiarlo a Supabase Storage.
+- WhatsApp: plantillas en `src/lib/mensajes/plantillas.ts` (deben existir aprobadas en Meta con el mismo nombre y orden de variables). Con `WHATSAPP_TOKEN` + `WHATSAPP_PHONE_ID` se envían por la API de Meta; sin ellos se registran como `simulado` y los botones abren wa.me. Los avisos automáticos se disparan con `after()` desde las acciones (`avisoAutomatico`) y nunca deben tumbar la operación. Bitácora en `mensaje_whatsapp`.
+- Reportes: consultas en `src/lib/reportes/consultas.ts`, reglas puras en `reglas.ts`. Exportar a Excel: catálogo en `src/lib/reportes/exportar.ts`, ruta `/exportar/[catalogo]`, generador propio sin dependencias en `src/lib/excel.ts`.
+- Respaldos: `src/lib/respaldos.ts` (JSON por tabla + gzip; restaura con `json_populate_recordset` en orden de llaves foráneas, dentro de una transacción). El servidor guarda uno al día en `.data/respaldos` (`src/instrumentation.ts`; se apaga con `RESPALDOS_AUTOMATICOS=0` y en Vercel).
+- PWA: `src/app/manifest.ts`, íconos en `src/app/icon.tsx`, `public/sw.js`. El worker solo guarda `/ventas/nueva` y `/_next/static`; las ventas sin conexión van a IndexedDB (`src/lib/offline/cola.ts`) con `claveLocal` para no duplicarse y las envía `VentasPendientes` en el encabezado. Si agregas una ruta pública (sin sesión), exclúyela también en el `matcher` de `src/proxy.ts`.

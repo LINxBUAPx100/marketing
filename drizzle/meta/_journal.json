@@ -50,6 +50,13 @@
       "when": 1791087377263,
       "tag": "0006_fase6_facturacion",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791088285580,
+      "tag": "0007_clever_proemial_gods",
+      "breakpoints": true
     }
   ]
 }

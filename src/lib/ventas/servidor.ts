@@ -36,6 +36,8 @@ export type VentaEntrada = {
   enviarProduccion: boolean;
   /** Si la venta viene de una cotización: respeta sus precios y la marca como aceptada. */
   cotizacionId: string | null;
+  /** Clave del navegador para ventas hechas sin conexión: si llega dos veces, no se duplica. */
+  claveLocal?: string | null;
 };
 
 export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise<Resultado<{ id: string; folio: string }>> {
@@ -44,6 +46,13 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
   if (!entrada.partidas.length) return { ok: false, mensaje: "Agrega al menos un producto o concepto." };
 
   const negocioId = sesion.negocio.id;
+  if (entrada.claveLocal) {
+    const [previa] = await db
+      .select({ id: t.venta.id, folio: t.venta.folio })
+      .from(t.venta)
+      .where(and(eq(t.venta.claveLocal, entrada.claveLocal), eq(t.venta.negocioId, negocioId)));
+    if (previa) return { ok: true, ...previa };
+  }
   const cliente = entrada.clienteId
     ? (await db.select().from(t.cliente).where(and(eq(t.cliente.id, entrada.clienteId), eq(t.cliente.negocioId, negocioId))))[0]
     : null;
@@ -159,6 +168,7 @@ export async function crearVenta(sesion: Sesion, entrada: VentaEntrada): Promise
         pagado,
         fechaEntrega: entrada.fechaEntrega,
         notas: entrada.notas,
+        claveLocal: entrada.claveLocal ?? null,
       })
       .returning();
 

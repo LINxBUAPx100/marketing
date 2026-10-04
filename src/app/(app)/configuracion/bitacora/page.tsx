@@ -10,7 +10,7 @@ import { formatoFechaHora } from "@/lib/numeros";
 
 export const metadata: Metadata = { title: "Bitácora" };
 
-const ACCIONES: Record<string, string> = { crear: "Creó", editar: "Editó", cancelar: "Canceló", abonar: "Cobró abono de", ajustar: "Ajustó", corte: "Hizo corte de", mover: "Movió", asignar: "Reasignó", rechazar: "Marcó rechazada", pagar: "Pagó", instalar: "Instaló", retirar: "Retiró", timbrar: "Timbró" };
+const ACCIONES: Record<string, string> = { crear: "Creó", editar: "Editó", cancelar: "Canceló", abonar: "Cobró abono de", ajustar: "Ajustó", corte: "Hizo corte de", mover: "Movió", asignar: "Reasignó", rechazar: "Marcó rechazada", pagar: "Pagó", instalar: "Instaló", retirar: "Retiró", timbrar: "Timbró", exportar: "Exportó", descargar: "Descargó", restaurar: "Restauró" };
 const ENTIDADES: Record<string, string> = {
   negocio: "datos del negocio",
   sucursal: "sucursal",
@@ -42,6 +42,8 @@ const ENTIDADES: Record<string, string> = {
   comisiones: "comisiones de",
   factura: "factura",
   complemento: "complemento de pago",
+  excel: "a Excel",
+  respaldo: "respaldo",
 };
 
 export default async function PaginaBitacora() {

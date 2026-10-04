@@ -1,6 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import { ArrowLeft, FileCode2, MessageCircle, Printer } from "lucide-react";
+import { ArrowLeft, FileCode2, Printer } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -16,6 +16,8 @@ import { ETIQUETA_FORMA_PAGO, MOTIVOS_CANCELACION } from "@/lib/facturacion/regl
 import { pagosSinComplemento } from "@/lib/facturacion/servidor";
 import { formatoCantidad, formatoFechaHora, formatoMoneda } from "@/lib/numeros";
 import { enlaceWhatsApp } from "@/lib/whatsapp";
+import { whatsappConfigurado } from "@/lib/mensajes/proveedor";
+import { BotonWhatsApp } from "@/components/boton-whatsapp";
 import { BotonComplemento, DialogoCancelarFactura } from "./controles";
 
 export const metadata: Metadata = { title: "Factura" };
@@ -89,11 +91,7 @@ export default async function PaginaFactura({ params }: PageProps<"/facturacion/
               <FileCode2 /> XML
             </Button>
           )}
-          {whatsapp && (
-            <Button variant="outline" nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noopener noreferrer" />}>
-              <MessageCircle /> WhatsApp
-            </Button>
-          )}
+          {f.estado === "vigente" && <BotonWhatsApp api={whatsappConfigurado() && f.tipo === "I"} clave="factura_emitida" entidadId={f.id} enlace={whatsapp} />}
           {f.estado === "vigente" && sesion.puede("facturacion.cancelar") && <DialogoCancelarFactura id={f.id} folio={folio} />}
         </div>
       </div>

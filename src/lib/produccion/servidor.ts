@@ -66,7 +66,7 @@ export async function cancelarOrdenDeVenta(tx: Tx, ventaId: string) {
   await tx.update(t.ordenProduccion).set({ estado: "cancelada", actualizadoEn: new Date() }).where(eq(t.ordenProduccion.ventaId, ventaId));
 }
 
-type Resultado = { ok: true } | { ok: false; mensaje: string };
+type Resultado = { ok: true; listaVentaId?: string } | { ok: false; mensaje: string };
 
 /**
  * Mueve la orden a otra etapa y/o cambia el responsable. Deja evento en el historial,
@@ -128,5 +128,6 @@ export async function moverOrden(
   });
 
   await registrar(sesion, cambiaEtapa ? "mover" : "asignar", "orden", fila.orden.id, { nombre: fila.folio, etapa: etapa.nombre });
-  return { ok: true };
+  // Para el aviso de WhatsApp "pedido listo".
+  return cambiaEtapa && etapa.tipo === "listo" ? { ok: true, listaVentaId: fila.orden.ventaId } : { ok: true };
 }
