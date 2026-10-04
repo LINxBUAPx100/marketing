@@ -13,7 +13,7 @@ type Props = React.ComponentProps<typeof Input> & {
 export function Campo({ etiqueta, nombre, errores, ayuda, className, ...props }: Props) {
   const idError = `${nombre}-error`;
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid content-start gap-1.5", className)}>
       <Label htmlFor={nombre}>{etiqueta}</Label>
       <Input
         id={nombre}
@@ -59,7 +59,7 @@ export function Selector({
   ...props
 }: React.ComponentProps<"select"> & { etiqueta: string; nombre: string; errores?: string[] }) {
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("grid content-start gap-1.5", className)}>
       <Label htmlFor={nombre}>{etiqueta}</Label>
       <select
         id={nombre}

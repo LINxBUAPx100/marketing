@@ -1,7 +1,7 @@
 "use client";
 
-import { ImageOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ImageOff, ImageUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Campo, MensajeFormulario, Selector } from "@/components/campo";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,8 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
   const [tipo, setTipo] = useState(valores.tipo);
   const [vista, setVista] = useState<string | null>(valores.imagenUrl);
   const [quitar, setQuitar] = useState(false);
+  const [nombreArchivo, setNombreArchivo] = useState<string | null>(null);
+  const archivoRef = useRef<HTMLInputElement>(null);
   const nuevo = !valores.id;
 
   useEffect(() => {
@@ -54,7 +56,7 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
       <input type="hidden" name="quitarImagen" value={String(quitar)} />
       {!estado?.ok && <MensajeFormulario estado={estado} />}
 
-      <fieldset disabled={!puedeEditar} className="grid gap-6 lg:grid-cols-[1fr_18rem]">
+      <fieldset disabled={!puedeEditar} className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="grid min-w-0 content-start gap-6">
           <Card>
             <CardHeader>
@@ -132,7 +134,8 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
           )}
         </div>
 
-        <div className="grid content-start gap-6">
+        {/* min-w-0: sin esto, el contenido de la columna puede ensanchar la página. */}
+        <div className="grid min-w-0 content-start gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Imagen</CardTitle>
@@ -140,32 +143,50 @@ export function FormularioProducto({ valores, categorias, verCostos, puedeEditar
             <CardContent className="grid gap-3">
               {vista && !quitar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={vista} alt="Vista previa" className="aspect-square w-full rounded-lg border object-cover" />
+                <img src={vista} alt="Vista previa" className="mx-auto aspect-square w-full max-w-56 rounded-lg border object-cover" />
               ) : (
-                <div className="bg-muted text-muted-foreground grid aspect-square w-full place-items-center rounded-lg">
+                <div className="bg-muted text-muted-foreground mx-auto grid aspect-square w-full max-w-56 place-items-center rounded-lg">
                   <ImageOff className="size-8" />
                 </div>
               )}
+              {/* El input nativo queda oculto: su texto ("No se ha seleccionado…") no se puede acomodar. */}
               <input
+                ref={archivoRef}
+                id="imagen"
                 type="file"
                 name="imagen"
                 accept="image/jpeg,image/png,image/webp"
-                aria-label="Subir imagen"
-                className="file:bg-secondary file:text-secondary-foreground text-muted-foreground text-sm file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1.5 file:text-sm file:font-medium"
+                className="sr-only"
                 onChange={(ev) => {
                   const archivo = ev.target.files?.[0];
                   if (archivo) {
                     setVista(URL.createObjectURL(archivo));
+                    setNombreArchivo(archivo.name);
                     setQuitar(false);
                   }
                 }}
               />
-              {e.imagen && <p className="text-destructive text-sm">{e.imagen[0]}</p>}
-              {vista && !quitar && (
-                <Button type="button" variant="ghost" size="sm" onClick={() => setQuitar(true)}>
-                  Quitar imagen
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <Button type="button" variant="secondary" size="sm" onClick={() => archivoRef.current?.click()}>
+                  <ImageUp /> {vista && !quitar ? "Cambiar imagen" : "Elegir imagen"}
                 </Button>
-              )}
+                {vista && !quitar && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setQuitar(true);
+                      setNombreArchivo(null);
+                      if (archivoRef.current) archivoRef.current.value = "";
+                    }}
+                  >
+                    Quitar
+                  </Button>
+                )}
+              </div>
+              {nombreArchivo && <p className="text-muted-foreground truncate text-xs" title={nombreArchivo}>{nombreArchivo}</p>}
+              {e.imagen && <p className="text-destructive text-sm">{e.imagen[0]}</p>}
               <p className="text-muted-foreground text-xs">JPG, PNG o WebP de hasta 3 MB.</p>
             </CardContent>
           </Card>
