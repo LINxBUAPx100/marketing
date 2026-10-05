@@ -1,0 +1,11 @@
+# Datos locales y respaldos (no publicar)
+.data/
+
+# Next.js / Node
+.next/
+node_modules/
+next-env.d.ts
+*.tsbuildinfo
+
+# Configuración local
+.claude/settings.local.json
