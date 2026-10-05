@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sin conexión · Imprenta</title>
+    <style>
+      :root { color-scheme: light dark; --fondo: #f6f7f9; --texto: #1b2333; --suave: #5b6475; --primario: #1b2333; --sobre: #fff; }
+      @media (prefers-color-scheme: dark) { :root { --fondo: #12161f; --texto: #e8eaf0; --suave: #a3abba; --primario: #e8eaf0; --sobre: #12161f; } }
+      body { margin: 0; min-height: 100svh; display: grid; place-items: center; background: var(--fondo); color: var(--texto); font: 16px/1.5 system-ui, sans-serif; }
+      main { max-width: 26rem; padding: 2rem 1.25rem; text-align: center; }
+      h1 { font-size: 1.4rem; margin: 0 0 .5rem; }
+      p { color: var(--suave); margin: 0 0 1.25rem; }
+      a { display: inline-block; padding: .7rem 1.2rem; border-radius: .6rem; background: var(--primario); color: var(--sobre); text-decoration: none; font-weight: 600; margin: .25rem; }
+      a.secundario { background: transparent; color: var(--texto); border: 1px solid currentColor; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Sin conexión a internet</h1>
+      <p>Esta pantalla necesita internet. Mientras vuelve, puedes seguir cobrando en el punto de venta: las ventas se guardan en este equipo y se envían solas al reconectar.</p>
+      <a href="/ventas/nueva">Ir al punto de venta</a>
+      <a class="secundario" href="">Reintentar</a>
+    </main>
+  </body>
+</html>

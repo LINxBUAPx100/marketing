@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791065639139,
+      "tag": "0000_loose_nico_minoru",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791069595025,
+      "tag": "0001_fase1_punto_de_venta",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791077578730,
+      "tag": "0002_fase2_produccion_cotizaciones",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791080301893,
+      "tag": "0003_fase3_insumos_almacen",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791081519581,
+      "tag": "0004_fase4_maquinas",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791086581091,
+      "tag": "0005_fase5_comisiones_convenios",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791087377263,
+      "tag": "0006_fase6_facturacion",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791088285580,
+      "tag": "0007_clever_proemial_gods",
+      "breakpoints": true
+    }
+  ]
+}
